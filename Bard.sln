@@ -24,6 +24,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bard.Fra.Analysis.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bard.Contracts", "src\Bard.Contracts\Bard.Contracts.csproj", "{2F0FEA16-DE1E-4F81-80C5-2D3264C56432}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intervals", "src\Intervals\Intervals.csproj", "{EDA72C84-4487-4175-BEAD-EA8FBCADF09D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intervals.Tests", "src\Intervals.Tests\Intervals.Tests.csproj", "{0381110F-497C-446A-A6FB-B42C7644B176}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +66,14 @@ Global
 		{2F0FEA16-DE1E-4F81-80C5-2D3264C56432}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F0FEA16-DE1E-4F81-80C5-2D3264C56432}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F0FEA16-DE1E-4F81-80C5-2D3264C56432}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDA72C84-4487-4175-BEAD-EA8FBCADF09D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDA72C84-4487-4175-BEAD-EA8FBCADF09D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDA72C84-4487-4175-BEAD-EA8FBCADF09D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDA72C84-4487-4175-BEAD-EA8FBCADF09D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0381110F-497C-446A-A6FB-B42C7644B176}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0381110F-497C-446A-A6FB-B42C7644B176}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0381110F-497C-446A-A6FB-B42C7644B176}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0381110F-497C-446A-A6FB-B42C7644B176}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
