@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bard.Contracts.Fra;
+using System;
 
 namespace Bard.Fra.Glaff
 {
@@ -7,7 +8,15 @@ namespace Bard.Fra.Glaff
         public int Id { get; set; }
         public bool OldFashioned { get; set; }
         public string GraphicalForm { get; set; }
+
         public string MorphoSyntax { get; set; }
+        public POS POS { get; set; }
+        public Person? Person { get; set; }
+        public Gender? Gender { get; set; }
+        public Number? Number { get; set; }
+        public Mood? Mood { get; set; }
+        public Tense? Tense { get; set; }
+
         public string Lemma { get; set; }
         public string ApiPronunciations { get; set; }
         public string SampaPronunciations { get; set; }

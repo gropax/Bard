@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bard.Contracts.Fra;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -20,14 +21,27 @@ namespace Bard.Fra.Glaff
                 {
                     string[] columns = line.Split('|');
 
+                    string morphoSyntax = columns[1];
+                    ParseGRACE(morphoSyntax, out var pos, out var gender, out var number, out var person, out var mood, out var tense);
+
                     yield return new GlaffEntry()
                     {
                         OldFashioned = false,
-                        GraphicalForm = columns[0],
-                        MorphoSyntax = columns[1],
+
                         Lemma = columns[2],
+                        GraphicalForm = columns[0],
+
+                        MorphoSyntax = morphoSyntax,
+                        POS = pos,
+                        Person = person,
+                        Gender = gender,
+                        Number = number,
+                        Mood = mood,
+                        Tense = tense,
+
                         ApiPronunciations = columns[3],
                         SampaPronunciations = columns[4],
+
                         FrantexAbsoluteFormFrequency = ParseDouble(columns[5]),
                         FrantexRelativeFormFrequency = ParseDouble(columns[6]),
                         FrantexAbsoluteLemmaFrequency = ParseDouble(columns[7]),
@@ -66,6 +80,86 @@ namespace Bard.Fra.Glaff
                         ApiPronunciations = columns.Length > 3 ? columns[3] : null,
                     };
                 }
+            }
+        }
+
+
+        private static void ParseGRACE(string traits, out POS pos, out Gender? gender, out Number? number, out Person? person, out Mood? mood, out Tense? tense)
+        {
+            char fst = traits[0];
+            gender = null;
+            number = null;
+            person = null;
+            mood = null;
+            tense = null;
+
+            switch (fst)
+            {
+                case 'A':
+                    pos = POS.Adjective;
+                    gender = ParseGender(traits[3]);
+                    number = ParseNumber(traits[4]);
+                    return;
+
+                case 'R':
+                    pos = POS.Adverb;
+                    return;
+
+                case 'C':
+                    pos = POS.Conjunction;
+                    return;
+
+                case 'D':
+                    pos = POS.Determiner;
+                    person = ParsePerson(traits[2]);
+                    gender = ParseGender(traits[3]);
+                    number = ParseNumber(traits[4]);
+                    return;
+
+                case 'I':
+                    pos = POS.Interjection;
+                    return;
+
+                case 'N':
+                    pos = POS.Noun;
+                    gender = ParseGender(traits[2]);
+                    number = ParseNumber(traits[3]);
+                    return;
+
+                case 'P':
+                    pos = POS.Pronoun;
+                    person = ParsePerson(traits[2]);
+                    gender = ParseGender(traits[3]);
+                    number = ParseNumber(traits[4]);
+                    return;
+
+                case 'S':
+                    pos = POS.Preposition;
+                    return;
+
+                case 'V':
+                    pos = POS.Verb;
+                    person = ParsePerson(traits[4]);
+                    gender = ParseGender(traits[5]);
+                    number = ParseNumber(traits[6]);
+                    return;
+
+                default:
+                    throw new Exception($"Unexpected POS value [{fst}].");
+            }
+        }
+
+        private static Gender ParseGender(char c) => c == 'm' ? Gender.Masculine : Gender.Feminine; 
+        private static Number ParseNumber(char c) => c == 's' ? Number.Singular : Number.Plural; 
+        private static Person ParsePerson(char s)
+        {
+            switch (s)
+            {
+                case '1': return Person.First;
+                case '2': return Person.Second;
+                case '3': return Person.Third;
+                default:
+                    throw new Exception($"Unexpected person value [{s}].");
             }
         }
     }
