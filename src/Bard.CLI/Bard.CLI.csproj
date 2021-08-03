@@ -10,7 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bard.Fra.Analysis\Bard.Fra.Analysis.csproj" />
     <ProjectReference Include="..\Bard.Fra.Glaff\Bard.Fra.Glaff.csproj" />
+    <ProjectReference Include="..\Bard.Storage.Neo4j\Bard.Storage.Neo4j.csproj" />
     <ProjectReference Include="..\Bard.Utils\Bard.Utils.csproj" />
   </ItemGroup>
 
