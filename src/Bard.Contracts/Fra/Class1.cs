@@ -107,6 +107,7 @@ namespace Bard.Contracts.Fra
 
     public enum Person
     {
+        Indeterminate,
         First,
         Second,
         Third,

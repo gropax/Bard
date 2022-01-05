@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bard.Fra.Analysis\Bard.Fra.Analysis.csproj" />
+    <ProjectReference Include="..\..\src\Bard.Fra.Glaff\Bard.Fra.Glaff.csproj" />
   </ItemGroup>
 
 </Project>

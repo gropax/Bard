@@ -1,4 +1,10 @@
+﻿using Bard.Fra.Glaff;
+using Intervals;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using Xunit;
 
 namespace Bard.Fra.Analysis.Tests
@@ -6,35 +12,114 @@ namespace Bard.Fra.Analysis.Tests
     public class PhonologicalAligner2Tests
     {
         [Theory]
-        [InlineData("boutique", "b u t i k", "b:b ou:u t:t i:i qu:k e:")]
-        public void TestCompute(string graphemes, string phonemesRaw, string expectedRaw)
+        [InlineData("boutique", "b:b ou:u t:t i:i qu:k e:")]
+        [InlineData("cornet", "c:k o:O r:R n:n e:E t:")]
+        [InlineData("anticonstitutionnellement", "an:@ t:t i:i c:k on:§ s:s t:t i:i t:t u:y t:s i:j o:o nn:n e:E ll:l e:° m:m en:@ t:")]
+        public void TestCompute(string graphemes, string rawAlignement)
         {
-            var phonemes = phonemesRaw.Split(' ');
+            var alignment = ParseAlignement(rawAlignement).ToArray();
+            var phonemes = alignment.SelectMany(a => a.phonemes).ToArray();
+
             var aligner = new PhonologicalAligner2(graphemes, phonemes);
             var result = aligner.Compute();
+            var trace = aligner.GetTrace();
 
-            if (expectedRaw == null)
-                Assert.Null(result);
-            else
+            Assert.NotNull(result);
+            Assert.Equal(alignment.Length, result.Length);
+
+            for (int i = 0; i < result.Length; i++)
             {
-                var expectedIntervalsRaw = expectedRaw.Split(' ');
+                var realInterval = result[i];
+                var realGraphemes = graphemes.Substring(realInterval.Start, realInterval.Length);
+                var realPhonemes = string.Join("", realInterval.Value);
 
-                Assert.Equal(expectedIntervalsRaw.Length, result.Length);
+                var expectedInterval = alignment[i];
 
-                for (int i = 0; i < result.Length; i++)
-                {
-                    var interval = result[i];
-                    var realGraphemes = graphemes.Substring(interval.Start, interval.Length);
-                    var realPhonemes = string.Join("", interval.Value);
-
-                    var parts = expectedIntervalsRaw[i].Split(':');
-                    var expectedGraphemes = parts[0];
-                    var expectedPhonemes = parts[1];
-
-                    Assert.Equal(expectedGraphemes, realGraphemes);
-                    Assert.Equal(expectedPhonemes, realPhonemes);
-                }
+                Assert.Equal(expectedInterval.graphemes, realGraphemes);
+                Assert.Equal(string.Join("", expectedInterval.phonemes), realPhonemes);
             }
+        }
+
+
+        [Fact]
+        public void TestComputeGlaff()
+        {
+            string glaffPath = @"C:\Users\VR1\source\repos\Bard\data\glaff-1.2.2.txt";
+            foreach (var entry in GlaffParser.ParseMainLexicon(glaffPath))
+            {
+                var graphemes = entry.GraphicalForm;
+                var phonemes = SplitIntoTextElements(entry.ApiPronunciations.Split(';')[0])
+                    .Where(p => p != ".").ToArray();
+
+                bool isFullCaps = graphemes.All(c => Char.IsUpper(c));
+
+                if (isFullCaps || phonemes.Length == 0)
+                    continue;
+
+                var aligner = new PhonologicalAligner2(graphemes, phonemes);
+                Interval<string>[] alignment = null;
+                try
+                {
+                    alignment = aligner.Compute();
+                    var trace = aligner.GetTrace();
+
+                    if (alignment == null)
+                    {
+                    }
+                }
+                catch (Exception e)
+                {
+                }
+
+
+                Assert.NotNull(alignment);
+            }
+        }
+
+
+        private IEnumerable<(string graphemes, string[] phonemes)> ParseAlignement(string rawAlignment)
+        {
+            foreach (var interval in rawAlignment.Split(' '))
+            {
+                var parts = interval.Split(':');
+                var graphemes = parts[0];
+                var phonemes = ParsePhonemes(parts[1]);
+
+                yield return (graphemes, phonemes);
+            }
+        }
+
+        private string[] ParsePhonemes(string phonemesRaw)
+        {
+            var builder = new List<string>();
+
+            foreach (var c in phonemesRaw)
+            {
+                if (_phonemeByChar.TryGetValue(c, out var phoneme))
+                    builder.Add(phoneme);
+                else
+                    builder.Add(c.ToString());
+            }
+
+            return builder.ToArray();
+        }
+
+        private static Dictionary<char, string> _phonemeByChar = new Dictionary<char, string>()
+        {
+            { 'O', "ɔ" }, { 'E', "ɛ" }, { '°', "ə" }, { '2', "ø" }, { '9', "œ" },
+            { '5', "ɛ̃" }, { '1', "œ̃" }, { '@', "ɑ̃" }, { '§', "ɔ̃" }, { '8', "ɥ" },
+            { 'S', "ʃ" }, { 'Z', "ʒ" }, { 'N', "ɲ" }, { 'R', "ʁ" }, { 'x', "χ" },
+            { 'G', "ŋ" },
+        };
+
+        string[] SplitIntoTextElements(string input)
+        {
+            IEnumerable<string> Helper()
+            {
+                for (var en = StringInfo.GetTextElementEnumerator(input); en.MoveNext();)
+                    yield return en.GetTextElement();
+            }
+            return Helper().ToArray();
         }
     }
 }

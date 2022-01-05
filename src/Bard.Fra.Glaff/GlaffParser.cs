@@ -155,6 +155,7 @@ namespace Bard.Fra.Glaff
         {
             switch (s)
             {
+                case '-': return Person.Indeterminate;
                 case '1': return Person.First;
                 case '2': return Person.Second;
                 case '3': return Person.Third;

@@ -10,19 +10,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bard.Fra.Glaff", "src\Bard.Fra.Glaff\Bard.Fra.Glaff.csproj", "{5A3D5637-6EA6-4D35-8EA0-4D1E0A587DE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bard.CLI", "src\Bard.CLI\Bard.CLI.csproj", "{06A0CBD1-FD13-44CD-B0C3-A3F084640DC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bard.CLI", "src\Bard.CLI\Bard.CLI.csproj", "{06A0CBD1-FD13-44CD-B0C3-A3F084640DC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bard.Utils", "src\Bard.Utils\Bard.Utils.csproj", "{3638BFC2-2C43-4743-B342-A1CCF3D5D83E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bard.Utils", "src\Bard.Utils\Bard.Utils.csproj", "{3638BFC2-2C43-4743-B342-A1CCF3D5D83E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bard.Storage", "src\Bard.Storage\Bard.Storage.csproj", "{08E1845A-6924-4478-B4F4-2123D965230C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bard.Storage", "src\Bard.Storage\Bard.Storage.csproj", "{08E1845A-6924-4478-B4F4-2123D965230C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bard.Storage.Neo4j", "src\Bard.Storage.Neo4j\Bard.Storage.Neo4j.csproj", "{09F5634F-7C78-4448-ABD5-522022901CA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bard.Storage.Neo4j", "src\Bard.Storage.Neo4j\Bard.Storage.Neo4j.csproj", "{09F5634F-7C78-4448-ABD5-522022901CA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bard.Fra.Analysis", "src\Bard.Fra.Analysis\Bard.Fra.Analysis.csproj", "{1BC1364E-3D22-403E-B283-65F8D30B8FCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bard.Fra.Analysis", "src\Bard.Fra.Analysis\Bard.Fra.Analysis.csproj", "{1BC1364E-3D22-403E-B283-65F8D30B8FCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bard.Fra.Analysis.Tests", "test\Bard.Fra.Analysis.Tests\Bard.Fra.Analysis.Tests.csproj", "{5A63A0AB-F403-40BA-84E1-6DA25575CB82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bard.Fra.Analysis.Tests", "test\Bard.Fra.Analysis.Tests\Bard.Fra.Analysis.Tests.csproj", "{5A63A0AB-F403-40BA-84E1-6DA25575CB82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bard.Contracts", "src\Bard.Contracts\Bard.Contracts.csproj", "{2F0FEA16-DE1E-4F81-80C5-2D3264C56432}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bard.Contracts", "src\Bard.Contracts\Bard.Contracts.csproj", "{2F0FEA16-DE1E-4F81-80C5-2D3264C56432}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intervals", "src\Intervals\Intervals.csproj", "{EDA72C84-4487-4175-BEAD-EA8FBCADF09D}"
 EndProject
@@ -74,6 +74,10 @@ Global
 		{0381110F-497C-446A-A6FB-B42C7644B176}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0381110F-497C-446A-A6FB-B42C7644B176}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0381110F-497C-446A-A6FB-B42C7644B176}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCEF8B1E-9519-4325-AFCD-77ECBF346BEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCEF8B1E-9519-4325-AFCD-77ECBF346BEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCEF8B1E-9519-4325-AFCD-77ECBF346BEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCEF8B1E-9519-4325-AFCD-77ECBF346BEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
