@@ -7,14 +7,14 @@ using System.Text.RegularExpressions;
 
 namespace Bard.Fra.Analysis
 {
-    public class PhonologicalAligner2
+    public class NaivePhonologicalAligner
     {
         private string _graphemes;
         private string _lowerCased;
         private string[] _phonemes;
         private StringBuilder _trace;
 
-        public PhonologicalAligner2(string graphemes, string[] phonemes)
+        public NaivePhonologicalAligner(string graphemes, string[] phonemes)
         {
             _graphemes = graphemes;
             _lowerCased = graphemes.ToLower();

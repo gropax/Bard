@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bard.Fra.Analysis;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace Bard.CLI
     {
         public string Main { get; set; }
         public string Oldies { get; set; }
+        public int Limit { get; set; } = int.MaxValue;
         public int BatchSize { get; set; }
     }
 
@@ -30,5 +32,6 @@ namespace Bard.CLI
 
     class AnalysisConfig
     {
+        public WordFormFilterModuleFactory.Config FilterModule { get; set; }
     }
 }

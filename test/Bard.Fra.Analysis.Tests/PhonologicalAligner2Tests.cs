@@ -20,7 +20,7 @@ namespace Bard.Fra.Analysis.Tests
             var alignment = ParseAlignement(rawAlignement).ToArray();
             var phonemes = alignment.SelectMany(a => a.phonemes).ToArray();
 
-            var aligner = new PhonologicalAligner2(graphemes, phonemes);
+            var aligner = new NaivePhonologicalAligner(graphemes, phonemes);
             var result = aligner.Compute();
             var trace = aligner.GetTrace();
 
@@ -56,7 +56,7 @@ namespace Bard.Fra.Analysis.Tests
                 if (isFullCaps || phonemes.Length == 0)
                     continue;
 
-                var aligner = new PhonologicalAligner2(graphemes, phonemes);
+                var aligner = new NaivePhonologicalAligner(graphemes, phonemes);
                 Interval<string>[] alignment = null;
                 try
                 {

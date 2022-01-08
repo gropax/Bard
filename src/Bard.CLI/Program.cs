@@ -32,10 +32,15 @@ namespace Bard.CLI
             var graphStorage = InitializeGraphStorage(config.GraphStorage);
             var entries = ParseLexicons(config.Lexicons);
             var pipeline = InitializeAnalysisPipeline(config.Analysis);
+            var multiNodeBuilder = new MultiNodeBuilder();
 
-            var wordForms = entries.Select(e => pipeline.Analyze(e)).Take(100);
+            var wordForms = entries
+                .Select(e => pipeline.Analyze(e))
+                .Where(w => w.IsValid);
 
-            foreach (var batch in wordForms.Batch(config.GraphStorage.BatchSize))
+            var multiNodes = wordForms.Select(w => multiNodeBuilder.Build(w)).Take(config.Lexicons.Limit);
+
+            foreach (var batch in multiNodes.Batch(config.GraphStorage.BatchSize))
                 AsyncHelpers.RunSync(() => graphStorage.CreateAsync(batch));
         }
 
@@ -63,6 +68,9 @@ namespace Bard.CLI
         private static AnalysisPipeline InitializeAnalysisPipeline(AnalysisConfig config)
         {
             var modules = new List<IAnalysisModule>();
+
+            if (config.FilterModule.Enabled)
+                modules.Add(WordFormFilterModuleFactory.Build(config.FilterModule));
 
             return new AnalysisPipeline(modules.ToArray());
         }

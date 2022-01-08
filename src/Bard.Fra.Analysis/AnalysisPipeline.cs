@@ -23,22 +23,27 @@ namespace Bard.Fra.Analysis
             _modules = modules;
         }
 
-        public MultiNode Analyze(GlaffEntry entry)
+        public WordForm Analyze(GlaffEntry entry)
         {
             var wordForm = new WordForm(entry);
 
             foreach (var module in _modules)
+            {
                 module.Analyze(wordForm);
 
-            var wordFormNode = new WordFormNodeType(wordForm.GlaffEntry.GraphicalForm);
+                // Stop further analysis if word is invalid
+                if (!wordForm.IsValid)
+                    break;
+            }
 
-            return new MultiNode(wordFormNode);
+            return wordForm;
         }
     }
 
     public class WordForm
     {
         public GlaffEntry GlaffEntry { get; }
+        public bool IsValid { get; set; } = true;
 
         public WordForm(GlaffEntry glaffEntry)
         {
