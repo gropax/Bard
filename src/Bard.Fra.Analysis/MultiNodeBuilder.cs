@@ -12,9 +12,14 @@ namespace Bard.Fra.Analysis
     {
         public MultiNode Build(WordForm wordForm)
         {
-            var wordFormNode = new WordFormNodeType(wordForm.GlaffEntry.GraphicalForm);
+            var nodeTypes = new List<INodeType>();
 
-            return new MultiNode(wordFormNode);
+            nodeTypes.Add(new WordFormNodeType(wordForm.GlaffEntry.GraphicalForm));
+
+            if (wordForm.IsLemma)
+                nodeTypes.Add(new LemmaNodeType());
+
+            return new MultiNode(nodeTypes.ToArray());
         }
     }
 }

@@ -25,4 +25,9 @@ namespace Bard.Storage.Neo4j.Fra
             new Field<WordFormFields>(WordFormFields.Graphemes, Graphemes),
         };
     }
+
+    public class LemmaNodeType : INodeType
+    {
+        public IField[] Fields => new IField[0];
+    }
 }

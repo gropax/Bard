@@ -11,7 +11,7 @@ namespace Bard.Fra.Analysis
 {
     public interface IAnalysisModule
     {
-        public void Analyze(WordForm word);
+        public void Analyze(WordForm wordForm);
     }
 
     public class AnalysisPipeline
@@ -44,6 +44,7 @@ namespace Bard.Fra.Analysis
     {
         public GlaffEntry GlaffEntry { get; }
         public bool IsValid { get; set; } = true;
+        public bool IsLemma { get; set; } = false;
 
         public WordForm(GlaffEntry glaffEntry)
         {

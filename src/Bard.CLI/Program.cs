@@ -72,6 +72,9 @@ namespace Bard.CLI
             if (config.FilterModule.Enabled)
                 modules.Add(WordFormFilterModuleFactory.Build(config.FilterModule));
 
+            if (config.LemmaDetectionModule.Enabled)
+                modules.Add(new LemmaDetectionModule());
+
             return new AnalysisPipeline(modules.ToArray());
         }
 

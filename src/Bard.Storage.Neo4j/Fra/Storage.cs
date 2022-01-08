@@ -39,6 +39,7 @@ namespace Bard.Storage.Neo4j.Fra
         private Dictionary<Type, string> _nodeTypes = new Dictionary<Type, string>()
         {
             { typeof(WordFormNodeType), "WordForm" },
+            { typeof(LemmaNodeType), "Lemma" },
         };
         private string GetNodeLabel(INodeType nodeType)
         {

@@ -12,3 +12,5 @@ analysis:
   filterModule:
     enabled: true
     filterAcronyms: true
+  lemmaDetectionModule:
+    enabled: true
