@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Bard.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "C:/Users/VR1/source/repos/Bard/src/Bard.CLI/config.yaml"
+    }
+  }
+}

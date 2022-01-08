@@ -4,6 +4,7 @@ using CommandLine;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace Bard.CLI
 {
@@ -11,14 +12,8 @@ namespace Bard.CLI
     {
         public class Options
         {
-            [Value(0, MetaName = "output", HelpText = "Output database file path.")]
-            public string DbPath { get; set; }
-
-            [Value(1, MetaName = "lexicon", HelpText = "Glàff main lexicon file path.")]
-            public string LexiconPath { get; set; }
-
-            [Value(2, MetaName = "oldies", HelpText = "Glàff oldies lexicon file path.")]
-            public string OldiesPath { get; set; }
+            [Value(0, MetaName = "config", HelpText = "Config file")]
+            public string ConfigFile { get; set; }
         }
 
         static void Main(string[] args)
@@ -28,16 +23,29 @@ namespace Bard.CLI
                 .WithNotParsed(HandleParseError);
         }
 
-        private const int BATCH_SIZE = 50000;
+        private const int BATCH_SIZE = 10000;
 
         static void RunOptions(Options opts)
         {
+            var deserializer = new YamlDotNet.Serialization.DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+
+            var configFullPath = Path.GetFullPath(opts.ConfigFile);
+            if (!File.Exists(configFullPath))
+            {
+                Console.WriteLine($"Config file not found [{configFullPath}].");
+                Environment.Exit(1);
+            }
+
+            var config = deserializer.Deserialize<Configuration>(File.ReadAllText(configFullPath));
+
             // init db
 
 
-            if (!string.IsNullOrWhiteSpace(opts.LexiconPath))
+            if (!string.IsNullOrWhiteSpace(config.Lexicons.Main))
             {
-                var fullPath = Path.GetFullPath(opts.LexiconPath);
+                var fullPath = Path.GetFullPath(config.Lexicons.Main);
                 if (!File.Exists(fullPath))
                 {
                     Console.WriteLine($"Glàff main lexicon file not found [{fullPath}].");
@@ -58,9 +66,9 @@ namespace Bard.CLI
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(opts.OldiesPath))
+            if (!string.IsNullOrWhiteSpace(config.Lexicons.Oldies))
             {
-                var fullPath = Path.GetFullPath(opts.OldiesPath);
+                var fullPath = Path.GetFullPath(config.Lexicons.Oldies);
                 if (!File.Exists(fullPath))
                 {
                     Console.WriteLine($"Glàff oldies lexicon file not found [{fullPath}].");
