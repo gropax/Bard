@@ -70,7 +70,7 @@ namespace Bard.CLI
             var modules = new List<IAnalysisModule>();
 
             if (config.FilterModule.Enabled)
-                modules.Add(WordFormFilterModuleFactory.Build(config.FilterModule));
+                modules.Add(FilterModuleFactory.Build(config.FilterModule));
 
             if (config.LemmaDetectionModule.Enabled)
                 modules.Add(new LemmaDetectionModule());

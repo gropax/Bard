@@ -48,7 +48,7 @@ namespace Bard.Fra.Analysis.Tests
             foreach (var entry in GlaffParser.ParseMainLexicon(glaffPath))
             {
                 var graphemes = entry.GraphicalForm;
-                var phonemes = SplitIntoTextElements(entry.ApiPronunciations.Split(';')[0])
+                var phonemes = SplitIntoTextElements(entry.IpaPronunciations.Split(';')[0])
                     .Where(p => p != ".").ToArray();
 
                 bool isFullCaps = graphemes.All(c => Char.IsUpper(c));

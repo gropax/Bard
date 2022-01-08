@@ -18,7 +18,7 @@ namespace Bard.Fra.Glaff
         public Tense? Tense { get; set; }
 
         public string Lemma { get; set; }
-        public string ApiPronunciations { get; set; }
+        public string IpaPronunciations { get; set; }
         public string SampaPronunciations { get; set; }
         public double FrantexAbsoluteFormFrequency { get; set; }
         public double FrantexRelativeFormFrequency { get; set; }

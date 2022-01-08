@@ -39,7 +39,7 @@ namespace Bard.Fra.Glaff
                         Mood = mood,
                         Tense = tense,
 
-                        ApiPronunciations = columns[3],
+                        IpaPronunciations = columns[3],
                         SampaPronunciations = columns[4],
 
                         FrantexAbsoluteFormFrequency = ParseDouble(columns[5]),
@@ -77,7 +77,7 @@ namespace Bard.Fra.Glaff
                         GraphicalForm = columns[0],
                         MorphoSyntax = columns[1],
                         Lemma = columns[2],
-                        ApiPronunciations = columns.Length > 3 ? columns[3] : null,
+                        IpaPronunciations = columns.Length > 3 ? columns[3] : null,
                     };
                 }
             }

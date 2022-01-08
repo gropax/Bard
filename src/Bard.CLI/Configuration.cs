@@ -32,7 +32,7 @@ namespace Bard.CLI
 
     class AnalysisConfig
     {
-        public WordFormFilterModuleFactory.Config FilterModule { get; set; }
+        public FilterModuleFactory.Config FilterModule { get; set; }
         public LemmaDetectionModuleFactory.Config LemmaDetectionModule { get; set; }
     }
 }
