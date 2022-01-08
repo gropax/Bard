@@ -1,9 +1,12 @@
-﻿using Bard.Fra.Glaff;
+﻿using Bard.Fra.Analysis;
+using Bard.Fra.Glaff;
+using Bard.Storage.Neo4j.Fra;
 using Bard.Utils;
 using CommandLine;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using YamlDotNet.Serialization.NamingConventions;
 
 namespace Bard.CLI
@@ -23,9 +26,20 @@ namespace Bard.CLI
                 .WithNotParsed(HandleParseError);
         }
 
-        private const int BATCH_SIZE = 10000;
-
         static void RunOptions(Options opts)
+        {
+            var config = ParseConfig(opts);
+            var graphStorage = InitializeGraphStorage(config.GraphStorage);
+            var entries = ParseLexicons(config.Lexicons);
+            var pipeline = InitializeAnalysisPipeline(config.Analysis);
+
+            var wordForms = entries.Select(e => pipeline.Analyze(e)).Take(100);
+
+            foreach (var batch in wordForms.Batch(config.GraphStorage.BatchSize))
+                AsyncHelpers.RunSync(() => graphStorage.CreateAsync(batch));
+        }
+
+        private static Configuration ParseConfig(Options opts)
         {
             var deserializer = new YamlDotNet.Serialization.DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
@@ -38,14 +52,26 @@ namespace Bard.CLI
                 Environment.Exit(1);
             }
 
-            var config = deserializer.Deserialize<Configuration>(File.ReadAllText(configFullPath));
+            return deserializer.Deserialize<Configuration>(File.ReadAllText(configFullPath));
+        }
 
-            // init db
+        private static GraphStorage InitializeGraphStorage(GraphStorageConfig config)
+        {
+            return new GraphStorage(config.Address, config.User, config.Password);
+        }
 
+        private static AnalysisPipeline InitializeAnalysisPipeline(AnalysisConfig config)
+        {
+            var modules = new List<IAnalysisModule>();
 
-            if (!string.IsNullOrWhiteSpace(config.Lexicons.Main))
+            return new AnalysisPipeline(modules.ToArray());
+        }
+
+        private static IEnumerable<GlaffEntry> ParseLexicons(LexiconConfig config)
+        {
+            if (!string.IsNullOrWhiteSpace(config.Main))
             {
-                var fullPath = Path.GetFullPath(config.Lexicons.Main);
+                var fullPath = Path.GetFullPath(config.Main);
                 if (!File.Exists(fullPath))
                 {
                     Console.WriteLine($"Glàff main lexicon file not found [{fullPath}].");
@@ -55,9 +81,10 @@ namespace Bard.CLI
                 Console.WriteLine($"Loading entries from Glàff main lexicon...");
 
                 int done = 0;
-                foreach (var batch in GlaffParser.ParseMainLexicon(fullPath).Batch(BATCH_SIZE))
+                foreach (var batch in GlaffParser.ParseMainLexicon(fullPath).Batch(config.BatchSize))
                 {
-                    // create entries in db
+                    foreach (var entry in batch)
+                        yield return entry;
 
                     done += batch.Length;
 
@@ -66,9 +93,9 @@ namespace Bard.CLI
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(config.Lexicons.Oldies))
+            if (!string.IsNullOrWhiteSpace(config.Oldies))
             {
-                var fullPath = Path.GetFullPath(config.Lexicons.Oldies);
+                var fullPath = Path.GetFullPath(config.Oldies);
                 if (!File.Exists(fullPath))
                 {
                     Console.WriteLine($"Glàff oldies lexicon file not found [{fullPath}].");
@@ -78,9 +105,10 @@ namespace Bard.CLI
                 Console.WriteLine($"Loading entries from Glàff oldies lexicon...");
 
                 int done = 0;
-                foreach (var batch in GlaffParser.ParseOldiesLexicon(fullPath).Batch(BATCH_SIZE))
+                foreach (var batch in GlaffParser.ParseOldiesLexicon(fullPath).Batch(config.BatchSize))
                 {
-                    // create entries in db
+                    foreach (var entry in batch)
+                        yield return entry;
 
                     done += batch.Length;
 

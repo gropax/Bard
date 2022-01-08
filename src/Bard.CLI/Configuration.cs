@@ -8,12 +8,27 @@ namespace Bard.CLI
 {
     class Configuration
     {
-        public Lexicons Lexicons { get; set; }
+        public LexiconConfig Lexicons { get; set; }
+        public GraphStorageConfig GraphStorage { get; set; }
+        public AnalysisConfig Analysis { get; set; }
     }
 
-    class Lexicons
+    class LexiconConfig
     {
         public string Main { get; set; }
         public string Oldies { get; set; }
+        public int BatchSize { get; set; }
+    }
+
+    class GraphStorageConfig
+    {
+        public string Address { get; set; }
+        public string User { get; set; }
+        public string Password { get; set; }
+        public int BatchSize { get; set; }
+    }
+
+    class AnalysisConfig
+    {
     }
 }
