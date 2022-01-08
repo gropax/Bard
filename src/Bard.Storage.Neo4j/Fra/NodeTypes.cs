@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bard.Contracts.Fra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,28 +7,27 @@ using System.Threading.Tasks;
 
 namespace Bard.Storage.Neo4j.Fra
 {
-    public enum WordFormFields
+    public enum WordFormField
     {
         Graphemes,
+        Phonemes,
+        Lemma,
+        POS,
+        Number,
+        Gender,
+        Person,
+        Mood,
     }
 
-    public class WordFormNodeType : INodeType
+    public class NodeType
     {
-        public string Graphemes { get; }
+        public string Label { get; }
+        public Field[] Fields { get; }
 
-        public WordFormNodeType(string graphemes)
+        public NodeType(string label, params Field[] fields)
         {
-            Graphemes = graphemes;
+            Label = label;
+            Fields = fields;
         }
-
-        public IField[] Fields => new[]
-        {
-            new Field<WordFormFields>(WordFormFields.Graphemes, Graphemes),
-        };
-    }
-
-    public class LemmaNodeType : INodeType
-    {
-        public IField[] Fields => new IField[0];
     }
 }

@@ -17,79 +17,31 @@ namespace Bard.Storage.Neo4j.Fra
             _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
         }
 
-        public async Task CreateAsync(IEnumerable<IMultiNode> multiNodes)
+        public async Task CreateAsync(IEnumerable<MultiNode> multiNodes)
         {
-            foreach (var grp in multiNodes.GroupBy(m => m.TypeHash))
+            foreach (var grp in multiNodes.GroupBy(m => m.Labels))
             {
-                var labels = string.Join("", grp.First().Types
-                    .Select(t => $":{GetNodeLabel(t)}")
-                    .OrderBy(l => l));
-
                 await Transaction(async t =>
                 {
                     var cursor = await t.RunAsync($@"
                         UNWIND $props AS map
-                        CREATE (n{labels})
+                        CREATE (n{grp.Key})
                         SET n = map",
                         new { props = grp.Select(m => GetProperties(m)).ToArray() });
                 });
             }
         }
 
-        private Dictionary<Type, string> _nodeTypes = new Dictionary<Type, string>()
-        {
-            { typeof(WordFormNodeType), "WordForm" },
-            { typeof(LemmaNodeType), "Lemma" },
-        };
-        private string GetNodeLabel(INodeType nodeType)
-        {
-            if (_nodeTypes.TryGetValue(nodeType.GetType(), out string label))
-                return label;
-            else
-                throw new NotImplementedException($"Unsupported node type [{nodeType.GetType()}].");
-        }
-
-        private Dictionary<string, object> GetProperties(IMultiNode multiNode)
+        private Dictionary<string, object> GetProperties(MultiNode multiNode)
         {
             var props = new Dictionary<string, object>();
 
             foreach (var nodeType in multiNode.Types)
-                AddProperties(props, nodeType);
+                foreach (var field in nodeType.Fields)
+                    props[field.Name] = field.Value;
 
             return props;
         }
-
-        private void AddProperties(Dictionary<string, object> props, INodeType nodeType)
-        {
-            foreach (var field in nodeType.Fields)
-            {
-                var fieldName = GetFieldName(field);
-                props[fieldName] = field.Value;
-            }
-        }
-
-        private Dictionary<WordFormFields, string> _wordFormFieldNames = new Dictionary<WordFormFields, string>()
-        {
-            { WordFormFields.Graphemes, "graphemes" },
-        };
-        private string GetFieldName(IField field)
-        {
-            switch (field)
-            {
-                case Field<WordFormFields> f: return GetFieldName(_wordFormFieldNames, f.Key);
-                default:
-                    throw new NotImplementedException($"Unsupported field type [{field.GetType()}].");
-            }
-        }
-
-        private string GetFieldName<T>(Dictionary<T, string> nameDict, T key)
-        {
-            if (nameDict.TryGetValue(key, out var name))
-                return name;
-            else
-                throw new NotImplementedException($"Unsupported field [{key}].");
-        }
-
 
         private async Task Transaction(Func<IAsyncTransaction, Task> func)
         {

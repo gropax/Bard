@@ -1,50 +1,28 @@
-﻿using System;
+﻿using Bard.Storage.Neo4j.Fra;
+using System;
 using System.Linq;
 
 namespace Bard.Storage.Neo4j
 {
-    public interface IMultiNode
+    public class MultiNode
     {
-        public INodeType[] Types { get; }
-        public int TypeHash { get; }
-    }
+        public NodeType[] Types { get; }
+        public string Labels => string.Join(string.Empty, Types.Select(t => $":{t.Label}"));
 
-    public interface INodeType
-    {
-        public IField[] Fields { get; }
-    }
-
-    public interface IField
-    {
-        public object Value { get; }
-    }
-
-    public class MultiNode : IMultiNode
-    {
-        public INodeType[] Types { get; }
-
-        public int TypeHash => Types.Sum(t => t.GetType().GetHashCode());
-
-        public MultiNode(params INodeType[] types)
+        public MultiNode(params NodeType[] types)
         {
             Types = types;
         }
     }
 
-    //public abstract class NodeType<T> : INodeType where T : Enum
-    //{
-    //    IField[] INodeType.Fields => Fields;
-    //    public abstract Field<T>[] Fields { get; }
-    //}
-
-    public class Field<T> : IField where T : Enum
+    public class Field
     {
-        public T Key { get; }
+        public string Name { get; }
         public object Value { get; }
 
-        public Field(T key, object value)
+        public Field(string name, object value)
         {
-            Key = key;
+            Name = name;
             Value = value;
         }
     }
