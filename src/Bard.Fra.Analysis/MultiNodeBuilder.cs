@@ -30,16 +30,31 @@ namespace Bard.Fra.Analysis
             return new MultiNode(nodeTypes.ToArray());
         }
 
+        private const string HISTORY = "history";
+        private const string CHANGE_COUNT = "change_count";
+
         private Field[] GetWordFormNodeFields(WordForm wordForm)
         {
             var fields = new List<Field>();
             var entry = wordForm.GlaffEntry;
 
             fields.Add(new Field(Format(WordFormField.Graphemes), entry.GraphicalForm));
-            fields.Add(new Field(Format(WordFormField.Phonemes), entry.IpaPronunciations));
-            fields.Add(new Field(Format(WordFormField.Lemma), entry.Lemma));
 
-            //fields.Add(new Field(Format(WordFormField.POS), Format(entry.POS)));
+            fields.Add(new Field(Format(WordFormField.PronunciationRaw), entry.IpaPronunciations));
+            fields.Add(new Field(Format(WordFormField.Pronunciation), wordForm.Pronunciation));
+            fields.Add(new Field($"{Format(WordFormField.Pronunciation)}.{HISTORY}", wordForm.PronunciationHistory.Format()));
+            fields.Add(new Field($"{Format(WordFormField.Pronunciation)}.{CHANGE_COUNT}", wordForm.PronunciationHistory.ChangeCount));
+
+            if (wordForm.Phonemes != null)
+                fields.Add(new Field(Format(WordFormField.Phonemes), wordForm.Phonemes));
+
+            if (wordForm.Syllables != null)
+            {
+                fields.Add(new Field(Format(WordFormField.Syllables), string.Join(".", wordForm.Syllables)));
+                fields.Add(new Field(Format(WordFormField.SyllableCount), wordForm.Syllables.Length));
+            }
+
+            fields.Add(new Field(Format(WordFormField.Lemma), entry.Lemma));
 
             if (entry.Number.HasValue)
                 fields.Add(new Field(Format(WordFormField.Number), Format(entry.Number.Value)));
@@ -65,13 +80,22 @@ namespace Bard.Fra.Analysis
             switch (field)
             {
                 case WordFormField.Graphemes: return "graphemes";
-                case WordFormField.Phonemes: return "phonemes";
+
+                case WordFormField.PronunciationRaw: return "phon.pronunciation_raw";
+                case WordFormField.Pronunciation: return "phon.pronunciation";
+                case WordFormField.PronunciationDebug: return "phon.pronunciation.debug";
+                case WordFormField.Phonemes: return "phon.phonemes";
+                case WordFormField.Syllables: return "phon.syllables";
+                case WordFormField.SyllableCount: return "phon.syllable_count";
+                case WordFormField.Alignment: return "phon.alignment";
+
                 case WordFormField.Lemma: return "lemma";
                 case WordFormField.POS: return "pos";
                 case WordFormField.Number: return "number";
                 case WordFormField.Gender: return "gender";
                 case WordFormField.Person: return "person";
                 case WordFormField.Mood: return "mood";
+
                 case WordFormField.Anomalies: return "anomaly";
                 default:
                     throw new NotImplementedException($"Unsupported word form field [{field}].");
@@ -170,6 +194,7 @@ namespace Bard.Fra.Analysis
             {
                 case AnomalyType.NoPhoneme: return "no_phonemes";
                 case AnomalyType.Acronym: return "acronym";
+                case AnomalyType.MultiplePronunciations: return "multiple_pronunciations";
                 default:
                     throw new NotImplementedException($"Unsupported anomaly type [{type}].");
             }

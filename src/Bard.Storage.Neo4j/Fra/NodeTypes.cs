@@ -10,7 +10,15 @@ namespace Bard.Storage.Neo4j.Fra
     public enum WordFormField
     {
         Graphemes,
+
+        PronunciationRaw,
+        Pronunciation,
+        PronunciationDebug,
         Phonemes,
+        Alignment,
+        Syllables,
+        SyllableCount,
+
         Lemma,
         POS,
         Number,

@@ -8,10 +8,15 @@ graphStorage:
   user: "neo4j"
   password: "12345"
   batchSize: 100
+
 analysis:
   anomalyDetectorModule:
     enabled: true
     detectAcronyms: true
     detectNoPhonemes: true
+
+  pronunciationCleaningModule:
+    enabled: true
+
   lemmaDetectionModule:
     enabled: true

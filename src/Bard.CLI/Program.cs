@@ -72,6 +72,9 @@ namespace Bard.CLI
             if (config.AnomalyDetectorModule.Enabled)
                 modules.Add(AnomalyDetectorModuleFactory.Build(config.AnomalyDetectorModule));
 
+            if (config.PronunciationCleaningModule.Enabled)
+                modules.Add(PronunciationCleaningModuleFactory.Build(config.PronunciationCleaningModule));
+
             if (config.LemmaDetectionModule.Enabled)
                 modules.Add(new LemmaDetectionModule());
 

@@ -33,6 +33,7 @@ namespace Bard.CLI
     class AnalysisPipelineConfig
     {
         public AnomalyDetectorModuleFactory.Config AnomalyDetectorModule { get; set; }
+        public PronunciationCleaningModuleFactory.Config PronunciationCleaningModule { get; set; }
         public LemmaDetectionModuleFactory.Config LemmaDetectionModule { get; set; }
     }
 }
