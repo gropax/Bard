@@ -17,6 +17,8 @@ namespace Bard.Storage.Neo4j.Fra
         Gender,
         Person,
         Mood,
+
+        Anomalies,
     }
 
     public class NodeType

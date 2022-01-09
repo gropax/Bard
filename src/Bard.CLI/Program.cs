@@ -65,12 +65,12 @@ namespace Bard.CLI
             return new GraphStorage(config.Address, config.User, config.Password);
         }
 
-        private static AnalysisPipeline InitializeAnalysisPipeline(AnalysisConfig config)
+        private static AnalysisPipeline InitializeAnalysisPipeline(AnalysisPipelineConfig config)
         {
             var modules = new List<IAnalysisModule>();
 
-            if (config.FilterModule.Enabled)
-                modules.Add(FilterModuleFactory.Build(config.FilterModule));
+            if (config.AnomalyDetectorModule.Enabled)
+                modules.Add(AnomalyDetectorModuleFactory.Build(config.AnomalyDetectorModule));
 
             if (config.LemmaDetectionModule.Enabled)
                 modules.Add(new LemmaDetectionModule());

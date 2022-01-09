@@ -9,9 +9,9 @@ graphStorage:
   password: "12345"
   batchSize: 100
 analysis:
-  filterModule:
+  anomalyDetectorModule:
     enabled: true
-    filterAcronyms: true
-    filterWithoutPhonemes: true
+    detectAcronyms: true
+    detectNoPhonemes: true
   lemmaDetectionModule:
     enabled: true

@@ -53,6 +53,9 @@ namespace Bard.Fra.Analysis
             if (entry.Mood.HasValue)
                 fields.Add(new Field(Format(WordFormField.Mood), Format(entry.Mood.Value)));
 
+            foreach (var anomaly in wordForm.Anomalies)
+                fields.Add(new Field($"{Format(WordFormField.Anomalies)}.{Format(anomaly.Type)}", true));
+
             return fields.ToArray();
         }
 
@@ -69,6 +72,7 @@ namespace Bard.Fra.Analysis
                 case WordFormField.Gender: return "gender";
                 case WordFormField.Person: return "person";
                 case WordFormField.Mood: return "mood";
+                case WordFormField.Anomalies: return "anomaly";
                 default:
                     throw new NotImplementedException($"Unsupported word form field [{field}].");
             }
@@ -159,5 +163,17 @@ namespace Bard.Fra.Analysis
                     throw new NotImplementedException($"Unsupported mood [{mood}].");
             }
         }
+
+        private string Format(AnomalyType type)
+        {
+            switch (type)
+            {
+                case AnomalyType.NoPhoneme: return "no_phonemes";
+                case AnomalyType.Acronym: return "acronym";
+                default:
+                    throw new NotImplementedException($"Unsupported anomaly type [{type}].");
+            }
+        }
+
     }
 }

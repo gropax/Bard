@@ -11,7 +11,7 @@ namespace Bard.CLI
     {
         public LexiconConfig Lexicons { get; set; }
         public GraphStorageConfig GraphStorage { get; set; }
-        public AnalysisConfig Analysis { get; set; }
+        public AnalysisPipelineConfig Analysis { get; set; }
     }
 
     class LexiconConfig
@@ -30,9 +30,9 @@ namespace Bard.CLI
         public int BatchSize { get; set; }
     }
 
-    class AnalysisConfig
+    class AnalysisPipelineConfig
     {
-        public FilterModuleFactory.Config FilterModule { get; set; }
+        public AnomalyDetectorModuleFactory.Config AnomalyDetectorModule { get; set; }
         public LemmaDetectionModuleFactory.Config LemmaDetectionModule { get; set; }
     }
 }

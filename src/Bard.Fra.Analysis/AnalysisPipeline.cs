@@ -43,12 +43,33 @@ namespace Bard.Fra.Analysis
     public class WordForm
     {
         public GlaffEntry GlaffEntry { get; }
+        public List<IAnomaly> Anomalies { get; } = new List<IAnomaly>();
         public bool IsValid { get; set; } = true;
         public bool IsLemma { get; set; } = false;
 
         public WordForm(GlaffEntry glaffEntry)
         {
             GlaffEntry = glaffEntry;
+        }
+    }
+
+    public enum AnomalyType
+    {
+        NoPhoneme,
+        Acronym,
+    }
+
+    public interface IAnomaly
+    {
+        AnomalyType Type { get; }
+    }
+
+    public class GenericAnomaly : IAnomaly
+    {
+        public AnomalyType Type { get; }
+        public GenericAnomaly(AnomalyType Type)
+        {
+            this.Type = Type;
         }
     }
 }

@@ -23,11 +23,12 @@ namespace Bard.Storage.Neo4j.Fra
             {
                 await Transaction(async t =>
                 {
+                    var props = grp.Select(m => GetProperties(m)).ToArray();
                     var cursor = await t.RunAsync($@"
                         UNWIND $props AS map
                         CREATE (n{grp.Key})
                         SET n = map",
-                        new { props = grp.Select(m => GetProperties(m)).ToArray() });
+                        new { props = props });
                 });
             }
         }
