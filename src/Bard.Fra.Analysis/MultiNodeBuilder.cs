@@ -195,6 +195,7 @@ namespace Bard.Fra.Analysis
                 case AnomalyType.NoPhoneme: return "no_phonemes";
                 case AnomalyType.Acronym: return "acronym";
                 case AnomalyType.MultiplePronunciations: return "multiple_pronunciations";
+                case AnomalyType.BadSyllabation: return "bad_syllabation";
                 default:
                     throw new NotImplementedException($"Unsupported anomaly type [{type}].");
             }

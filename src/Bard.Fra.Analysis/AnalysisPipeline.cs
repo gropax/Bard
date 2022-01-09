@@ -105,6 +105,7 @@ namespace Bard.Fra.Analysis
         NoPhoneme,
         Acronym,
         MultiplePronunciations,
+        BadSyllabation,
     }
 
     public interface IAnomaly
