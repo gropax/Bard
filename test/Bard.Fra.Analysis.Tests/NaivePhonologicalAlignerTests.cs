@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Bard.Fra.Analysis.Tests
 {
-    public class PhonologicalAligner2Tests
+    public class NaivePhonologicalAlignerTests
     {
         [Theory]
         [InlineData("boutique", "b:b ou:u t:t i:i qu:k e:")]

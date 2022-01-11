@@ -48,7 +48,7 @@ namespace Bard.Fra.Analysis
         public bool IsLemma { get; set; } = false;
         public string Pronunciation { get; set; }
         public ChangeHistory PronunciationHistory { get; set; }
-        public string Phonemes { get; set; }
+        public string[] Phonemes { get; set; }
         public string[] Syllables { get; set; }
         public string Alignment { get; set; }
 
@@ -106,6 +106,7 @@ namespace Bard.Fra.Analysis
         Acronym,
         MultiplePronunciations,
         BadSyllabation,
+        AlignmentFailed,
     }
 
     public interface IAnomaly

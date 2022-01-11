@@ -34,6 +34,7 @@ namespace Bard.CLI
     {
         public AnomalyDetectorModuleFactory.Config AnomalyDetectorModule { get; set; }
         public PronunciationCleaningModuleFactory.Config PronunciationCleaningModule { get; set; }
+        public PhonologicalAnalysisModuleFactory.Config PhonologicalAnalysisModule { get; set; }
         public LemmaDetectionModuleFactory.Config LemmaDetectionModule { get; set; }
     }
 }

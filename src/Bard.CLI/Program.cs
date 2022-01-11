@@ -34,6 +34,9 @@ namespace Bard.CLI
             var pipeline = InitializeAnalysisPipeline(config.Analysis);
             var multiNodeBuilder = new MultiNodeBuilder();
 
+            // Cleanup database
+            AsyncHelpers.RunSync(() => graphStorage.DeleteAll());
+
             var wordForms = entries
                 .Select(e => pipeline.Analyze(e))
                 .Where(w => w.IsValid);
@@ -74,6 +77,9 @@ namespace Bard.CLI
 
             if (config.PronunciationCleaningModule.Enabled)
                 modules.Add(PronunciationCleaningModuleFactory.Build(config.PronunciationCleaningModule));
+
+            if (config.PhonologicalAnalysisModule.Enabled)
+                modules.Add(PhonologicalAnalysisModuleFactory.Build(config.PhonologicalAnalysisModule));
 
             if (config.LemmaDetectionModule.Enabled)
                 modules.Add(new LemmaDetectionModule());

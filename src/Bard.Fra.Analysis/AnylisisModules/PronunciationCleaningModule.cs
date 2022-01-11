@@ -15,8 +15,9 @@ namespace Bard.Fra.Analysis
 
         public static PronunciationCleaningModule Build(Config config)
         {
-            var steps = new List<IPronunciationCleaningStep>();
+            var steps = new List<IPhonologicalAnalyzer>();
 
+            steps.Add(new AlignmentAnalyzer());
             steps.Add(new FixSyllabationStep());
 
             return new PronunciationCleaningModule(steps.ToArray());
@@ -25,9 +26,9 @@ namespace Bard.Fra.Analysis
 
     public class PronunciationCleaningModule : IAnalysisModule
     {
-        private IPronunciationCleaningStep[] _steps;
+        private IPhonologicalAnalyzer[] _steps;
 
-        public PronunciationCleaningModule(IPronunciationCleaningStep[] steps)
+        public PronunciationCleaningModule(IPhonologicalAnalyzer[] steps)
         {
             _steps = steps;
         }
@@ -45,10 +46,8 @@ namespace Bard.Fra.Analysis
 
                 foreach (var pronunciation in pronunciations)
                 {
-                    if (step.TryClean(pronunciation.Value, out string cleaned, out IAnomaly anomaly))
+                    if (step.Analyze(pronunciation))
                     {
-                        pronunciation.Value = cleaned;
-                        pronunciation.Anomalies.Add(anomaly);
                         hasChanged = true;
                     }
 
@@ -60,10 +59,12 @@ namespace Bard.Fra.Analysis
             }
 
             // Pick the one with the least anomalies
-            var best = pronunciations.OrderByDescending(p => p.Anomalies.Count).FirstOrDefault();
+            var best = pronunciations.OrderBy(p => p.Anomalies.Count).FirstOrDefault();
             if (best != null)
             {
                 wordForm.Pronunciation = best.Value;
+                wordForm.Phonemes = best.Phonemes;
+                wordForm.Alignment = best.Alignment;
                 wordForm.Anomalies.AddRange(best.Anomalies);
 
                 if (pronunciations.Length > 1)
@@ -77,46 +78,48 @@ namespace Bard.Fra.Analysis
         private Pronunciation[] ParsePronunciations(WordForm wordForm)
         {
             var parts = wordForm.Pronunciation.Split(";", StringSplitOptions.RemoveEmptyEntries);
-            return parts.Select(p => new Pronunciation(p)).ToArray();
-        }
-
-
-        class Pronunciation
-        {
-            public string Value { get; set; }
-            public ChangeHistory History { get; }
-            public List<IAnomaly> Anomalies { get; } = new List<IAnomaly>();
-            public Pronunciation(string value)
-            {
-                Value = value;
-                History = new ChangeHistory(value);
-            }
+            return parts.Select(p => new Pronunciation(wordForm.GlaffEntry.GraphicalForm, p)).ToArray();
         }
     }
 
-    public interface IPronunciationCleaningStep
+    public class Pronunciation
+    {
+        public string Graphemes { get; }
+        public string Value { get; set; }
+        public string[] Phonemes { get; set; }
+        public string Alignment { get; set; }
+        public ChangeHistory History { get; }
+        public List<IAnomaly> Anomalies { get; } = new List<IAnomaly>();
+        public Pronunciation(string graphemes, string value)
+        {
+            Graphemes = graphemes;
+            Value = value;
+            History = new ChangeHistory(value);
+        }
+    }
+
+    public interface IPhonologicalAnalyzer
     {
         string Name { get; }
-        bool TryClean(string pronunciation, out string cleaned, out IAnomaly anomaly);
+        bool Analyze(Pronunciation pronunciation);
     }
 
     /// <summary>
     /// Fix missing syllable boundary between multiple vowels
     /// </summary>
-    public class FixSyllabationStep : IPronunciationCleaningStep
+    public class FixSyllabationStep : IPhonologicalAnalyzer
     {
         public string Name => "FixSyllabation";
 
-        public bool TryClean(string pronunciation, out string cleaned, out IAnomaly anomaly)
+        public bool Analyze(Pronunciation pronunciation)
         {
-            cleaned = default;
-            anomaly = default;
+            string pronuncValue = pronunciation.Value;
 
-            if (string.IsNullOrWhiteSpace(pronunciation))
+            if (string.IsNullOrWhiteSpace(pronuncValue))
                 return false;
 
             // Determine index of missing syllable separators in the pronunciation string
-            var missingDotIndices = FindMissingDots(pronunciation);
+            var missingDotIndices = FindMissingDots(pronuncValue);
             if (missingDotIndices.Count == 0)
                 return false;
             else
@@ -126,14 +129,14 @@ namespace Bard.Fra.Analysis
                 int start = 0;
                 foreach (var idx in missingDotIndices)
                 {
-                    builder.Append(pronunciation.Substring(start, idx - start));
+                    builder.Append(pronuncValue.Substring(start, idx - start));
                     builder.Append('.');
                     start = idx;
                 }
-                builder.Append(pronunciation.Substring(start, pronunciation.Length - start));
+                builder.Append(pronuncValue.Substring(start, pronuncValue.Length - start));
 
-                cleaned = builder.ToString();
-                anomaly = new GenericAnomaly(AnomalyType.BadSyllabation);
+                pronunciation.Value = builder.ToString();
+                pronunciation.Anomalies.Add(new GenericAnomaly(AnomalyType.BadSyllabation));
 
                 return true;
             }
@@ -165,6 +168,32 @@ namespace Bard.Fra.Analysis
             }
 
             return missingDotIndices;
+        }
+    }
+
+    public class AlignmentAnalyzer : IPhonologicalAnalyzer
+    {
+        public string Name => "PhonologicalAlignment";
+
+        public bool Analyze(Pronunciation pronunciation)
+        {
+            var graphemes = pronunciation.Graphemes;
+
+            // Flatten syllabized phoneme list
+            var phonemesStr = pronunciation.Value.Replace(".", string.Empty);
+            var phonemes = IpaHelpers.ParseSymbols(phonemesStr);
+            pronunciation.Phonemes = phonemes;
+
+            // Align phonemes with graphemes
+            //
+            var aligner = new NaivePhonologicalAligner(graphemes, phonemes);
+            var alignment = aligner.Compute();
+            if (alignment == null)
+                pronunciation.Anomalies.Add(new GenericAnomaly(AnomalyType.AlignmentFailed));
+            else
+                pronunciation.Alignment = string.Join(" ", alignment.Select(i => $"{graphemes.Substring(i.Start, i.Length)}:{i.Value}"));
+
+            return false;
         }
     }
 }

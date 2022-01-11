@@ -17,6 +17,11 @@ namespace Bard.Storage.Neo4j.Fra
             _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
         }
 
+        public async Task DeleteAll(int batchSize = 1000)
+        {
+            await Transaction(async t => await t.RunAsync($@"CALL apoc.periodic.iterate('MATCH (n) RETURN n', 'DETACH DELETE n', {{batchSize: {batchSize}}})"));
+        }
+
         public async Task CreateAsync(IEnumerable<MultiNode> multiNodes)
         {
             foreach (var grp in multiNodes.GroupBy(m => m.Labels))

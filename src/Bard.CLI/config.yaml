@@ -18,5 +18,8 @@ analysis:
   pronunciationCleaningModule:
     enabled: true
 
+  phonologicalAnalysisModule:
+    enabled: true
+
   lemmaDetectionModule:
     enabled: true

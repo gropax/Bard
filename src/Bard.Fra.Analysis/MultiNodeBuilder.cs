@@ -46,7 +46,10 @@ namespace Bard.Fra.Analysis
             fields.Add(new Field($"{Format(WordFormField.Pronunciation)}.{CHANGE_COUNT}", wordForm.PronunciationHistory.ChangeCount));
 
             if (wordForm.Phonemes != null)
-                fields.Add(new Field(Format(WordFormField.Phonemes), wordForm.Phonemes));
+                fields.Add(new Field(Format(WordFormField.Phonemes), string.Join("", wordForm.Phonemes)));
+
+            if (wordForm.Alignment != null)
+                fields.Add(new Field(Format(WordFormField.Alignment), wordForm.Alignment));
 
             if (wordForm.Syllables != null)
             {
@@ -196,6 +199,7 @@ namespace Bard.Fra.Analysis
                 case AnomalyType.Acronym: return "acronym";
                 case AnomalyType.MultiplePronunciations: return "multiple_pronunciations";
                 case AnomalyType.BadSyllabation: return "bad_syllabation";
+                case AnomalyType.AlignmentFailed: return "alignment_failed";
                 default:
                     throw new NotImplementedException($"Unsupported anomaly type [{type}].");
             }
