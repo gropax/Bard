@@ -37,6 +37,7 @@ namespace Bard.Fra.Analysis
 
         private bool TryAlignNext(int phonemeIdx, int graphemeIdx, ref Queue<Interval<string>> alignment)
         {
+            // If all phonemes are already parsed, consider the remaining graphemes as silent ending
             if (phonemeIdx == _phonemes.Length)
             {
                 if (graphemeIdx < _graphemes.Length)
@@ -44,6 +45,21 @@ namespace Bard.Fra.Analysis
 
                 return true;
             }
+
+            // If all graphemes are already parsed and there remains phonemes, the alignment fails
+            if (graphemeIdx == _lowerCased.Length)
+            {
+                _trace.AppendLine($"Could not parse phoneme [{_phonemes[phonemeIdx]}]: no remaing graphemes.");
+                return false;
+            }
+
+            // If next grapheme is 'h', consider it as silent
+            var nextGrapheme = _lowerCased[graphemeIdx];
+            if (nextGrapheme == 'h')
+            {
+                alignment.Enqueue(new Interval<string>(graphemeIdx, 1, string.Empty));
+                return TryAlignNext(phonemeIdx, graphemeIdx + 1, ref alignment);
+            } 
 
             var phoneme = _phonemes[phonemeIdx];
             var patterns = GetWrittenForms(phoneme);
@@ -108,25 +124,25 @@ namespace Bard.Fra.Analysis
             { "x", new string[] { "j" }},
 
             { "j", new string[] { "ill", "il", "i", "y", "j", "ï" }},
-            { "w", new string[] { "hou", "ou", "ww", "wh", "w" }},
-            { "ɥ", new string[] { "hu", "u" }},
+            { "w", new string[] { "ou", "ww", "wh", "w" }},
+            { "ɥ", new string[] { "u" }},
 
-            { "i", new string[] { "hi", "hy", "hï", "hî", "i", "y", "ï", "î" }},
-            { "e", new string[] { "hé", "he", "ez", "ai", "aî", "é", "e" }},
-            { "ɛ", new string[] { "hai", "he", "hè", "hê", "hë", "ai", "aî", "e", "è", "é", "ê", "ë" }},
-            { "a", new string[] { "has", "ha", "hâ", "as", "aa", "a", "â" }},
-            { "ɑ", new string[] { "has", "ha", "hâ", "as", "a", "â" }},
-            { "ɔ", new string[] { "ho", "o" }},
-            { "o", new string[] { "hau", "au", "ho", "hô", "o", "ô" }},
-            { "u", new string[] { "hou", "ou", "où", "oû", "hu", "u" }},
-            { "y", new string[] { "hu", "hû", "hü", "u", "û", "ü" }},
-            { "ø", new string[] { "heu", "eu" }},
-            { "œ", new string[] { "heu", "eu", "e" }},
-            { "ə", new string[] { "he", "e" }},
-            { "ɛ̃", new string [] { "hain", "hein", "hin", "hen", "ain", "ein", "in", "en" } },
-            { "ɑ̃", new string [] { "han", "ham", "hen", "hem", "an", "am", "en", "em" }},
-            { "ɔ̃", new string [] { "hon", "hom", "on", "om" }},
-            { "œ̃", new string [] { "hun", "hum", "un", "um" }},
+            { "i", new string[] { "i", "y", "ï", "î" }},
+            { "e", new string[] { "ez", "ai", "aî", "é", "e" }},
+            { "ɛ", new string[] { "ai", "aî", "e", "è", "é", "ê", "ë" }},
+            { "a", new string[] { "as", "aa", "a", "â" }},
+            { "ɑ", new string[] { "as", "a", "â" }},
+            { "ɔ", new string[] { "o" }},
+            { "o", new string[] { "au", "o", "ô" }},
+            { "u", new string[] { "ou", "où", "oû", "u" }},
+            { "y", new string[] { "u", "û", "ü" }},
+            { "ø", new string[] { "eu" }},
+            { "œ", new string[] { "eu", "e" }},
+            { "ə", new string[] { "e" }},
+            { "ɛ̃", new string [] { "ain", "ein", "in", "en" } },
+            { "ɑ̃", new string [] { "an", "am", "en", "em" }},
+            { "ɔ̃", new string [] { "on", "om" }},
+            { "œ̃", new string [] { "un", "um" }},
         };
     }
 }

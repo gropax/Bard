@@ -15,6 +15,23 @@ namespace Bard.Fra.Analysis.Tests
         [InlineData("boutique", "b:b ou:u t:t i:i qu:k e:")]
         [InlineData("cornet", "c:k o:O r:R n:n e:E t:")]
         [InlineData("anticonstitutionnellement", "an:@ t:t i:i c:k on:§ s:s t:t i:i t:t u:y t:s i:j o:o nn:n e:E ll:l e:° m:m en:@ t:")]
+        // Silent 'h'
+        [InlineData("hôpital", "h: ô:o p:p i:i t:t a:a l:l")]  // 'h' silent at beginning
+        [InlineData("dehors", "d:d e:° h: o:O r:R s:")]        // 'h' silent inside
+        [InlineData("poussah", "p:p ou:u ss:s a:a h:")]        // 'h' silent at the end
+        // Digram with 'h'
+        [InlineData("chat", "ch:S a:a t:t")]                   // french 'ch' digram
+        [InlineData("philosophe", "ph:f i:i l:l o:o s:z o:O ph:f e:")]  // greek 'ph' digram
+        [InlineData("chianti", "ch:k i:i an:@ t:t i:i")]       // italian 'ch' digram
+        [InlineData("vecchio", "v:v e:e cch:k i:i o:o")]       // italian 'cch' digram
+        [InlineData("bouddha", "b:b ou:u ddh:d a:a")]       // italian 'cch' digram
+        [InlineData("dharma", "dh:d a:a r:R m:m a:a")]       // italian 'cch' digram
+        [InlineData("pha", "ph:p a:a")]       // italian 'cch' digram
+        [InlineData("ppha", "pph:p a:a")]       // italian 'cch' digram
+        [InlineData("tha", "th:t a:a")]       // italian 'cch' digram
+        [InlineData("ttha", "tth:t a:a")]       // italian 'cch' digram
+        [InlineData("kha", "kh:k a:a")]       // italian 'cch' digram
+        [InlineData("kkha", "kkh:k a:a")]       // italian 'cch' digram
         public void TestCompute(string graphemes, string rawAlignement)
         {
             var alignment = ParseAlignement(rawAlignement).ToArray();
