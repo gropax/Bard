@@ -104,7 +104,7 @@ namespace Bard.Fra.Analysis
         private Dictionary<string, string[]> _writtenForms = new Dictionary<string, string[]>()
         {
             { "p", new string[] { "pph", "pp", "ph", "p" } },
-            { "t", new string[] { "tth", "tt", "t" }},
+            { "t", new string[] { "tth", "tt", "th", "pt", "t" }},
             { "k", new string[] { "cch", "cc", "ch", "kkh", "kk", "kh", "qu", "c", "k", "q" }},
             { "b", new string[] { "bbh", "bb", "bh", "b" }},
             { "d", new string[] { "ddh", "dd", "dh", "d" }},
@@ -129,11 +129,11 @@ namespace Bard.Fra.Analysis
 
             { "i", new string[] { "i", "y", "ï", "î" }},
             { "e", new string[] { "ez", "ai", "aî", "é", "e" }},
-            { "ɛ", new string[] { "ai", "aî", "e", "è", "é", "ê", "ë" }},
+            { "ɛ", new string[] { "ai", "aî", "ei", "e", "è", "é", "ê", "ë" }},
             { "a", new string[] { "as", "aa", "a", "â" }},
             { "ɑ", new string[] { "as", "a", "â" }},
             { "ɔ", new string[] { "o" }},
-            { "o", new string[] { "au", "o", "ô" }},
+            { "o", new string[] { "eau", "au", "o", "ô" }},
             { "u", new string[] { "ou", "où", "oû", "u" }},
             { "y", new string[] { "u", "û", "ü" }},
             { "ø", new string[] { "eu" }},

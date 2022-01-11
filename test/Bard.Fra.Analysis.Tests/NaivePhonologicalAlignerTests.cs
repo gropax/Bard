@@ -13,8 +13,51 @@ namespace Bard.Fra.Analysis.Tests
     {
         [Theory]
         [InlineData("boutique", "b:b ou:u t:t i:i qu:k e:")]
-        [InlineData("cornet", "c:k o:O r:R n:n e:E t:")]
         [InlineData("anticonstitutionnellement", "an:@ t:t i:i c:k on:§ s:s t:t i:i t:t u:y t:s i:j o:o nn:n e:E ll:l e:° m:m en:@ t:")]
+        // /p/ sound
+        [InlineData("pomme", "p:p o:O mm:m e:")]
+        [InlineData("frappe", "f:f r:R a:a pp:p e:")]
+        [InlineData("pha", "ph:p a:a")]
+        [InlineData("ppha", "pph:p a:a")]
+        // /b/ sound
+        [InlineData("bourde", "b:b ou:u r:R d:d e:")]
+        [InlineData("abbé", "a:a bb:b é:e")]
+        [InlineData("abhorré", "a:a bh:b o:o rr:R é:e")]
+        [InlineData("bbha", "bbh:b a:a")]
+        // /t/ sound
+        [InlineData("taupe", "t:t au:o p:p e:")]
+        [InlineData("sculpter", "s:s c:k u:y l:l pt:t e:e r:")]
+        [InlineData("thé", "th:t é:e")]
+        [InlineData("matthéen", "m:m a:a tth:t é:e en:5")]
+        // /d/ sound
+        [InlineData("dur", "d:d u:y r:R")]
+        [InlineData("addict", "a:a dd:d i:i c:k t:t")]
+        [InlineData("bouddha", "b:b ou:u ddh:d a:a")]
+        [InlineData("dharma", "dh:d a:a r:R m:m a:a")]
+        // /k/ sound
+        [InlineData("cadeaux", "c:k a:a d:d eau:o x:")]
+        [InlineData("accroc", "a:a cc:k r:R o:o c:")]
+        [InlineData("cinq", "c:s in:5 q:k")]
+        [InlineData("qatar", "q:k a:a t:t a:a r:R")]
+        [InlineData("quinze", "qu:k in:5 z:z e:")]
+        [InlineData("chianti", "ch:k i:i an:@ t:t i:i")]
+        [InlineData("vecchio", "v:v e:e cch:k i:i o:o")]
+        [InlineData("akène", "a:a k:k è:E n:n e:")]
+        [InlineData("trekking", "t:t r:R e:E kk:k i:i ng:G")]
+        [InlineData("cheikh", "ch:S ei:E kh:k")]
+        [InlineData("kha", "kh:k a:a")]
+        [InlineData("kkha", "kkh:k a:a")]
+        // /g/ sound
+        // Silent endings
+        [InlineData("cornet", "c:k o:O r:R n:n e:E t:")]
+        [InlineData("manger", "m:m an:@ g:Z e:e r:")]
+        [InlineData("mange", "m:m an:@ g:Z e:")]
+        [InlineData("manges", "m:m an:@ g:Z es:")]
+        [InlineData("mangent", "m:m an:@ g:Z ent:")]
+        [InlineData("jonc", "j:Z on:§ c:")]
+        [InlineData("plomb", "p:p l:l om:§ b:")]
+        [InlineData("lard", "l:l a:a r:R d:")]
+        [InlineData("clef", "c:k l:l e:e f:")]
         // Silent 'h'
         [InlineData("hôpital", "h: ô:o p:p i:i t:t a:a l:l")]  // 'h' silent at beginning
         [InlineData("dehors", "d:d e:° h: o:O r:R s:")]        // 'h' silent inside
@@ -22,16 +65,6 @@ namespace Bard.Fra.Analysis.Tests
         // Digram with 'h'
         [InlineData("chat", "ch:S a:a t:t")]                   // french 'ch' digram
         [InlineData("philosophe", "ph:f i:i l:l o:o s:z o:O ph:f e:")]  // greek 'ph' digram
-        [InlineData("chianti", "ch:k i:i an:@ t:t i:i")]       // italian 'ch' digram
-        [InlineData("vecchio", "v:v e:e cch:k i:i o:o")]       // italian 'cch' digram
-        [InlineData("bouddha", "b:b ou:u ddh:d a:a")]       // italian 'cch' digram
-        [InlineData("dharma", "dh:d a:a r:R m:m a:a")]       // italian 'cch' digram
-        [InlineData("pha", "ph:p a:a")]       // italian 'cch' digram
-        [InlineData("ppha", "pph:p a:a")]       // italian 'cch' digram
-        [InlineData("tha", "th:t a:a")]       // italian 'cch' digram
-        [InlineData("ttha", "tth:t a:a")]       // italian 'cch' digram
-        [InlineData("kha", "kh:k a:a")]       // italian 'cch' digram
-        [InlineData("kkha", "kkh:k a:a")]       // italian 'cch' digram
         public void TestCompute(string graphemes, string rawAlignement)
         {
             var alignment = ParseAlignement(rawAlignement).ToArray();
