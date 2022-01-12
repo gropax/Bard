@@ -14,26 +14,19 @@ namespace Bard.Fra.Analysis.Tests
         [Theory]
         [InlineData("boutique", "b:b ou:u t:t i:i qu:k e:")]
         [InlineData("anticonstitutionnellement", "an:@ t:t i:i c:k on:§ s:s t:t i:i t:t u:y t:s i:j o:o nn:n e:E ll:l e:° m:m en:@ t:")]
+
         // /p/ sound
         [InlineData("pomme", "p:p o:O mm:m e:")]
         [InlineData("frappe", "f:f r:R a:a pp:p e:")]
         [InlineData("pha", "ph:p a:a")]
         [InlineData("ppha", "pph:p a:a")]
-        // /b/ sound
-        [InlineData("bourde", "b:b ou:u r:R d:d e:")]
-        [InlineData("abbé", "a:a bb:b é:e")]
-        [InlineData("abhorré", "a:a bh:b o:o rr:R é:e")]
-        [InlineData("bbha", "bbh:b a:a")]
+
         // /t/ sound
         [InlineData("taupe", "t:t au:o p:p e:")]
         [InlineData("sculpter", "s:s c:k u:y l:l pt:t e:e r:")]
         [InlineData("thé", "th:t é:e")]
         [InlineData("matthéen", "m:m a:a tth:t é:e en:5")]
-        // /d/ sound
-        [InlineData("dur", "d:d u:y r:R")]
-        [InlineData("addict", "a:a dd:d i:i c:k t:t")]
-        [InlineData("bouddha", "b:b ou:u ddh:d a:a")]
-        [InlineData("dharma", "dh:d a:a r:R m:m a:a")]
+
         // /k/ sound
         [InlineData("cadeaux", "c:k a:a d:d eau:o x:")]
         [InlineData("accroc", "a:a cc:k r:R o:o c:")]
@@ -47,7 +40,79 @@ namespace Bard.Fra.Analysis.Tests
         [InlineData("cheikh", "ch:S ei:E kh:k")]
         [InlineData("kha", "kh:k a:a")]
         [InlineData("kkha", "kkh:k a:a")]
+
+        // /b/ sound
+        [InlineData("bourde", "b:b ou:u r:R d:d e:")]
+        [InlineData("abbé", "a:a bb:b é:e")]
+        [InlineData("abhorré", "a:a bh:b o:o rr:R é:e")]
+        [InlineData("bbha", "bbh:b a:a")]
+
+        // /d/ sound
+        [InlineData("dur", "d:d u:y r:R")]
+        [InlineData("addict", "a:a dd:d i:i c:k t:t")]
+        [InlineData("bouddha", "b:b ou:u ddh:d a:a")]
+        [InlineData("dharma", "dh:d a:a r:R m:m a:a")]
+
         // /g/ sound
+        [InlineData("gâteau", "g:g â:a t:t eau:o")]
+        [InlineData("guichet", "gu:g i:i ch:S e:E t:")]
+        [InlineData("ghana", "gh:g a:a n:n a:a")]
+        [InlineData("agglomérat", "a:a gg:g l:l o:o m:m é:e r:R a:a t:")]
+        [InlineData("aggha", "a:a ggh:g a:a")]
+
+        // /f/ sound
+        [InlineData("faon", "f:f aon:@")]
+        [InlineData("affaire", "a:a ff:f ai:E r:R e:")]
+        [InlineData("philosophe", "ph:f i:i l:l o:o s:z o:O ph:f e:")]
+
+        // /s/ sound
+        [InlineData("cerise", "c:s e:° r:R i:i s:z e:")]
+        [InlineData("sauver", "s:s au:o v:v e:e r:")]
+        [InlineData("casser", "c:k a:a ss:s e:e r:")]
+        [InlineData("garçon", "g:g a:a r:R ç:s on:§")]
+        [InlineData("faction", "f:f a:a c:k t:s i:j on:§")]
+        [InlineData("auxerre", "au:o x:s e:E rr:R e:")]
+
+        // /ʃ/ sound
+        [InlineData("charrue", "ch:S a:a rr:R u:y e:")]
+        [InlineData("shah", "sh:S a:a h:")]
+
+        // /v/ sound
+        [InlineData("voiture", "v:v oi:wa t:t u:y r:R e:")]
+        [InlineData("wagon", "w:v a:a g:g on:§")]
+
+        // /z/ sound
+        [InlineData("rose", "r:R o:o s:z e:")]
+        [InlineData("zoé", "z:z o:o é:e")]
+        [InlineData("blizzard", "b:b l:l i:i zz:z a:a r:R d:")]
+
+        // /ʒ/ sound
+        [InlineData("géant", "g:Z é:e an:@ t:")]
+        [InlineData("juri", "j:Z u:y r:R i:i")]
+
+        // /l/ sound
+        [InlineData("livre", "l:l i:i v:v r:R e:")]
+        [InlineData("allez", "a:a ll:l e:e z:")]
+
+        // /r/ sound
+        [InlineData("rue", "r:R u:y e:")]
+        [InlineData("barre", "b:b a:a rr:R e:")]
+
+        // /m/ sound
+        [InlineData("monde", "m:m on:§ d:d e:")]
+        [InlineData("immonde", "i:i mm:m on:§ d:d e:")]
+
+        // /n/ sound
+        [InlineData("ananas", "a:a n:n a:a n:n a:a s:s")]
+        [InlineData("donne", "d:d o:o nn:n e:")]
+        [InlineData("damner", "d:d a:a mn:n e:e r:")]
+
+        // /ɲ/ sound
+        [InlineData("peigne", "p:p ei:E gn:N e:")]
+
+        // /ŋ/ sound
+        [InlineData("parking", "p:p a:a r:R k:k i:i ng:G")]
+
         // Silent endings
         [InlineData("cornet", "c:k o:O r:R n:n e:E t:")]
         [InlineData("manger", "m:m an:@ g:Z e:e r:")]
@@ -58,13 +123,16 @@ namespace Bard.Fra.Analysis.Tests
         [InlineData("plomb", "p:p l:l om:§ b:")]
         [InlineData("lard", "l:l a:a r:R d:")]
         [InlineData("clef", "c:k l:l e:e f:")]
+
         // Silent 'h'
         [InlineData("hôpital", "h: ô:o p:p i:i t:t a:a l:l")]  // 'h' silent at beginning
         [InlineData("dehors", "d:d e:° h: o:O r:R s:")]        // 'h' silent inside
         [InlineData("poussah", "p:p ou:u ss:s a:a h:")]        // 'h' silent at the end
-        // Digram with 'h'
-        [InlineData("chat", "ch:S a:a t:t")]                   // french 'ch' digram
-        [InlineData("philosophe", "ph:f i:i l:l o:o s:z o:O ph:f e:")]  // greek 'ph' digram
+
+        // Special digrams
+        [InlineData("sprezzatura", "s:s p:p r:R e:e zz:tz a:a t:t u:u r:R a:a")]
+        [InlineData("poire", "p:p oi:wa r:R e:")]
+        [InlineData("point", "p:p oin:w5 t:")]
         public void TestCompute(string graphemes, string rawAlignement)
         {
             var alignment = ParseAlignement(rawAlignement).ToArray();
