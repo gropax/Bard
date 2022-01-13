@@ -28,20 +28,20 @@ namespace Bard.Fra.Analysis
             _trace = new StringBuilder();
             _trace.AppendLine($"Aligning graphemes [{_lowerCased}] with phonemes [{string.Join("", _phonemes)}].");
 
-            var alignments = new Queue<Interval<string>>();
+            var alignments = new Stack<Interval<string>>();
             if (TryAlignNext(0, 0, ref alignments))
-                return alignments.ToArray();
+                return alignments.Reverse().ToArray();
             else
                 return null;
         }
 
-        private bool TryAlignNext(int phonemeIdx, int graphemeIdx, ref Queue<Interval<string>> alignment)
+        private bool TryAlignNext(int phonemeIdx, int graphemeIdx, ref Stack<Interval<string>> alignment)
         {
             // If all phonemes are already parsed, consider the remaining graphemes as silent ending
             if (phonemeIdx == _phonemes.Length)
             {
                 if (graphemeIdx < _graphemes.Length)
-                    alignment.Enqueue(new Interval<string>(graphemeIdx, _graphemes.Length - graphemeIdx, string.Empty));
+                    alignment.Push(new Interval<string>(graphemeIdx, _graphemes.Length - graphemeIdx, string.Empty));
 
                 return true;
             }
@@ -57,7 +57,7 @@ namespace Bard.Fra.Analysis
             var nextGrapheme = _lowerCased[graphemeIdx];
             if (nextGrapheme == 'h')
             {
-                alignment.Enqueue(new Interval<string>(graphemeIdx, 1, string.Empty));
+                alignment.Push(new Interval<string>(graphemeIdx, 1, string.Empty));
                 return TryAlignNext(phonemeIdx, graphemeIdx + 1, ref alignment);
             } 
 
@@ -78,12 +78,12 @@ namespace Bard.Fra.Analysis
                     patternMatched = true;
                     _trace.AppendLine($"Pattern [{pattern}] matched.");
 
-                    alignment.Enqueue(new Interval<string>(graphemeIdx, length, phoneme));
+                    alignment.Push(new Interval<string>(graphemeIdx, length, phoneme));
 
                     if (TryAlignNext(phonemeIdx + 1, graphemeIdx + length, ref alignment))
                         return true;
                     else
-                        alignment.Dequeue();
+                        alignment.Pop();
                 }
             }
 
