@@ -116,6 +116,21 @@ namespace Bard.Fra.Analysis.Tests
         // /ŋ/ sound
         [InlineData("parking", "p:p a:a r:R k:k i:i ng:G")]
 
+        // /j/ sound
+        [InlineData("faille", "f:f a:a ill:j e:")]
+        [InlineData("travail", "t:t r:R a:a v:v a:a il:j")]
+        [InlineData("fion", "f:f i:j on:§")]
+        [InlineData("rayon", "r:R a:E y:j on:§")]
+        [InlineData("aja", "a:a j:j a:a")]
+        [InlineData("ïambique", "ï:j am:@ b:b i:i qu:k e:")]
+
+        // /w/ sound ", new string[] { "ou", "ww", "wh", "w" }},
+        [InlineData("oui", "ou:w i:i")]
+        [InlineData("awa", "a:a w:w a:a")]
+
+        // /ɥ/ sound
+        [InlineData("huit", "h: u:8 i:i t:t")]
+
         // /i/ sound
         [InlineData("ville", "v:v i:i ll:l e:")]
         [InlineData("yves", "y:i v:v es:")]

@@ -186,7 +186,7 @@ namespace Bard.Fra.Analysis
 
             { "i", new string[] { "i", "y", "ï", "î" }},
             { "e", new string[] { "ai", "aî", "ae", "oe", "é", "e", "æ", "œ" }},
-            { "ɛ", new string[] { "ai", "aî", "ei", "ae", "e", "è", "é", "ê", "ë", "æ" }},
+            { "ɛ", new string[] { "ai", "aî", "ei", "ae", "e", "è", "é", "ê", "ë", "a", "æ" }},
             { "a", new string[] { "aa", "a", "â" }},
             { "ɑ", new string[] { "a", "â" }},
             { "ɔ", new string[] { "o" }},
