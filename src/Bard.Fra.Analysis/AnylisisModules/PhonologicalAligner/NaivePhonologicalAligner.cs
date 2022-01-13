@@ -23,25 +23,28 @@ namespace Bard.Fra.Analysis
 
         public string GetTrace() => _trace.ToString();
 
-        public Interval<string>[] Compute()
+        public Interval<string[]>[] Compute()
         {
             _trace = new StringBuilder();
             _trace.AppendLine($"Aligning graphemes [{_lowerCased}] with phonemes [{string.Join("", _phonemes)}].");
 
-            var alignments = new Stack<Interval<string>>();
+            var alignments = new Stack<Interval<string[]>>();
             if (TryAlignNext(0, 0, ref alignments))
                 return alignments.Reverse().ToArray();
             else
                 return null;
         }
 
-        private bool TryAlignNext(int phonemeIdx, int graphemeIdx, ref Stack<Interval<string>> alignment)
+        private char[] _nonPalatalLetters = new[] { 'a', 'o', 'u', 'ü' };
+
+        private bool TryAlignNext(int phonemeIdx, int graphemeIdx, ref Stack<Interval<string[]>> alignment)
         {
             // If all phonemes are already parsed, consider the remaining graphemes as silent ending
-            if (phonemeIdx == _phonemes.Length)
+            int remainingPhonemes = _phonemes.Length - phonemeIdx;
+            if (remainingPhonemes == 0)
             {
                 if (graphemeIdx < _graphemes.Length)
-                    alignment.Push(new Interval<string>(graphemeIdx, _graphemes.Length - graphemeIdx, string.Empty));
+                    alignment.Push(new Interval<string[]>(graphemeIdx, _graphemes.Length - graphemeIdx, new string[0]));
 
                 return true;
             }
@@ -53,13 +56,62 @@ namespace Bard.Fra.Analysis
                 return false;
             }
 
+            string nextGraphemes = _lowerCased.Substring(graphemeIdx);
+            string nextPhonemes = string.Join(string.Empty, _phonemes[phonemeIdx..]);
+
             // If next grapheme is 'h', consider it as silent
-            var nextGrapheme = _lowerCased[graphemeIdx];
-            if (nextGrapheme == 'h')
+            if (nextGraphemes.StartsWith('h'))
             {
-                alignment.Push(new Interval<string>(graphemeIdx, 1, string.Empty));
+                alignment.Push(new Interval<string[]>(graphemeIdx, 1, new string[0]));
                 return TryAlignNext(phonemeIdx, graphemeIdx + 1, ref alignment);
-            } 
+            }
+
+            // Handle multi-phonemes combinations
+            if (remainingPhonemes >= 2)
+            {
+                // If next grapheme is 'x'
+                if (nextGraphemes.StartsWith('x') && nextPhonemes.StartsWith("ks"))
+                {
+                    alignment.Push(new Interval<string[]>(graphemeIdx, 1, new[] { "k", "s" }));
+                    return TryAlignNext(phonemeIdx + 2, graphemeIdx + 1, ref alignment);
+                }
+                else if (nextGraphemes.StartsWith('x') && nextPhonemes.StartsWith("gz"))
+                {
+                    alignment.Push(new Interval<string[]>(graphemeIdx, 1, new[] { "g", "z" }));
+                    return TryAlignNext(phonemeIdx + 2, graphemeIdx + 1, ref alignment);
+                }
+                else if (nextGraphemes.StartsWith("oin") && nextPhonemes.StartsWith("wɛ̃"))
+                {
+                    alignment.Push(new Interval<string[]>(graphemeIdx, 3, new[] { "w", "ɛ̃" }));
+                    return TryAlignNext(phonemeIdx + 2, graphemeIdx + 3, ref alignment);
+                }
+                else if (nextGraphemes.StartsWith("oi") && nextPhonemes.StartsWith("wa"))
+                {
+                    alignment.Push(new Interval<string[]>(graphemeIdx, 2, new[] { "w", "a" }));
+                    return TryAlignNext(phonemeIdx + 2, graphemeIdx + 2, ref alignment);
+                }
+                else if (nextGraphemes.StartsWith("zz") && nextPhonemes.StartsWith("dz"))
+                {
+                    alignment.Push(new Interval<string[]>(graphemeIdx, 2, new[] { "d", "z" }));
+                    return TryAlignNext(phonemeIdx + 2, graphemeIdx + 2, ref alignment);
+                }
+                else if (nextGraphemes.StartsWith("zz") && nextPhonemes.StartsWith("tz"))
+                {
+                    alignment.Push(new Interval<string[]>(graphemeIdx, 2, new[] { "t", "z" }));
+                    return TryAlignNext(phonemeIdx + 2, graphemeIdx + 2, ref alignment);
+                }
+
+                // Handle special case of 'ge' followed by a non palatal vowel (mangeais)
+                if (
+                    nextGraphemes.Length >= 3 && nextGraphemes.StartsWith("ge") &&
+                    nextPhonemes.StartsWith("ʒ") &&
+                    _nonPalatalLetters.Contains(nextGraphemes[2]))
+                {
+                    alignment.Push(new Interval<string[]>(graphemeIdx, 2, new[] { "ʒ" }));
+                    return TryAlignNext(phonemeIdx + 1, graphemeIdx + 2, ref alignment);
+                }
+            }
+
 
             var phoneme = _phonemes[phonemeIdx];
             var patterns = GetWrittenForms(phoneme);
@@ -78,7 +130,7 @@ namespace Bard.Fra.Analysis
                     patternMatched = true;
                     _trace.AppendLine($"Pattern [{pattern}] matched.");
 
-                    alignment.Push(new Interval<string>(graphemeIdx, length, phoneme));
+                    alignment.Push(new Interval<string[]>(graphemeIdx, length, new[] { phoneme }));
 
                     if (TryAlignNext(phonemeIdx + 1, graphemeIdx + length, ref alignment))
                         return true;
@@ -101,6 +153,11 @@ namespace Bard.Fra.Analysis
                 throw new Exception($"Unsupported phoneme [{phoneme}].");
         }
 
+        private Dictionary<string, string[]> _multiPhonemeDigrams = new Dictionary<string, string[]>()
+        {
+            { "p", new string[] { "pph", "pp", "ph", "p" } },
+        };
+
         private Dictionary<string, string[]> _writtenForms = new Dictionary<string, string[]>()
         {
             { "p", new string[] { "pph", "pp", "ph", "p" } },
@@ -114,7 +171,7 @@ namespace Bard.Fra.Analysis
             { "ʃ", new string[] { "ch", "sh", "ç" }},
             { "v", new string[] { "vv", "v", "w" }},
             { "z", new string[] { "zz", "s", "z", }}, // x?
-            { "ʒ", new string[] { "ge", "j", "g" }},
+            { "ʒ", new string[] { "j", "g" }},
             { "l", new string[] { "ll", "l" }},
             { "ʁ", new string[] { "rr", "r" }},
             { "m", new string[] { "mm", "m" }},

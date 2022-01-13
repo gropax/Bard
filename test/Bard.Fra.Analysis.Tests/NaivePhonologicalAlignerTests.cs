@@ -89,7 +89,9 @@ namespace Bard.Fra.Analysis.Tests
         // /ʒ/ sound
         [InlineData("géant", "g:Z é:e an:@ t:")]
         [InlineData("juri", "j:Z u:y r:R i:i")]
-        [InlineData("rangeai", "r:R an:§ ge:Z ai:e")]
+        [InlineData("rangeai", "r:R an:@ ge:Z ai:e")]
+        [InlineData("pigeon", "p:p i:i ge:Z on:§")]
+        [InlineData("gageüre", "g:g a:a ge:Z ü:y r:R e:")]
 
         // /l/ sound
         [InlineData("livre", "l:l i:i v:v r:R e:")]
@@ -121,17 +123,17 @@ namespace Bard.Fra.Analysis.Tests
         [InlineData("île", "î:i l:l e:")]
 
         // /e/ sound
-        [InlineData("mangeai", "m:m an:§ ge:Z ai:e")]  // prononciation non standard
+        [InlineData("mangeai", "m:m an:@ ge:Z ai:e")]  // prononciation non standard
         [InlineData("créées", "c:k r:R é:e é:e es:")]
         [InlineData("aesophage", "ae:e s:z o:o ph:f a:a g:Z e:")]
-        [InlineData("æsophage", "ae:e s:z o:o ph:f a:a g:Z e:")]
+        [InlineData("æsophage", "æ:e s:z o:o ph:f a:a g:Z e:")]
         [InlineData("oedipe", "oe:e d:d i:i p:p e:")]
         [InlineData("œdipe", "œ:e d:d i:i p:p e:")]
         [InlineData("aî", "aî:e")]  // ???
         [InlineData("e", "e:e")] // ???
 
         // /ɛ/ sound
-        [InlineData("mangeai", "m:m an:@ ge:j ai:E")]
+        [InlineData("sortai", "s:s o:O r:R t:t ai:E")]
         [InlineData("affaîter", "a:a ff:f aî:E t:t e:e r:")]
         [InlineData("abeille", "a:a b:b e:E ill:j e:")]
         [InlineData("blette", "b:b l:l e:E tt:t e:")]
@@ -140,7 +142,7 @@ namespace Bard.Fra.Analysis.Tests
         [InlineData("noël", "n:n o:o ë:E l:l")]
         [InlineData("aéroport", "a:a é:E r:R o:o p:p o:O r:R t:")] // Prononciation non standard
         [InlineData("aesophage", "ae:E s:z o:o ph:f a:a g:Z e:")] // Prononciation non standard
-        [InlineData("æsophage", "ae:E s:z o:o ph:f a:a g:Z e:")] // Prononciation non standard
+        [InlineData("æsophage", "æ:E s:z o:o ph:f a:a g:Z e:")] // Prononciation non standard
 
         // /a/ sound
         [InlineData("aaron", "aa:a r:R on:§")]
@@ -231,6 +233,8 @@ namespace Bard.Fra.Analysis.Tests
         [InlineData("poire", "p:p oi:wa r:R e:")]
         [InlineData("point", "p:p oin:w5 t:")]
         [InlineData("maxime", "m:m a:a x:ks i:i m:m e:")]
+        [InlineData("xavier", "x:gz a:a v:v i:j e:e r:")]
+        [InlineData("max", "m:m a:a x:ks")]
         public void TestCompute(string graphemes, string rawAlignement)
         {
             var alignment = ParseAlignement(rawAlignement).ToArray();
@@ -273,7 +277,7 @@ namespace Bard.Fra.Analysis.Tests
                     continue;
 
                 var aligner = new NaivePhonologicalAligner(graphemes, phonemes);
-                Interval<string>[] alignment = null;
+                Interval<string[]>[] alignment = null;
                 try
                 {
                     alignment = aligner.Compute();
