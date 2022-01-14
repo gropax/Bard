@@ -8,6 +8,7 @@
     <ProjectReference Include="..\Bard.Contracts\Bard.Contracts.csproj" />
     <ProjectReference Include="..\Bard.Fra.Glaff\Bard.Fra.Glaff.csproj" />
     <ProjectReference Include="..\Bard.Storage.Neo4j\Bard.Storage.Neo4j.csproj" />
+    <ProjectReference Include="..\Bard.Utils\Bard.Utils.csproj" />
     <ProjectReference Include="..\Intervals\Intervals.csproj" />
   </ItemGroup>
 

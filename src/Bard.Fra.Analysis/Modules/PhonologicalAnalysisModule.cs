@@ -19,6 +19,7 @@ namespace Bard.Fra.Analysis
             return new PhonologicalAnalysisModule();
         }
     }
+
     public class PhonologicalAnalysisModule : IAnalysisModule
     {
         public void Analyze(WordForm wordForm)

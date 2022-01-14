@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Bard.Fra.Analysis
+namespace Bard.Fra.Analysis.Phonology
 {
     public class NaivePhonologicalAligner
     {

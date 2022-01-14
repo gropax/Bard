@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace Bard.Fra.Analysis.Tests
+namespace Bard.Fra.Analysis.Phonology.Tests
 {
     public class NaivePhonologicalAlignerTests
     {
@@ -274,43 +274,6 @@ namespace Bard.Fra.Analysis.Tests
                 Assert.Equal(string.Join("", expectedInterval.phonemes), realPhonemes);
             }
         }
-
-
-        [Fact]
-        public void TestComputeGlaff()
-        {
-            string glaffPath = @"C:\Users\VR1\source\repos\Bard\data\glaff-1.2.2.txt";
-            foreach (var entry in GlaffParser.ParseMainLexicon(glaffPath))
-            {
-                var graphemes = entry.GraphicalForm;
-                var phonemes = IpaHelpers.ParseSymbols(entry.IpaPronunciations.Split(';')[0])
-                    .Where(p => p != ".").ToArray();
-
-                bool isFullCaps = graphemes.All(c => Char.IsUpper(c));
-
-                if (isFullCaps || phonemes.Length == 0)
-                    continue;
-
-                var aligner = new NaivePhonologicalAligner(graphemes, phonemes);
-                Interval<string[]>[] alignment = null;
-                try
-                {
-                    alignment = aligner.Compute();
-                    var trace = aligner.GetTrace();
-
-                    if (alignment == null)
-                    {
-                    }
-                }
-                catch (Exception e)
-                {
-                }
-
-
-                Assert.NotNull(alignment);
-            }
-        }
-
 
         private IEnumerable<(string graphemes, string[] phonemes)> ParseAlignement(string rawAlignment)
         {
