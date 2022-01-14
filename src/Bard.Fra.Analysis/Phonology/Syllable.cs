@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace Bard.Fra.Analysis.Phonology
 {
+    public static class SyllableExtensions
+    {
+        public static string Format(this Syllable[] syllables)
+        {
+            return string.Join(".", syllables.Select(s => s.Format()));
+        }
+    }
+
     public class Syllable
     {
         public static Syllable Null { get; } = new Syllable(Phonology.Phonemes._);
@@ -17,6 +25,7 @@ namespace Bard.Fra.Analysis.Phonology
 
         public bool IsOpen => Coda.Length == 0;
         public bool IsClose => Coda.Length > 0;
+        public Phoneme[] Rhyme => Coda.Prepend(Nucleus).ToArray();
 
         public Syllable(Phoneme nucleus) : this(null, nucleus, null) { }
         public Syllable(Phoneme[] onset, Phoneme nucleus) : this(onset, nucleus, null) { }
@@ -28,10 +37,10 @@ namespace Bard.Fra.Analysis.Phonology
             Coda = coda ?? Array.Empty<Phoneme>();
         }
 
+        public string Format() => string.Join("", Phonemes.Select(p => p.Symbol));
         public override string ToString()
         {
-            var symbols = string.Join("", Phonemes.Select(p => p.Symbol));
-            return $"/{symbols}/";
+            return string.Join("", Phonemes.Select(p => p.Symbol));
         }
 
         public override bool Equals(object obj)

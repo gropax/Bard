@@ -77,6 +77,14 @@ namespace Bard.Fra.Analysis.Phonology
         }
     }
 
+    public static class PhonemeExtensions
+    {
+        public static string Format(this IEnumerable<Phoneme> phonemes)
+        {
+            return string.Join(string.Empty, phonemes.Select(p => p.Format()));
+        }
+    }
+
     public class Phoneme : IEquatable<Phoneme>
     {
         public string Symbol { get; }
@@ -113,9 +121,10 @@ namespace Bard.Fra.Analysis.Phonology
             IsTight = isTight;
         }
 
+        public string Format() => Symbol;
         public override string ToString()
         {
-            return $"/{Symbol}/";
+            return Symbol;
         }
 
         public override bool Equals(object obj)

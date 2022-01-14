@@ -1,4 +1,5 @@
 ﻿using Bard.Contracts.Fra;
+using Bard.Fra.Analysis.Phonology;
 using Bard.Storage.Neo4j;
 using Bard.Storage.Neo4j.Fra;
 using System;
@@ -46,15 +47,22 @@ namespace Bard.Fra.Analysis
             fields.Add(new Field($"{Format(WordFormField.Pronunciation)}.{CHANGE_COUNT}", wordForm.PronunciationHistory.ChangeCount));
 
             if (wordForm.Phonemes != null)
-                fields.Add(new Field(Format(WordFormField.Phonemes), string.Join("", wordForm.Phonemes.Select(p => p.Symbol))));
+                fields.Add(new Field(Format(WordFormField.Phonemes), wordForm.Phonemes.Format()));
 
             if (wordForm.Alignment != null)
                 fields.Add(new Field(Format(WordFormField.Alignment), wordForm.Alignment));
 
             if (wordForm.Syllables != null)
             {
-                fields.Add(new Field(Format(WordFormField.Syllables), string.Join(".", wordForm.Syllables.Select(s => string.Join(string.Empty, s.Phonemes.Select(p => p.Symbol))))));
+                fields.Add(new Field(Format(WordFormField.Syllables), wordForm.Syllables.Format()));
                 fields.Add(new Field(Format(WordFormField.SyllableCount), wordForm.Syllables.Length));
+            }
+
+            if (wordForm.Rhymes != null)
+            {
+                fields.Add(new Field(Format(WordFormField.FinalRhyme), wordForm.Rhymes.FinalRhyme.Format()));
+                for (int i = 0; i < wordForm.Rhymes.InnerRhymes.Length; i++)
+                    fields.Add(new Field($"{Format(WordFormField.InnerRhyme)}{i+1}", wordForm.Rhymes.InnerRhymes[i].Format()));
             }
 
             fields.Add(new Field(Format(WordFormField.Lemma), entry.Lemma));
@@ -91,6 +99,8 @@ namespace Bard.Fra.Analysis
                 case WordFormField.Syllables: return "phon.syllables";
                 case WordFormField.SyllableCount: return "phon.syllable_count";
                 case WordFormField.Alignment: return "phon.alignment";
+                case WordFormField.FinalRhyme: return "rhym.final";
+                case WordFormField.InnerRhyme: return "rhym.inner";
 
                 case WordFormField.Lemma: return "gram.lemma";
                 case WordFormField.POS: return "gram.pos";

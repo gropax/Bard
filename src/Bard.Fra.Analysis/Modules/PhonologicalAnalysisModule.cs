@@ -45,13 +45,17 @@ namespace Bard.Fra.Analysis
 
             wordForm.Syllables = newSyllables.ToArray();
             wordForm.Phonemes = newSyllables.SelectMany(s => s.Phonemes).ToArray();
+
+            wordForm.Rhymes = new Rhymes()
+            {
+                FinalRhyme = wordForm.Syllables.Last().Rhyme,
+                InnerRhymes = wordForm.Syllables.Select(s => s.Rhyme).ToArray(),
+            };
         }
 
         private Dictionary<Phoneme, Phoneme> _vowelCorrections = new Dictionary<Phoneme, Phoneme>()
         {
             { Phonemes.E, Phonemes.e }, { Phonemes.O, Phonemes.o }, { Phonemes.oe, Phonemes.eu },
-
-
         };
     }
 }

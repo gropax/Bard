@@ -51,6 +51,7 @@ namespace Bard.Fra.Analysis
         public ChangeHistory PronunciationHistory { get; set; }
         public Phoneme[] Phonemes { get; set; }
         public Syllable[] Syllables { get; set; }
+        public Rhymes Rhymes { get; set; }
         public string Alignment { get; set; }
 
         public WordForm(GlaffEntry glaffEntry)

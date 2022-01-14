@@ -18,6 +18,8 @@ namespace Bard.Storage.Neo4j.Fra
         Alignment,
         Syllables,
         SyllableCount,
+        FinalRhyme,
+        InnerRhyme,
 
         Lemma,
         POS,
