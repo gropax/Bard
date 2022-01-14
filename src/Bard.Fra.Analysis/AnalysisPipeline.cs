@@ -1,4 +1,5 @@
-﻿using Bard.Fra.Glaff;
+﻿using Bard.Fra.Analysis.Phonology;
+using Bard.Fra.Glaff;
 using Bard.Storage.Neo4j;
 using Bard.Storage.Neo4j.Fra;
 using System;
@@ -48,8 +49,8 @@ namespace Bard.Fra.Analysis
         public bool IsLemma { get; set; } = false;
         public string Pronunciation { get; set; }
         public ChangeHistory PronunciationHistory { get; set; }
-        public string[] Phonemes { get; set; }
-        public string[] Syllables { get; set; }
+        public Phoneme[] Phonemes { get; set; }
+        public Syllable[] Syllables { get; set; }
         public string Alignment { get; set; }
 
         public WordForm(GlaffEntry glaffEntry)

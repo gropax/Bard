@@ -46,14 +46,14 @@ namespace Bard.Fra.Analysis
             fields.Add(new Field($"{Format(WordFormField.Pronunciation)}.{CHANGE_COUNT}", wordForm.PronunciationHistory.ChangeCount));
 
             if (wordForm.Phonemes != null)
-                fields.Add(new Field(Format(WordFormField.Phonemes), string.Join("", wordForm.Phonemes)));
+                fields.Add(new Field(Format(WordFormField.Phonemes), string.Join("", wordForm.Phonemes.Select(p => p.Symbol))));
 
             if (wordForm.Alignment != null)
                 fields.Add(new Field(Format(WordFormField.Alignment), wordForm.Alignment));
 
             if (wordForm.Syllables != null)
             {
-                fields.Add(new Field(Format(WordFormField.Syllables), string.Join(".", wordForm.Syllables)));
+                fields.Add(new Field(Format(WordFormField.Syllables), string.Join(".", wordForm.Syllables.Select(s => string.Join(string.Empty, s.Phonemes)))));
                 fields.Add(new Field(Format(WordFormField.SyllableCount), wordForm.Syllables.Length));
             }
 

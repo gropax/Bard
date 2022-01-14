@@ -64,7 +64,7 @@ namespace Bard.Fra.Analysis
             if (best != null)
             {
                 wordForm.Pronunciation = best.Value;
-                wordForm.Phonemes = best.Phonemes;
+                wordForm.Phonemes = best.Phonemes.Select(p => Phonemes.BySymbol(p)).ToArray();
                 wordForm.Alignment = best.Alignment;
                 wordForm.Anomalies.AddRange(best.Anomalies);
 
@@ -192,7 +192,7 @@ namespace Bard.Fra.Analysis
             if (alignment == null)
                 pronunciation.Anomalies.Add(new GenericAnomaly(AnomalyType.AlignmentFailed));
             else
-                pronunciation.Alignment = string.Join(" ", alignment.Select(i => $"{graphemes.Substring(i.Start, i.Length)}:{i.Value}"));
+                pronunciation.Alignment = string.Join(" ", alignment.Select(i => $"{graphemes.Substring(i.Start, i.Length)}:{string.Join(string.Empty, i.Value)}"));
 
             return false;
         }

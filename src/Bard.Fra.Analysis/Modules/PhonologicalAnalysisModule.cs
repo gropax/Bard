@@ -1,4 +1,5 @@
-﻿using Intervals;
+﻿using Bard.Fra.Analysis.Phonology;
+using Intervals;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,8 @@ namespace Bard.Fra.Analysis
                 return;
 
             var graphemes = wordForm.GlaffEntry.GraphicalForm;
+
+            wordForm.Syllables = new Syllabifier().Compute(wordForm.Phonemes).ToArray();
         }
     }
 }
