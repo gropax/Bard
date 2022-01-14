@@ -115,15 +115,28 @@ namespace Bard.Contracts.Fra
 
     public enum Tense
     {
+        Indeterminate,
+        Infinitive,
+        PresentParticiple,
+        PastParticiple,
+        Present,
+        Imperfect,
+        Futur,
+        Past,
+        Conditional,
+        Imperative,
+        PresentSubjunctive,
+        ImperfectSubjunctive,
     }
 
     public enum Mood
     {
+        Indeterminate,
+        Infinitive,
+        Participle,
         Indicative,
         Subjunctive,
         Conditional,
         Imperative,
-        Infinitive,
-        PastParticiple,
     }
 }

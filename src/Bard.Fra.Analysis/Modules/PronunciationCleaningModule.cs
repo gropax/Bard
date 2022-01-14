@@ -60,7 +60,10 @@ namespace Bard.Fra.Analysis
             }
 
             // Pick the one with the least anomalies
-            var best = pronunciations.OrderBy(p => p.Anomalies.Count).FirstOrDefault();
+            var best = pronunciations
+                .Where(p => p.IsValid)
+                .OrderBy(p => p.Anomalies.Count).FirstOrDefault();
+
             if (best != null)
             {
                 wordForm.Pronunciation = best.Value;
@@ -91,6 +94,8 @@ namespace Bard.Fra.Analysis
         public string Alignment { get; set; }
         public ChangeHistory History { get; }
         public List<IAnomaly> Anomalies { get; } = new List<IAnomaly>();
+        public bool IsValid { get; set; } = true;
+
         public Pronunciation(string graphemes, string value)
         {
             Graphemes = graphemes;
@@ -182,7 +187,16 @@ namespace Bard.Fra.Analysis
 
             // Flatten syllabized phoneme list
             var phonemesStr = pronunciation.Value.Replace(".", string.Empty);
-            var phonemes = IpaHelpers.ParseSymbols(phonemesStr);
+            var phonemes = IpaHelpers.ParseSymbols(phonemesStr)
+                .Where(p => Phonemes.IsValid(p))
+                .ToArray();
+
+            if (phonemes.Length == 0)
+            {
+                pronunciation.IsValid = false;
+                return true;
+            }
+
             pronunciation.Phonemes = phonemes;
 
             // Align phonemes with graphemes

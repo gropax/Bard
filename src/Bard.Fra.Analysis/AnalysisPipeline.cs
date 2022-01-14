@@ -109,6 +109,7 @@ namespace Bard.Fra.Analysis
         MultiplePronunciations,
         BadSyllabation,
         AlignmentFailed,
+        SyllabificationError,
     }
 
     public interface IAnomaly

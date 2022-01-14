@@ -139,9 +139,10 @@ namespace Bard.Fra.Glaff
 
                 case 'V':
                     pos = POS.Verb;
+                    (mood, tense) = ParseMoodAndTense(traits[2], traits[3]);
                     person = ParsePerson(traits[4]);
-                    gender = ParseGender(traits[5]);
-                    number = ParseNumber(traits[6]);
+                    number = ParseNumber(traits[5]);
+                    gender = ParseGender(traits[6]);
                     return;
 
                 default:
@@ -162,6 +163,47 @@ namespace Bard.Fra.Glaff
                 default:
                     throw new Exception($"Unexpected person value [{s}].");
             }
+        }
+        private static (Mood, Tense) ParseMoodAndTense(char m, char t)
+        {
+            if (m == 'n')
+                return (Mood.Infinitive, Tense.Infinitive);
+
+            else if (m == 'p')
+            {
+                var mood = Mood.Participle;
+                var tense = t == 'p' ? Tense.PresentParticiple : Tense.PastParticiple;
+                return (mood, tense);
+            }
+
+            else if (m == 'i')
+            {
+                var mood = Mood.Indicative;
+                if (t == 'p')
+                    return (mood, Tense.Present);
+                else if (t == 'i')
+                    return (mood, Tense.Imperfect);
+                else if (t == 'f')
+                    return (mood, Tense.Futur);
+                else if (t == 's')
+                    return (mood, Tense.Futur);
+            }
+
+            else if (m == 'c')
+                return (Mood.Conditional, Tense.Conditional);
+
+            else if (m == 'm')
+                return (Mood.Imperative, Tense.Imperative);
+
+            else if (m == 's')
+            {
+                if (t == 'p')
+                    return (Mood.Subjunctive, Tense.PresentSubjunctive);
+                else if (t == 'i')
+                    return (Mood.Subjunctive, Tense.ImperfectSubjunctive);
+            }
+
+            throw new Exception($"Unexpected mood/tense combination [{m}, {t}].");
         }
     }
 }

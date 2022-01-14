@@ -75,6 +75,8 @@ namespace Bard.Fra.Analysis.Phonology
         {
             return _phonemesBySymbol[symbol];
         }
+
+        public static bool IsValid(string symbol) => _phonemesBySymbol.ContainsKey(symbol);
     }
 
     public static class PhonemeExtensions

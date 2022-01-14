@@ -191,7 +191,7 @@ namespace Bard.Fra.Analysis
             switch (mood)
             {
                 case Mood.Infinitive: return "inf";
-                case Mood.PastParticiple: return "part";
+                case Mood.Participle: return "part";
                 case Mood.Indicative: return "ind";
                 case Mood.Subjunctive: return "subj";
                 case Mood.Conditional: return "cond";
@@ -210,6 +210,7 @@ namespace Bard.Fra.Analysis
                 case AnomalyType.MultiplePronunciations: return "multiple_pronunciations";
                 case AnomalyType.BadSyllabation: return "bad_syllabation";
                 case AnomalyType.AlignmentFailed: return "alignment_failed";
+                case AnomalyType.SyllabificationError: return "syllabification_error";
                 default:
                     throw new NotImplementedException($"Unsupported anomaly type [{type}].");
             }
