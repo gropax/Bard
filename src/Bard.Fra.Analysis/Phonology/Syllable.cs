@@ -15,6 +15,9 @@ namespace Bard.Fra.Analysis.Phonology
         public Phoneme[] Coda { get; }
         public IEnumerable<Phoneme> Phonemes => Onset.Append(Nucleus).Concat(Coda);
 
+        public bool IsOpen => Coda.Length == 0;
+        public bool IsClose => Coda.Length > 0;
+
         public Syllable(Phoneme nucleus) : this(null, nucleus, null) { }
         public Syllable(Phoneme[] onset, Phoneme nucleus) : this(onset, nucleus, null) { }
         public Syllable(Phoneme nucleus, Phoneme[] coda) : this(null, nucleus, coda) { }

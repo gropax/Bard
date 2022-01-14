@@ -53,7 +53,7 @@ namespace Bard.Fra.Analysis
 
             if (wordForm.Syllables != null)
             {
-                fields.Add(new Field(Format(WordFormField.Syllables), string.Join(".", wordForm.Syllables.Select(s => string.Join(string.Empty, s.Phonemes)))));
+                fields.Add(new Field(Format(WordFormField.Syllables), string.Join(".", wordForm.Syllables.Select(s => string.Join(string.Empty, s.Phonemes.Select(p => p.Symbol))))));
                 fields.Add(new Field(Format(WordFormField.SyllableCount), wordForm.Syllables.Length));
             }
 
@@ -84,20 +84,20 @@ namespace Bard.Fra.Analysis
             {
                 case WordFormField.Graphemes: return "graphemes";
 
-                case WordFormField.PronunciationRaw: return "phon.pronunciation_raw";
-                case WordFormField.Pronunciation: return "phon.pronunciation";
-                case WordFormField.PronunciationDebug: return "phon.pronunciation.debug";
+                case WordFormField.PronunciationRaw: return "glaff.pronunciation_raw";
+                case WordFormField.Pronunciation: return "glaff.pronunciation";
+                case WordFormField.PronunciationDebug: return "glaff.pronunciation.debug";
                 case WordFormField.Phonemes: return "phon.phonemes";
                 case WordFormField.Syllables: return "phon.syllables";
                 case WordFormField.SyllableCount: return "phon.syllable_count";
                 case WordFormField.Alignment: return "phon.alignment";
 
-                case WordFormField.Lemma: return "lemma";
-                case WordFormField.POS: return "pos";
-                case WordFormField.Number: return "number";
-                case WordFormField.Gender: return "gender";
-                case WordFormField.Person: return "person";
-                case WordFormField.Mood: return "mood";
+                case WordFormField.Lemma: return "gram.lemma";
+                case WordFormField.POS: return "gram.pos";
+                case WordFormField.Number: return "gram.number";
+                case WordFormField.Gender: return "gram.gender";
+                case WordFormField.Person: return "gram.person";
+                case WordFormField.Mood: return "gram.mood";
 
                 case WordFormField.Anomalies: return "anomaly";
                 default:
