@@ -44,10 +44,17 @@ namespace Bard.Storage.Neo4j.Fra
         IsStandard,
     }
 
+    public enum InnerRhymeField
+    {
+        SyllableNumber,
+    }
+
     public enum RelationshipType
     {
         Lemma,
         PhoneticRealization,
+        Rhyme,
+        InnerRhyme,
     }
 
     public class NodeType

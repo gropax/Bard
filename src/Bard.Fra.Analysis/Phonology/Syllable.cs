@@ -26,6 +26,7 @@ namespace Bard.Fra.Analysis.Phonology
         public bool IsOpen => Coda.Length == 0;
         public bool IsClose => Coda.Length > 0;
         public Phoneme[] Rhyme => Coda.Prepend(Nucleus).ToArray();
+        public Syllable RhymeSyllable => new Syllable(null, Nucleus, Coda);
 
         public Syllable(Phoneme nucleus) : this(null, nucleus, null) { }
         public Syllable(Phoneme[] onset, Phoneme nucleus) : this(onset, nucleus, null) { }

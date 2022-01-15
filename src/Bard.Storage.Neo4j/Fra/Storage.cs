@@ -35,7 +35,7 @@ namespace Bard.Storage.Neo4j.Fra
                         UNWIND $props AS map
                         MATCH (o) WHERE id(o) = map._originId
                         MATCH (t) WHERE id(t) = map._targetId
-                        CREATE (o)-[r:{grp.Key}]->(t)
+                        MERGE (o)-[r:{grp.Key}]->(t)
                         WITH r, apoc.map.removeKeys(map, ['_originId', '_targetId']) AS fields
                         SET r = fields
                         RETURN r",

@@ -39,12 +39,21 @@ namespace Bard.Fra.Analysis
                 n => n.Id);
 
 
-            // Collect all PhonSeqs
+            // Collect PhonSeqs from WordForm
             var wfPhonSeqs = wordForms
                 .SelectMany(wf => wf.Realizations)
-                .Select(r => r.PhoneticSequence);
+                .Select(r => r.PhoneticWord.PhoneticSequence);
 
-            var phonSeqs = new HashSet<PhoneticSequence>(wfPhonSeqs, new PhoneticSequenceIdComparer());
+            // Collect PhonSeqs from Rhymes
+            var rhymePhonSeqs = wordForms
+                .SelectMany(wf => wf.Realizations)
+                .SelectMany(r =>
+                    r.PhoneticWord.Rhymes.Select(rh => rh.PhoneticSequence)
+                        .Concat(r.PhoneticWord.InnerRhymes.Select(rh => rh.PhoneticSequence)));
+
+            var phonSeqs = new HashSet<PhoneticSequence>(
+                wfPhonSeqs.Concat(rhymePhonSeqs),
+                new PhoneticSequenceIdComparer());
 
             // Build new PhonSeq nodes
             var newPhonSeqs = phonSeqs.Where(s => !_phonSeqIdMapping.ContainsKey(s.Id)).ToArray();
@@ -61,6 +70,8 @@ namespace Bard.Fra.Analysis
             //
             var lemmaRels = new List<LemmaRelation>();
             var phonRealRels = new List<PhoneticRealizationRelation>();
+            var rhymeRels = new List<RhymeRelation>();
+            var innerRhymeRels = new List<InnerRhymeRelation>();
 
             foreach (var wordForm in wordForms)
             {
@@ -75,10 +86,25 @@ namespace Bard.Fra.Analysis
                 foreach (var real in wordForm.Realizations)
                 {
                     long wordFormNodeId = wordFormIdMapping[wordForm.GlaffEntry.Rank];
-                    long phonSeqNodeId = _phonSeqIdMapping[real.PhoneticSequence.Id];
+                    long phonSeqNodeId = _phonSeqIdMapping[real.PhoneticWord.PhoneticSequence.Id];
                     phonRealRels.Add(new PhoneticRealizationRelation(wordFormNodeId, phonSeqNodeId, real));
+
+                    foreach (var rhyme in real.PhoneticWord.Rhymes)
+                    {
+                        rhymeRels.Add(new RhymeRelation(phonSeqNodeId,
+                            _phonSeqIdMapping[rhyme.PhoneticSequence.Id],
+                            rhyme));
+                    }
+
+                    foreach (var innerRhyme in real.PhoneticWord.InnerRhymes)
+                    {
+                        innerRhymeRels.Add(new InnerRhymeRelation(phonSeqNodeId,
+                            _phonSeqIdMapping[innerRhyme.PhoneticSequence.Id],
+                            innerRhyme));
+                    }
                 }
             }
+
 
             // Store PhonReal relationships
             var phonRealRelationships = phonRealRels
@@ -106,6 +132,24 @@ namespace Bard.Fra.Analysis
             _pendingLemmaRels = pendingLemmaRels;
 
             await _storage.CreateAsync(lemmaRelationships);
+
+            // Store Rhyme relationships
+            var rhymeRelationships = rhymeRels
+                .Select(r => _nodeBuilder.Build(
+                    originId: r.PhonSeqNodeId,
+                    targetId: r.RhymeNodeId,
+                    rhyme: r.Rhyme));
+
+            await _storage.CreateAsync(rhymeRelationships);
+
+            // Store InnerRhyme relationships
+            var innerRhymeRelationships = innerRhymeRels
+                .Select(r => _nodeBuilder.Build(
+                    originId: r.PhonSeqNodeId,
+                    targetId: r.RhymeNodeId,
+                    rhyme: r.InnerRhyme));
+
+            await _storage.CreateAsync(innerRhymeRelationships);
         }
     }
 
@@ -133,6 +177,34 @@ namespace Bard.Fra.Analysis
             WordFormNodeId = wordFormNodeId;
             PhonSeqNodeId = phonSeqNodeId;
             Realization = realization;
+        }
+    }
+
+    public class RhymeRelation
+    {
+        public long PhonSeqNodeId { get; } 
+        public long RhymeNodeId { get; } 
+        public Rhyme Rhyme { get; }
+
+        public RhymeRelation(long phonSeqNodeId, long rhymeNodeId, Rhyme rhyme)
+        {
+            PhonSeqNodeId = phonSeqNodeId;
+            RhymeNodeId = rhymeNodeId;
+            Rhyme = rhyme;
+        }
+    }
+
+    public class InnerRhymeRelation
+    {
+        public long PhonSeqNodeId { get; } 
+        public long RhymeNodeId { get; } 
+        public InnerRhyme InnerRhyme { get; }
+
+        public InnerRhymeRelation(long phonSeqNodeId, long rhymeNodeId, InnerRhyme innerRhyme)
+        {
+            PhonSeqNodeId = phonSeqNodeId;
+            RhymeNodeId = rhymeNodeId;
+            InnerRhyme = innerRhyme;
         }
     }
 }

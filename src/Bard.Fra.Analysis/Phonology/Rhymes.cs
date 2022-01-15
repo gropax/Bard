@@ -8,8 +8,12 @@ namespace Bard.Fra.Analysis.Phonology
 {
     public class Rhyme
     {
-        public Phoneme[] Phonemes { get; set; }
-        public bool IsFinal { get; set; }
+        public PhoneticSequence PhoneticSequence { get; set; }
+    }
+
+    public class InnerRhyme
+    {
+        public PhoneticSequence PhoneticSequence { get; set; }
         public int SyllableNumber { get; set; }
     }
 

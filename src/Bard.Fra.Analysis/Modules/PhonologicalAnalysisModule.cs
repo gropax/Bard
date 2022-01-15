@@ -63,64 +63,84 @@ namespace Bard.Fra.Analysis
 
         private PhoneticRealization GetStandardRealization(WordForm wordForm)
         {
-            var phonSeq = GetPhoneticSequence(wordForm.Phonemes);
+            var phonWord = GetPhoneticWord(wordForm.Phonemes);
 
             return new PhoneticRealization()
             {
                 Graphemes = wordForm.GlaffEntry.GraphicalForm,
                 Alignment = wordForm.Alignment,
-                PhoneticSequence = phonSeq,
+                PhoneticWord = phonWord,
                 IsStandard = true,
             };
         }
 
-        private Dictionary<string, PhoneticSequence> _phonSeqs = new Dictionary<string, PhoneticSequence>();
-        private PhoneticSequence GetPhoneticSequence(Phoneme[] phonemes)
+        private Dictionary<string, PhoneticWord> _phonSeqs = new Dictionary<string, PhoneticWord>();
+        private PhoneticWord GetPhoneticWord(Phoneme[] phonemes)
         {
             string key = phonemes.Format();
 
-            if (!_phonSeqs.TryGetValue(key, out var phonSeq))
+            if (!_phonSeqs.TryGetValue(key, out var phonWord))
             {
                 var syllables = new Syllabifier().Compute(phonemes).ToArray();
-                var rhymes = GetAllRhymes(syllables);
+                var rhymes = GetRhymes(syllables);
+                var innerRhymes = GetInnerRhymes(syllables);
 
-                phonSeq = new PhoneticSequence()
+                phonWord = new PhoneticWord()
                 {
-                    Id = phonemes.Format(),
-                    Phonemes = phonemes,
-                    Syllables = syllables,
+                    PhoneticSequence = new PhoneticSequence()
+                    {
+                        Id = phonemes.Format(),
+                        Phonemes = phonemes,
+                        Syllables = syllables,
+                    },
                     Rhymes = rhymes,
+                    InnerRhymes = innerRhymes,
                 };
-                _phonSeqs[key] = phonSeq;
+                _phonSeqs[key] = phonWord;
             }
 
-            return phonSeq;
+            return phonWord;
         }
 
-        private Rhyme[] GetAllRhymes(Syllable[] syllables)
+        private Rhyme[] GetRhymes(Syllable[] syllables)
         {
             var rhymes = new List<Rhyme>();
 
-            // Add final rhyme
             rhymes.Add(new Rhyme()
             {
-                Phonemes = syllables.Last().Phonemes.ToArray(),
-                IsFinal = true,
+                PhoneticSequence = new PhoneticSequence()
+                {
+                    Id = syllables.Last().Rhyme.Format(),
+                    Phonemes = syllables.Last().Rhyme.ToArray(),
+                    Syllables = new[] { syllables.Last().RhymeSyllable },
+                },
             });
+
+            return rhymes.ToArray();
+        }
+
+
+        private InnerRhyme[] GetInnerRhymes(Syllable[] syllables)
+        {
+            var innerRhymes = new List<InnerRhyme>();
 
             // Add inner rhymes
             for (int i = 0; i < syllables.Length; i++)
             {
                 var syllable = syllables[i];
-                rhymes.Add(new Rhyme()
+                innerRhymes.Add(new InnerRhyme()
                 {
-                    Phonemes = syllable.Phonemes.ToArray(),
-                    IsFinal = false,
+                    PhoneticSequence = new PhoneticSequence()
+                    {
+                        Id = syllable.Rhyme.Format(),
+                        Phonemes = syllable.Rhyme.ToArray(),
+                        Syllables = new[] { syllable.RhymeSyllable },
+                    },
                     SyllableNumber = i + 1,
                 });
             }
 
-            return rhymes.ToArray();
+            return innerRhymes.ToArray();
         }
 
         private PhoneticRealization[] DeriveAllPossibleRealizations(PhoneticRealization stdReal)

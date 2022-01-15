@@ -7,12 +7,18 @@ using System.Threading.Tasks;
 
 namespace Bard.Fra.Analysis.Phonology
 {
+    public class PhoneticWord
+    {
+        public PhoneticSequence PhoneticSequence { get; set; }
+        public Rhyme[] Rhymes { get; set; }
+        public InnerRhyme[] InnerRhymes { get; set; }
+    }
+
     public class PhoneticSequence
     {
         public string Id { get; set; }
         public Phoneme[] Phonemes { get; set; }
         public Syllable[] Syllables { get; set; }
-        public Rhyme[] Rhymes { get; set; }
     }
 
     public class PhoneticSequenceIdComparer : IEqualityComparer<PhoneticSequence>

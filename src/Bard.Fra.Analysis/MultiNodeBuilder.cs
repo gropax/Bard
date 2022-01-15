@@ -28,6 +28,28 @@ namespace Bard.Fra.Analysis
                 fields.ToArray());
         }
 
+        public Relationship Build(long originId, long targetId, Rhyme rhyme)
+        {
+            var fields = new List<Field>();
+
+            return new Relationship(
+                originId, targetId,
+                Format(RelationshipType.Rhyme),
+                fields.ToArray());
+        }
+
+        public Relationship Build(long originId, long targetId, InnerRhyme rhyme)
+        {
+            var fields = new List<Field>();
+
+            fields.Add(new Field(Format(InnerRhymeField.SyllableNumber), rhyme.SyllableNumber));
+
+            return new Relationship(
+                originId, targetId,
+                Format(RelationshipType.InnerRhyme),
+                fields.ToArray());
+        }
+
         public MultiNode Build(PhoneticSequence phonSeq)
         {
             var nodeTypes = new List<NodeType>();
@@ -127,6 +149,16 @@ namespace Bard.Fra.Analysis
             return new Relationship(
                 originId, targetId,
                 Format(RelationshipType.Lemma));
+        }
+
+        private string Format(InnerRhymeField field)
+        {
+            switch (field)
+            {
+                case InnerRhymeField.SyllableNumber: return "syllable_nb";
+                default:
+                    throw new NotImplementedException($"Unsupported inner rhyme field [{field}].");
+            }
         }
 
         private string Format(PhoneticRealizationField field)
@@ -288,6 +320,8 @@ namespace Bard.Fra.Analysis
             {
                 case RelationshipType.Lemma: return "LEMMA";
                 case RelationshipType.PhoneticRealization: return "PHONREAL";
+                case RelationshipType.Rhyme: return "RHYME";
+                case RelationshipType.InnerRhyme: return "INNER_RHYME";
                 default:
                     throw new NotImplementedException($"Unsupported relationship type [{type}].");
             }
