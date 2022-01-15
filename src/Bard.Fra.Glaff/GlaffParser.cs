@@ -17,6 +17,7 @@ namespace Bard.Fra.Glaff
             using (var fileStream = File.OpenRead(path))
             using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, BufferSize)) {
                 String line;
+                int lineno = 0;
                 while ((line = streamReader.ReadLine()) != null)
                 {
                     string[] columns = line.Split('|');
@@ -26,6 +27,7 @@ namespace Bard.Fra.Glaff
 
                     yield return new GlaffEntry()
                     {
+                        Rank = lineno,
                         OldFashioned = false,
 
                         Lemma = columns[2],
@@ -55,6 +57,8 @@ namespace Bard.Fra.Glaff
                         FrWacAbsoluteLemmaFrequency = ParseDouble(columns[15]),
                         FrWacRelativeLemmaFrequency = ParseDouble(columns[16]),
                     };
+
+                    lineno++;
                 }
             }
         }

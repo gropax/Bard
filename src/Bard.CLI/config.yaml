@@ -1,8 +1,8 @@
 ﻿lexicons:
   main: C:/Users/VR1/source/repos/Bard/data/glaff-1.2.2.txt
   oldies: C:/Users/VR1/source/repos/Bard/data/oldiesSubLexicon.txt
-  batchSize: 10000
-  limit: 100000
+  batchSize: 100
+  limit: 1000
 graphStorage:
   address: "bolt://176.142.20.237:7687"
   user: "neo4j"

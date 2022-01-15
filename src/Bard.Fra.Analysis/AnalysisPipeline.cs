@@ -41,27 +41,6 @@ namespace Bard.Fra.Analysis
         }
     }
 
-    public class WordForm
-    {
-        public GlaffEntry GlaffEntry { get; }
-        public List<IAnomaly> Anomalies { get; } = new List<IAnomaly>();
-        public bool IsValid { get; set; } = true;
-        public bool IsLemma { get; set; } = false;
-        public string Pronunciation { get; set; }
-        public ChangeHistory PronunciationHistory { get; set; }
-        public Phoneme[] Phonemes { get; set; }
-        public Syllable[] Syllables { get; set; }
-        public Rhymes Rhymes { get; set; }
-        public string Alignment { get; set; }
-
-        public WordForm(GlaffEntry glaffEntry)
-        {
-            GlaffEntry = glaffEntry;
-            Pronunciation = glaffEntry.IpaPronunciations;
-            PronunciationHistory = new ChangeHistory(Pronunciation);
-        }
-    }
-
     public class ChangeHistory
     {
         public class Change

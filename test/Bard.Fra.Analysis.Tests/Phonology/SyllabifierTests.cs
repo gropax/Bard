@@ -10,6 +10,7 @@ namespace Bard.Fra.Analysis.Phonology.Tests
     public class SyllabifierTests
     {
 
+        //[InlineData("y.bøʁ.se.lɛbʁ")]
         [Fact]
         public void TestCompute()
         {

@@ -7,8 +7,16 @@ using System.Threading.Tasks;
 
 namespace Bard.Storage.Neo4j.Fra
 {
+    public enum PhoneticSequenceField
+    {
+        Phonemes,
+        Syllables,
+        SyllableCount,
+    }
+
     public enum WordFormField
     {
+        Rank,
         Graphemes,
 
         PronunciationRaw,
@@ -29,6 +37,17 @@ namespace Bard.Storage.Neo4j.Fra
         Mood,
 
         Anomalies,
+    }
+
+    public enum PhoneticRealizationField
+    {
+        IsStandard,
+    }
+
+    public enum RelationshipType
+    {
+        Lemma,
+        PhoneticRealization,
     }
 
     public class NodeType

@@ -13,7 +13,43 @@ namespace Bard.Fra.Analysis
     public class MultiNodeBuilder
     {
         public const string LABEL_WORD_FORM = "WordForm";
+        public const string LABEL_PHON_SEQ = "PhonSeq";
         public const string LABEL_LEMMA = "Lemma";
+
+        public Relationship Build(long originId, long targetId, PhoneticRealization realization)
+        {
+            var fields = new List<Field>();
+
+            fields.Add(new Field(Format(PhoneticRealizationField.IsStandard), realization.IsStandard));
+
+            return new Relationship(
+                originId, targetId,
+                Format(RelationshipType.PhoneticRealization),
+                fields.ToArray());
+        }
+
+        public MultiNode Build(PhoneticSequence phonSeq)
+        {
+            var nodeTypes = new List<NodeType>();
+
+            nodeTypes.Add(new NodeType(
+                label: LABEL_PHON_SEQ,
+                fields: GetPhoneticSequenceNodeFields(phonSeq)));
+
+            return new MultiNode(nodeTypes.ToArray());
+        }
+
+        private Field[] GetPhoneticSequenceNodeFields(PhoneticSequence phonSeq)
+        {
+            var fields = new List<Field>();
+
+            fields.Add(new Field(Format(PhoneticSequenceField.Phonemes), phonSeq.Phonemes.Format()));
+            fields.Add(new Field(Format(PhoneticSequenceField.Syllables), phonSeq.Syllables.Format()));
+            fields.Add(new Field(Format(PhoneticSequenceField.SyllableCount), phonSeq.Syllables.Length));
+
+            return fields.ToArray();
+        }
+
 
         public MultiNode Build(WordForm wordForm)
         {
@@ -39,6 +75,7 @@ namespace Bard.Fra.Analysis
             var fields = new List<Field>();
             var entry = wordForm.GlaffEntry;
 
+            fields.Add(new Field(Format(WordFormField.Rank), entry.Rank));
             fields.Add(new Field(Format(WordFormField.Graphemes), entry.GraphicalForm));
 
             fields.Add(new Field(Format(WordFormField.PronunciationRaw), entry.IpaPronunciations));
@@ -58,12 +95,12 @@ namespace Bard.Fra.Analysis
                 fields.Add(new Field(Format(WordFormField.SyllableCount), wordForm.Syllables.Length));
             }
 
-            if (wordForm.Rhymes != null)
-            {
-                fields.Add(new Field(Format(WordFormField.FinalRhyme), wordForm.Rhymes.FinalRhyme.Format()));
-                for (int i = 0; i < wordForm.Rhymes.InnerRhymes.Length; i++)
-                    fields.Add(new Field($"{Format(WordFormField.InnerRhyme)}{i+1}", wordForm.Rhymes.InnerRhymes[i].Format()));
-            }
+            //if (wordForm.Rhymes != null)
+            //{
+            //    fields.Add(new Field(Format(WordFormField.FinalRhyme), wordForm.Rhymes.FinalRhyme.Format()));
+            //    for (int i = 0; i < wordForm.Rhymes.InnerRhymes.Length; i++)
+            //        fields.Add(new Field($"{Format(WordFormField.InnerRhyme)}{i+1}", wordForm.Rhymes.InnerRhymes[i].Format()));
+            //}
 
             fields.Add(new Field(Format(WordFormField.Lemma), entry.Lemma));
 
@@ -85,11 +122,40 @@ namespace Bard.Fra.Analysis
             return fields.ToArray();
         }
 
+        public Relationship BuildLemmaRelation(long originId, long targetId)
+        {
+            return new Relationship(
+                originId, targetId,
+                Format(RelationshipType.Lemma));
+        }
 
-        private string Format(WordFormField field)
+        private string Format(PhoneticRealizationField field)
         {
             switch (field)
             {
+                case PhoneticRealizationField.IsStandard: return "is_std";
+                default:
+                    throw new NotImplementedException($"Unsupported phonetic realization field [{field}].");
+            }
+        }
+
+        public string Format(PhoneticSequenceField field)
+        {
+            switch (field)
+            {
+                case PhoneticSequenceField.Phonemes: return "phonemes";
+                case PhoneticSequenceField.Syllables: return "syllables";
+                case PhoneticSequenceField.SyllableCount: return "syllable_count";
+                default:
+                    throw new NotImplementedException($"Unsupported phonetic sequence field [{field}].");
+            }
+        }
+
+        public string Format(WordFormField field)
+        {
+            switch (field)
+            {
+                case WordFormField.Rank: return "glaff.rank";
                 case WordFormField.Graphemes: return "graphemes";
 
                 case WordFormField.PronunciationRaw: return "glaff.pronunciation_raw";
@@ -213,6 +279,17 @@ namespace Bard.Fra.Analysis
                 case AnomalyType.SyllabificationError: return "syllabification_error";
                 default:
                     throw new NotImplementedException($"Unsupported anomaly type [{type}].");
+            }
+        }
+
+        private string Format(RelationshipType type)
+        {
+            switch (type)
+            {
+                case RelationshipType.Lemma: return "LEMMA";
+                case RelationshipType.PhoneticRealization: return "PHONREAL";
+                default:
+                    throw new NotImplementedException($"Unsupported relationship type [{type}].");
             }
         }
 

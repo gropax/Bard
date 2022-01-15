@@ -15,6 +15,22 @@ namespace Bard.Storage.Neo4j
         }
     }
 
+    public class Relationship
+    {
+        public long OriginId { get; }
+        public long TargetId { get; }
+        public string Label { get; }
+        public Field[] Fields { get; }
+
+        public Relationship(long originId, long targetId, string label, Field[] fields = null)
+        {
+            OriginId = originId;
+            TargetId = targetId;
+            Label = label;
+            Fields = fields ?? Array.Empty<Field>();
+        }
+    }
+
     public class Field
     {
         public string Name { get; }

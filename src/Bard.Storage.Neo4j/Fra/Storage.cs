@@ -22,8 +22,37 @@ namespace Bard.Storage.Neo4j.Fra
             await Transaction(async t => await t.RunAsync($@"CALL apoc.periodic.iterate('MATCH (n) RETURN n', 'DETACH DELETE n', {{batchSize: {batchSize}}})"));
         }
 
-        public async Task CreateAsync(IEnumerable<MultiNode> multiNodes)
+        public async Task<long[]> CreateAsync(IEnumerable<Relationship> relationships)
         {
+            var ids = new List<long>();
+
+            foreach (var grp in relationships.GroupBy(r => r.Label))
+            {
+                await Transaction(async t =>
+                {
+                    var props = grp.Select(m => GetProperties(m)).ToArray();
+                    var cursor = await t.RunAsync($@"
+                        UNWIND $props AS map
+                        MATCH (o) WHERE id(o) = map._originId
+                        MATCH (t) WHERE id(t) = map._targetId
+                        CREATE (o)-[r:{grp.Key}]->(t)
+                        WITH r, apoc.map.removeKeys(map, ['_originId', '_targetId']) AS fields
+                        SET r = fields
+                        RETURN r",
+                        new { props = props });
+
+                    var records = await cursor.ToListAsync();
+                    ids.AddRange(records.Select(r => r["r"].As<IRelationship>().Id));
+                });
+            }
+
+            return ids.ToArray();
+        }
+
+        public async Task<INode[]> CreateAsync(IEnumerable<MultiNode> multiNodes)
+        {
+            var ids = new List<INode>();
+
             foreach (var grp in multiNodes.GroupBy(m => m.Labels))
             {
                 await Transaction(async t =>
@@ -32,10 +61,29 @@ namespace Bard.Storage.Neo4j.Fra
                     var cursor = await t.RunAsync($@"
                         UNWIND $props AS map
                         CREATE (n{grp.Key})
-                        SET n = map",
-                        new { props = props });
+                        SET n = map
+                        RETURN n",
+                        new { props });
+
+                    var records = await cursor.ToListAsync();
+                    ids.AddRange(records.Select(r => r["n"].As<INode>()));
                 });
             }
+
+            return ids.ToArray();
+        }
+
+        private Dictionary<string, object> GetProperties(Relationship r)
+        {
+            var props = new Dictionary<string, object>();
+
+            props["_originId"] = r.OriginId;
+            props["_targetId"] = r.TargetId;
+
+            foreach (var field in r.Fields)
+                props[field.Name] = field.Value;
+
+            return props;
         }
 
         private Dictionary<string, object> GetProperties(MultiNode multiNode)

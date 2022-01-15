@@ -32,19 +32,18 @@ namespace Bard.CLI
             var graphStorage = InitializeGraphStorage(config.GraphStorage);
             var entries = ParseLexicons(config.Lexicons);
             var pipeline = InitializeAnalysisPipeline(config.Analysis);
-            var multiNodeBuilder = new MultiNodeBuilder();
+            var graphBuilder = new GraphBuilder(graphStorage);
 
             // Cleanup database
             AsyncHelpers.RunSync(() => graphStorage.DeleteAll());
 
             var wordForms = entries
                 .Select(e => pipeline.Analyze(e))
-                .Where(w => w.IsValid);
+                .Where(w => w.IsValid)
+                .Take(config.Lexicons.Limit);
 
-            var multiNodes = wordForms.Select(w => multiNodeBuilder.Build(w)).Take(config.Lexicons.Limit);
-
-            foreach (var batch in multiNodes.Batch(config.GraphStorage.BatchSize))
-                AsyncHelpers.RunSync(() => graphStorage.CreateAsync(batch));
+            foreach (var batch in wordForms.Batch(config.GraphStorage.BatchSize))
+                AsyncHelpers.RunSync(() => graphBuilder.ProcessAsync(batch));
         }
 
         private static Configuration ParseConfig(Options opts)

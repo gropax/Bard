@@ -5,7 +5,7 @@ namespace Bard.Fra.Glaff
 {
     public class GlaffEntry
     {
-        public int Id { get; set; }
+        public int Rank { get; set; }
         public bool OldFashioned { get; set; }
         public string GraphicalForm { get; set; }
 
