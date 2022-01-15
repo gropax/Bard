@@ -64,6 +64,9 @@ namespace Bard.Fra.Analysis
 
             foreach (var wordForm in wordForms)
             {
+                if (wordForm.IsLemma)
+                    _lemmaIdMapping[Tuple.Create(wordForm.GlaffEntry.Lemma, wordForm.GlaffEntry.POS)] = wordFormIdMapping[wordForm.GlaffEntry.Rank];
+
                 lemmaRels.Add(new LemmaRelation(
                     wordFormNodeId: wordFormIdMapping[wordForm.GlaffEntry.Rank],
                     lemma: wordForm.GlaffEntry.Lemma,
