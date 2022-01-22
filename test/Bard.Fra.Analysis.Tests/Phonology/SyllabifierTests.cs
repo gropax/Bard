@@ -7,12 +7,25 @@ using Xunit;
 
 namespace Bard.Fra.Analysis.Phonology.Tests
 {
-    public class SyllabifierTests
+    public class SyllabifierTests : TestBase
     {
 
-        //[InlineData("y.bøʁ.se.lɛbʁ")]
+        [Theory]
+        [InlineData("uR.s5")]
+        public void TestCompute(string phonemes)
+        {
+            var syllables = phonemes.Split('.').Select(s => ParsePhonemes(s));
+            var expected = string.Join(".", syllables.Select(s => string.Join(string.Empty, s)));
+            var input = syllables.SelectMany(s => s)
+                .Select(p => Phonemes.BySymbol(p)).ToArray();
+
+            var result = new Syllabifier().Compute(input).ToArray();
+
+            Assert.Equal(expected, result.Format());
+        }
+
         [Fact]
-        public void TestCompute()
+        public void TestCompute2()
         {
             var syllabifier = new Syllabifier();
 

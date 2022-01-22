@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Bard.Fra.Analysis.Phonology.Tests
 {
-    public class NaivePhonologicalAlignerTests
+    public class NaivePhonologicalAlignerTests : TestBase
     {
         [Theory]
         [InlineData("boutique", "b:b ou:u t:t i:i qu:k e:")]
@@ -286,28 +286,5 @@ namespace Bard.Fra.Analysis.Phonology.Tests
                 yield return (graphemes, phonemes);
             }
         }
-
-        private string[] ParsePhonemes(string phonemesRaw)
-        {
-            var builder = new List<string>();
-
-            foreach (var c in phonemesRaw)
-            {
-                if (_phonemeByChar.TryGetValue(c, out var phoneme))
-                    builder.Add(phoneme);
-                else
-                    builder.Add(c.ToString());
-            }
-
-            return builder.ToArray();
-        }
-
-        private static Dictionary<char, string> _phonemeByChar = new Dictionary<char, string>()
-        {
-            { 'O', "ɔ" }, { 'E', "ɛ" }, { '°', "ə" }, { '2', "ø" }, { '9', "œ" },
-            { '5', "ɛ̃" }, { '1', "œ̃" }, { '@', "ɑ̃" }, { '§', "ɔ̃" }, { '8', "ɥ" },
-            { 'S', "ʃ" }, { 'Z', "ʒ" }, { 'N', "ɲ" }, { 'R', "ʁ" }, { 'x', "χ" },
-            { 'G', "ŋ" }, { 'A', "ɑ" }
-        };
     }
 }
