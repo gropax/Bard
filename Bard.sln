@@ -28,6 +28,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intervals", "src\Intervals\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intervals.Tests", "src\Intervals.Tests\Intervals.Tests.csproj", "{0381110F-497C-446A-A6FB-B42C7644B176}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bard.Fra.Web", "src\Bard.Fra.Web\Bard.Fra.Web.csproj", "{AD19A10F-AC10-4F08-8DFA-0BDCC179AE46}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,10 +76,10 @@ Global
 		{0381110F-497C-446A-A6FB-B42C7644B176}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0381110F-497C-446A-A6FB-B42C7644B176}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0381110F-497C-446A-A6FB-B42C7644B176}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BCEF8B1E-9519-4325-AFCD-77ECBF346BEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BCEF8B1E-9519-4325-AFCD-77ECBF346BEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BCEF8B1E-9519-4325-AFCD-77ECBF346BEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BCEF8B1E-9519-4325-AFCD-77ECBF346BEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD19A10F-AC10-4F08-8DFA-0BDCC179AE46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD19A10F-AC10-4F08-8DFA-0BDCC179AE46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD19A10F-AC10-4F08-8DFA-0BDCC179AE46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD19A10F-AC10-4F08-8DFA-0BDCC179AE46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
