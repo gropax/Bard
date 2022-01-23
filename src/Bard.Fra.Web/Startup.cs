@@ -1,3 +1,4 @@
+using Bard.Storage.Neo4j.Fra;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
@@ -19,7 +20,14 @@ namespace Bard.Fra.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Add(new ServiceDescriptor(typeof(GraphStorage),
+                new GraphStorage(
+                    uri: Configuration["Neo4j:Address"],
+                    user: Configuration["Neo4j:User"],
+                    password: Configuration["Neo4j:Password"])));
+
             services.AddControllersWithViews();
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

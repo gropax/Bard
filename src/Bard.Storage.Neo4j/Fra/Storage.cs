@@ -1,4 +1,5 @@
-﻿using Bard.Storage.Fra;
+﻿using Bard.Contracts.Fra;
+using Bard.Storage.Fra;
 using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,32 @@ namespace Bard.Storage.Neo4j.Fra
         public GraphStorage(string uri, string user, string password)
         {
             _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
+        }
+
+        public async Task<WordForm[]> SearchWordForms(string graphemes, int limit = 10)
+        {
+            return await Transaction(async t =>
+            {
+                var cursor = await t.RunAsync($@"
+                    MATCH (w:WordForm)
+                    WHERE w.graphemes STARTS WITH $graphemes
+                    RETURN w
+                    LIMIT $limit",
+                    new { graphemes, limit });
+
+                var records = await cursor.ToListAsync();
+                return records.Select(r =>
+                {
+                    var node = r["w"].As<INode>();
+                    string graphemes = node["graphemes"].As<string>();
+                    string syllables = null;
+
+                    if (node.Properties.TryGetValue("phon.syllables", out var prop))
+                        syllables = prop.As<string>();
+
+                    return new WordForm(graphemes, syllables);
+                }).ToArray();
+            });
         }
 
         public async Task DeleteAll(int batchSize = 1000)

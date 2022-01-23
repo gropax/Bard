@@ -1,0 +1,1 @@
+{"version":3,"file":"word-forms-service.js","sourceRoot":"","sources":["word-forms-service.ts"],"names":[],"mappings":";;;AAGA;IAEE,0BAAsB,IAAgB;QAAhB,SAAI,GAAJ,IAAI,CAAY;IAAI,CAAC;IAEpC,iCAAM,GAAb,UAAc,MAAc;QAC1B,OAAO,IAAI,CAAC,IAAI,CAAC,GAAG,CAAa,mBAAmB,EAAE,EAAE,MAAM,EAAE,EAAE,CAAC,EAAE,MAAM,EAAE,EAAE,CAAC,CAAC;IACnF,CAAC;IACH,uBAAC;AAAD,CAAC,AAPD,IAOC;AAPY,4CAAgB"}

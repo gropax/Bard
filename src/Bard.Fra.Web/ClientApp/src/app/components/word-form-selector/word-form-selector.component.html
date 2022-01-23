@@ -1,0 +1,23 @@
+<form class="form">
+  <mat-form-field class="full-width" appearance="fill">
+
+    <mat-label>Word form</mat-label>
+    <input #trigger="matAutocompleteTrigger"
+           type="text"
+           placeholder="Pick one"
+           aria-label="Number"
+           matInput
+           [ngModel]="inputText"
+           (ngModelChange)="onChange($event)"
+           [formControl]="myControl"
+           [matAutocomplete]="auto">
+
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)" [displayWith]="displayWith">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+        {{option.graphemes}}
+      </mat-option>
+    </mat-autocomplete>
+
+  </mat-form-field>
+</form>
+
