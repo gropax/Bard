@@ -1,15 +1,19 @@
 import { HttpClient } from "@angular/common/http";
-import { WordForm } from "../models/word-form";
+import { PhonGraphWord, WordForm } from "../models/word-form";
 import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
-export class WordFormsService {
+export class GraphService {
   
   constructor(protected http: HttpClient) { }
 
-  public search(q: string, limit: number) {
-    return this.http.get<WordForm[]>('word-forms/search', { params: { q, limit } });
+  public searchWordForm(q: string, limit: number) {
+    return this.http.get<WordForm[]>('graph/word-forms/search', { params: { q, limit } });
+  }
+
+  public searchPhonGraphWord(q: string, limit: number) {
+    return this.http.get<PhonGraphWord[]>('graph/phon-graph-words/search', { params: { q, limit } });
   }
 }

@@ -18,14 +18,18 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WordFormsPageComponent } from './pages/word-forms-page/word-forms-page.component';
-import { WordFormsService } from './services/word-forms-service';
+import { GraphService } from './services/word-forms-service';
 import { WordFormSelectorComponent } from './components/word-form-selector/word-form-selector.component';
+import { PhonGraphWordSelectorComponent } from './components/phon-graph-word-selector/phon-graph-word-selector.component';
+import { RhymesPageComponent } from './pages/rhymes-page/rhymes-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     WordFormsPageComponent,
-    WordFormSelectorComponent
+    WordFormSelectorComponent,
+    PhonGraphWordSelectorComponent,
+    RhymesPageComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +52,7 @@ import { WordFormSelectorComponent } from './components/word-form-selector/word-
     BrowserAnimationsModule
   ],
   providers: [
-    WordFormsService,
+    GraphService,
   ],
   bootstrap: [AppComponent]
 })

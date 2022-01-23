@@ -18,6 +18,33 @@ namespace Bard.Storage.Neo4j.Fra
             _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
         }
 
+        public async Task<PhonGraphWordDto[]> SearchPhonGraphWords(string graphemes, int limit = 10)
+        {
+            return await Transaction(async t =>
+            {
+                var cursor = await t.RunAsync($@"
+                    MATCH (w:WordForm)-[r:PHONREAL]->(p:PhonSeq)
+                    WHERE
+                        w.graphemes STARTS WITH $graphemes AND
+                        r.is_std = true AND
+                        EXISTS(p.syllables)
+                    RETURN w.graphemes AS graphemes, p.syllables AS syllables, count(w) AS count
+                    ORDER BY graphemes, count DESC
+                    LIMIT $limit",
+                    new { graphemes, limit });
+
+                var records = await cursor.ToListAsync();
+                return records.Select(r =>
+                {
+                    string graphemes = r["graphemes"].As<string>();
+                    string syllables = r["syllables"].As<string>();
+
+                    return new PhonGraphWordDto(graphemes, syllables);
+
+                }).ToArray();
+            });
+        }
+
         public async Task<WordFormDto[]> SearchWordForms(string graphemes, int limit = 10)
         {
             return await Transaction(async t =>

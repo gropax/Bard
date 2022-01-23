@@ -9,20 +9,20 @@ import { tap } from 'rxjs';
 import { concatMap } from 'rxjs';
 import { BehaviorSubject, map } from 'rxjs';
 import { Observable } from 'rxjs';
-import { WordForm } from '../../models/word-form';
+import { PhonGraphWord, WordForm } from '../../models/word-form';
 import { GraphService } from '../../services/word-forms-service';
 
 @Component({
-  selector: 'app-word-form-selector',
-  templateUrl: './word-form-selector.component.html',
-  styleUrls: ['./word-form-selector.component.less']
+  selector: 'app-phon-graph-word-selector',
+  templateUrl: './phon-graph-word-selector.component.html',
+  styleUrls: ['./phon-graph-word-selector.component.less']
 })
-export class WordFormSelectorComponent implements OnInit, AfterViewInit {
+export class PhonGraphWordSelectorComponent implements OnInit, AfterViewInit {
 
   @Output() selected = new EventEmitter();
 
   myControl = new FormControl();
-  filteredOptions: Observable<WordForm[]>;
+  filteredOptions: Observable<PhonGraphWord[]>;
 
   @ViewChild('trigger', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
 
@@ -33,7 +33,7 @@ export class WordFormSelectorComponent implements OnInit, AfterViewInit {
   loading = false;
 
   constructor(
-    private wordFormsService: GraphService) {
+    private graphService: GraphService) {
   }
 
   ngOnInit() {
@@ -51,7 +51,7 @@ export class WordFormSelectorComponent implements OnInit, AfterViewInit {
 
   updateResults(text: string) {
     if (typeof text === 'string')
-      return this.wordFormsService.searchWordForm(text, 7);
+      return this.graphService.searchPhonGraphWord(text, 7);
     else {
       return of([]);
     }

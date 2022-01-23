@@ -12,3 +12,10 @@ export class WordForm {
     public tense: string) {
   }
 }
+
+export class PhonGraphWord {
+  constructor(
+    public graphemes: string,
+    public syllables: string) {
+  }
+}

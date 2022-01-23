@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { RhymesPageComponent } from './pages/rhymes-page/rhymes-page.component';
 import { WordFormsPageComponent } from './pages/word-forms-page/word-forms-page.component';
 
 const routes: Routes = [
@@ -20,6 +21,10 @@ const routes: Routes = [
     //    ]
     //  },
     ],
+  },
+  {
+    path: 'rhymes',
+    component: RhymesPageComponent
   },
 ];
 

@@ -40,4 +40,16 @@ namespace Bard.Contracts.Fra
             Tense = tense;
         }
     }
+
+    public class PhonGraphWordDto
+    {
+        public string Graphemes { get; }
+        public string Syllables { get; }
+
+        public PhonGraphWordDto(string graphemes, string syllables)
+        {
+            Graphemes = graphemes;
+            Syllables = syllables;
+        }
+    }
 }
