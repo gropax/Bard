@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { MatChipsModule } from '@angular/material/chips'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -41,6 +42,7 @@ import { WordFormSelectorComponent } from './components/word-form-selector/word-
     MatAutocompleteModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    MatChipsModule,
 
     AppRoutingModule,
     BrowserAnimationsModule

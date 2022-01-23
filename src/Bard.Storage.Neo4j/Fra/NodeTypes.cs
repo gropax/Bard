@@ -35,6 +35,7 @@ namespace Bard.Storage.Neo4j.Fra
         Gender,
         Person,
         Mood,
+        Tense,
 
         Anomalies,
     }

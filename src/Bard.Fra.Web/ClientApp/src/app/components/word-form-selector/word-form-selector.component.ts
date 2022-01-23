@@ -50,7 +50,7 @@ export class WordFormSelectorComponent implements OnInit, AfterViewInit {
   }
 
   updateResults(text: string) {
-    if (text)
+    if (typeof text === 'string')
       return this.wordFormsService.search(text, 7);
     else {
       return of([]);

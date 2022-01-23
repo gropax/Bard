@@ -81,7 +81,7 @@ namespace Bard.Fra.Analysis
                 label: LABEL_WORD_FORM,
                 fields: GetWordFormNodeFields(wordForm)));
 
-            nodeTypes.Add(new NodeType(label: GetLabel(wordForm.GlaffEntry.POS)));
+            //nodeTypes.Add(new NodeType(label: GetLabel(wordForm.GlaffEntry.POS)));
 
             if (wordForm.IsLemma)
                 nodeTypes.Add(new NodeType(label: LABEL_LEMMA));
@@ -125,18 +125,22 @@ namespace Bard.Fra.Analysis
             //}
 
             fields.Add(new Field(Format(WordFormField.Lemma), entry.Lemma));
+            fields.Add(new Field(Format(WordFormField.POS), entry.POS.ToString()));
 
             if (entry.Number.HasValue)
-                fields.Add(new Field(Format(WordFormField.Number), Format(entry.Number.Value)));
+                fields.Add(new Field(Format(WordFormField.Number), entry.Number.Value.ToString()));
 
             if (entry.Gender.HasValue)
-                fields.Add(new Field(Format(WordFormField.Gender), Format(entry.Gender.Value)));
+                fields.Add(new Field(Format(WordFormField.Gender), entry.Gender.Value.ToString()));
 
             if (entry.Person.HasValue)
-                fields.Add(new Field(Format(WordFormField.Person), Format(entry.Person.Value)));
+                fields.Add(new Field(Format(WordFormField.Person), entry.Person.Value.ToString()));
 
             if (entry.Mood.HasValue)
-                fields.Add(new Field(Format(WordFormField.Mood), Format(entry.Mood.Value)));
+                fields.Add(new Field(Format(WordFormField.Mood), entry.Mood.Value.ToString()));
+
+            if (entry.Tense.HasValue)
+                fields.Add(new Field(Format(WordFormField.Tense), entry.Tense.Value.ToString()));
 
             foreach (var anomaly in wordForm.Anomalies)
                 fields.Add(new Field($"{Format(WordFormField.Anomalies)}.{Format(anomaly.Type)}", true));
@@ -206,6 +210,7 @@ namespace Bard.Fra.Analysis
                 case WordFormField.Gender: return "gram.gender";
                 case WordFormField.Person: return "gram.person";
                 case WordFormField.Mood: return "gram.mood";
+                case WordFormField.Tense: return "gram.tense";
 
                 case WordFormField.Anomalies: return "anomaly";
                 default:

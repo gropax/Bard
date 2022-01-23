@@ -14,7 +14,13 @@
 
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)" [displayWith]="displayWith">
       <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-        {{option.graphemes}}
+        <span class="graphemes">{{option.graphemes}}</span>
+        <span class="badge pos">{{option.pos}}</span>
+        <span class="badge number" *ngIf="option.number">{{option.number}}</span>
+        <span class="badge gender" *ngIf="option.gender">{{option.gender}}</span>
+        <span class="badge person" *ngIf="option.person">{{option.person}}</span>
+        <span class="badge mood" *ngIf="option.mood">{{option.mood}}</span>
+        <span class="badge tense" *ngIf="option.tense">{{option.tense}}</span>
       </mat-option>
     </mat-autocomplete>
 

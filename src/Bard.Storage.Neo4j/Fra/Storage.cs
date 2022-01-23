@@ -18,7 +18,7 @@ namespace Bard.Storage.Neo4j.Fra
             _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
         }
 
-        public async Task<WordForm[]> SearchWordForms(string graphemes, int limit = 10)
+        public async Task<WordFormDto[]> SearchWordForms(string graphemes, int limit = 10)
         {
             return await Transaction(async t =>
             {
@@ -26,6 +26,7 @@ namespace Bard.Storage.Neo4j.Fra
                     MATCH (w:WordForm)
                     WHERE w.graphemes STARTS WITH $graphemes
                     RETURN w
+                    ORDER BY w.graphemes
                     LIMIT $limit",
                     new { graphemes, limit });
 
@@ -33,13 +34,39 @@ namespace Bard.Storage.Neo4j.Fra
                 return records.Select(r =>
                 {
                     var node = r["w"].As<INode>();
-                    string graphemes = node["graphemes"].As<string>();
-                    string syllables = null;
+                    var labels = node.Labels;
 
+                    string graphemes = node["graphemes"].As<string>();
+
+                    string syllables = null;
+                    Number? number = null;
+                    Gender? gender = null;
+                    Person? person = null;
+                    Mood? mood = null;
+                    Tense? tense = null;
+                    
                     if (node.Properties.TryGetValue("phon.syllables", out var prop))
                         syllables = prop.As<string>();
 
-                    return new WordForm(graphemes, syllables);
+                    var pos = Enum.Parse<POS>(node["gram.pos"].As<string>());
+                    
+                    if (node.Properties.TryGetValue("gram.number", out var numberProp))
+                        number = Enum.Parse<Number>(numberProp.As<string>());
+                    
+                    if (node.Properties.TryGetValue("gram.gender", out var genderProp))
+                        gender = Enum.Parse<Gender>(genderProp.As<string>());
+                    
+                    if (node.Properties.TryGetValue("gram.person", out var personProp))
+                        person = Enum.Parse<Person>(personProp.As<string>());
+                    
+                    if (node.Properties.TryGetValue("gram.mood", out var moodProp))
+                        mood = Enum.Parse<Mood>(moodProp.As<string>());
+                    
+                    if (node.Properties.TryGetValue("gram.tense", out var tenseProp))
+                        tense = Enum.Parse<Tense>(tenseProp.As<string>());
+
+                    return new WordFormDto(node.Id, graphemes, syllables, pos, number, gender, person, mood, tense);
+
                 }).ToArray();
             });
         }
