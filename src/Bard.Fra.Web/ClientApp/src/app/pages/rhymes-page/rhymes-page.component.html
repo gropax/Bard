@@ -1,1 +1,2 @@
-<app-phon-graph-word-selector></app-phon-graph-word-selector>
+<app-phon-graph-word-selector (selected)="onWordSelected($event)"></app-phon-graph-word-selector>
+<app-final-rhyme-table [word]="selectedWord"></app-final-rhyme-table>

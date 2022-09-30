@@ -19,3 +19,11 @@ export class PhonGraphWord {
     public syllables: string) {
   }
 }
+
+export class RhymingWords {
+  constructor(
+    public graphemes: string,
+    public wordBeginning: string,
+    public rhyme: string) {
+  }
+}

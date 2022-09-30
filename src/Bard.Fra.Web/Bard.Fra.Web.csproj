@@ -24,6 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\app\data-sources\final-rhyme-data-source.ts" />
+    <None Remove="ClientApp\src\app\models\paginated.ts" />
     <None Remove="ClientApp\src\app\models\word-form.ts" />
     <None Remove="ClientApp\src\app\services\word-forms-service.ts" />
   </ItemGroup>
@@ -33,6 +35,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\app\data-sources\final-rhyme-data-source.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\models\paginated.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\models\word-form.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\word-forms-service.ts" />
   </ItemGroup>

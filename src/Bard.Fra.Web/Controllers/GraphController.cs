@@ -30,5 +30,18 @@ namespace Bard.Fra.Web.Controllers
             var results = await _graphStorage.SearchPhonGraphWords(q, limit);
             return Ok(results);
         }
+
+        [HttpGet("final-rhymes")]
+        public async Task<IActionResult> GetFinalRhymingWords(
+            string graphemes,
+            string phonemes,
+            string filter = null,
+            string sortDir = null,
+            int page = 0,
+            int pageSize = 10)
+        {
+            var results = await _graphStorage.GetFinalRhymingWords(graphemes, phonemes, sortDir, page, pageSize);
+            return Ok(results);
+        }
     }
 }

@@ -45,6 +45,11 @@ namespace Bard.Storage.Neo4j.Fra
             });
         }
 
+        public Task<object> GetFinalRhymingWords(string graphemes, string phonemes, string sortDir, int page, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<WordFormDto[]> SearchWordForms(string graphemes, int limit = 10)
         {
             return await Transaction(async t =>

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PhonGraphWord = exports.WordForm = void 0;
+exports.RhymingWords = exports.PhonGraphWord = exports.WordForm = void 0;
 var WordForm = /** @class */ (function () {
     function WordForm(id, graphemes, syllables, pos, number, gender, person, mood, tense) {
         this.id = id;
@@ -24,4 +24,13 @@ var PhonGraphWord = /** @class */ (function () {
     return PhonGraphWord;
 }());
 exports.PhonGraphWord = PhonGraphWord;
+var RhymingWords = /** @class */ (function () {
+    function RhymingWords(graphemes, wordBeginning, rhyme) {
+        this.graphemes = graphemes;
+        this.wordBeginning = wordBeginning;
+        this.rhyme = rhyme;
+    }
+    return RhymingWords;
+}());
+exports.RhymingWords = RhymingWords;
 //# sourceMappingURL=word-form.js.map

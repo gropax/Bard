@@ -13,6 +13,9 @@ import { MatInputModule } from '@angular/material/input'
 import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatChipsModule } from '@angular/material/chips'
+import { MatTableModule } from '@angular/material/table'
+import { MatPaginatorModule } from '@angular/material/paginator'
+import { MatSortModule } from '@angular/material/sort'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,6 +25,7 @@ import { GraphService } from './services/word-forms-service';
 import { WordFormSelectorComponent } from './components/word-form-selector/word-form-selector.component';
 import { PhonGraphWordSelectorComponent } from './components/phon-graph-word-selector/phon-graph-word-selector.component';
 import { RhymesPageComponent } from './pages/rhymes-page/rhymes-page.component';
+import { FinalRhymeTableComponent } from './pages/rhymes-page/final-rhyme-table/final-rhyme-table.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +33,8 @@ import { RhymesPageComponent } from './pages/rhymes-page/rhymes-page.component';
     WordFormsPageComponent,
     WordFormSelectorComponent,
     PhonGraphWordSelectorComponent,
-    RhymesPageComponent
+    RhymesPageComponent,
+    FinalRhymeTableComponent
   ],
   imports: [
     BrowserModule,
@@ -47,6 +52,9 @@ import { RhymesPageComponent } from './pages/rhymes-page/rhymes-page.component';
     MatInputModule,
     MatProgressSpinnerModule,
     MatChipsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
 
     AppRoutingModule,
     BrowserAnimationsModule
