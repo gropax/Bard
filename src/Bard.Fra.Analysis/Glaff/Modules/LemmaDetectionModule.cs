@@ -1,28 +1,34 @@
 ﻿using Bard.Contracts.Fra;
-using Bard.Fra.Analysis.Phonology;
-using Bard.Fra.Analysis.Glaff;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bard.Fra.Analysis
+namespace Bard.Fra.Analysis.Glaff.Modules
 {
-    public class LemmaDetectionModuleFactory
+    public class LemmaDetectionConfig
     {
-        public class Config
-        {
-            public bool Enabled { get; set; } = true;
-        }
+        public bool Enabled { get; set; } = true;
     }
 
-    public class LemmaDetectionModule : IAnalysisModule
+    public class LemmaDetectionModule : IAnalysisModule<GlaffEntry>
     {
-        public void Analyze(WordForm wordForm)
+        public LemmaDetectionConfig Config { get; }
+
+        public LemmaDetectionModule(LemmaDetectionConfig config)
         {
-            if (IsLemma(wordForm.GlaffEntry))
-                wordForm.IsLemma = true;
+            Config = config;
+        }
+
+        public bool Analyze(AnalysisResult<GlaffEntry> result)
+        {
+            bool isLemma = IsLemma(result.Result);
+
+            result.Result.IsLemma = isLemma;
+
+            bool abort = false;
+            return abort;
         }
 
         public bool IsLemma(GlaffEntry entry)

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bard.Fra.Glaff
+namespace Bard.Fra.Analysis.Glaff
 {
     public static class GlaffParser
     {

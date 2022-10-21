@@ -108,6 +108,12 @@ namespace Bard.Storage.Neo4j.Fra
             await Transaction(async t => await t.RunAsync($@"CALL apoc.periodic.iterate('MATCH (n) RETURN n', 'DETACH DELETE n', {{batchSize: {batchSize}}})"));
         }
 
+        public async Task DeleteLabel(string label, int batchSize = 1000)
+        {
+            await Transaction(async t =>
+                await t.RunAsync($@"CALL apoc.periodic.iterate('MATCH (n:{label}) RETURN n', 'DETACH DELETE n', {{batchSize: {batchSize}}})"));
+        }
+
         public async Task<long[]> CreateAsync(IEnumerable<Relationship> relationships)
         {
             var ids = new List<long>();

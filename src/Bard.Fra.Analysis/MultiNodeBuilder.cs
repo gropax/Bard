@@ -1,4 +1,5 @@
 ﻿using Bard.Contracts.Fra;
+using Bard.Fra.Analysis.Glaff;
 using Bard.Fra.Analysis.Phonology;
 using Bard.Storage.Neo4j;
 using Bard.Storage.Neo4j.Fra;
@@ -10,12 +11,16 @@ using System.Threading.Tasks;
 
 namespace Bard.Fra.Analysis
 {
-    public class MultiNodeBuilder
+    public static class NodeLabel
     {
         public const string LABEL_WORD_FORM = "WordForm";
         public const string LABEL_PHON_SEQ = "PhonSeq";
         public const string LABEL_LEMMA = "Lemma";
+        public const string LABEL_GLAFF_ENTRY = "GlaffEntry";
+    }
 
+    public class MultiNodeBuilder
+    {
         public Relationship Build(long originId, long targetId, PhoneticRealization realization)
         {
             var fields = new List<Field>();
@@ -55,7 +60,7 @@ namespace Bard.Fra.Analysis
             var nodeTypes = new List<NodeType>();
 
             nodeTypes.Add(new NodeType(
-                label: LABEL_PHON_SEQ,
+                label: NodeLabel.LABEL_PHON_SEQ,
                 fields: GetPhoneticSequenceNodeFields(phonSeq)));
 
             return new MultiNode(nodeTypes.ToArray());
@@ -78,13 +83,13 @@ namespace Bard.Fra.Analysis
             var nodeTypes = new List<NodeType>();
 
             nodeTypes.Add(new NodeType(
-                label: LABEL_WORD_FORM,
+                label: NodeLabel.LABEL_WORD_FORM,
                 fields: GetWordFormNodeFields(wordForm)));
 
             //nodeTypes.Add(new NodeType(label: GetLabel(wordForm.GlaffEntry.POS)));
 
             if (wordForm.IsLemma)
-                nodeTypes.Add(new NodeType(label: LABEL_LEMMA));
+                nodeTypes.Add(new NodeType(label: NodeLabel.LABEL_LEMMA));
 
             return new MultiNode(nodeTypes.ToArray());
         }

@@ -9,12 +9,12 @@ namespace Bard.CLI
 {
     class Configuration
     {
-        public LexiconConfig Lexicons { get; set; }
+        public GlaffConfig Lexicons { get; set; }
         public GraphStorageConfig GraphStorage { get; set; }
         public AnalysisPipelineConfig Analysis { get; set; }
     }
 
-    class LexiconConfig
+    class GlaffConfig
     {
         public string Main { get; set; }
         public string Oldies { get; set; }

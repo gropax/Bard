@@ -1,5 +1,5 @@
 ﻿using Bard.Fra.Analysis.Phonology;
-using Bard.Fra.Glaff;
+using Bard.Fra.Analysis.Glaff;
 using Bard.Storage.Neo4j;
 using Bard.Storage.Neo4j.Fra;
 using System;

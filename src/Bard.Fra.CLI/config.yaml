@@ -1,0 +1,22 @@
+﻿graphStorage:
+  address: "bolt://localhost:37687"
+  user: "neo4j"
+  password: "12345"
+  batchSize: 100
+
+dataSources:
+  glaff:
+    source:
+      mainDataset: D:/source/repos/Bard/data/glaff-1.2.2.txt
+      oldiesDataset: D:/source/repos/Bard/data/oldiesSubLexicon.txt
+      batchSize: 100
+      limit: 10000
+    analysis:
+      missingPronunciationDetection:
+        enabled: true
+        abortIfMissing: false
+      acronymDetection:
+        enabled: true
+        abortIfAcronym: false
+      lemmaDetection:
+        enabled: true

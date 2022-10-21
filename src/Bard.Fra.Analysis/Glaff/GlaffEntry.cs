@@ -1,7 +1,7 @@
 ﻿using Bard.Contracts.Fra;
 using System;
 
-namespace Bard.Fra.Glaff
+namespace Bard.Fra.Analysis.Glaff
 {
     public class GlaffEntry
     {
@@ -32,6 +32,11 @@ namespace Bard.Fra.Glaff
         public double FrWacRelativeFormFrequency { get; set; }
         public double FrWacAbsoluteLemmaFrequency { get; set; }
         public double FrWacRelativeLemmaFrequency { get; set; }
+
+
+        public bool? MissingPronunciation { get; set; }
+        public bool? IsAcronym { get; set; }
+        public bool? IsLemma { get; set; }
     }
 
 

@@ -6,11 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="YamlDotNet" Version="11.2.1" />
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="YamlDotNet" Version="12.0.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bard.Contracts\Bard.Contracts.csproj" />
     <ProjectReference Include="..\Bard.Fra.Analysis\Bard.Fra.Analysis.csproj" />
     <ProjectReference Include="..\Bard.Storage.Neo4j\Bard.Storage.Neo4j.csproj" />
     <ProjectReference Include="..\Bard.Utils\Bard.Utils.csproj" />

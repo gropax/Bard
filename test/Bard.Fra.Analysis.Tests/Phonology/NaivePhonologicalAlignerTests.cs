@@ -1,4 +1,4 @@
-﻿using Bard.Fra.Glaff;
+﻿using Bard.Fra.Analysis.Glaff;
 using Intervals;
 using System;
 using System.Collections.Generic;

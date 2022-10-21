@@ -1,5 +1,5 @@
 ﻿using Bard.Fra.Analysis;
-using Bard.Fra.Glaff;
+using Bard.Fra.Analysis.Glaff;
 using Bard.Storage.Neo4j.Fra;
 using Bard.Utils;
 using CommandLine;
@@ -86,7 +86,7 @@ namespace Bard.CLI
             return new AnalysisPipeline(modules.ToArray());
         }
 
-        private static IEnumerable<GlaffEntry> ParseLexicons(LexiconConfig config)
+        private static IEnumerable<GlaffEntry> ParseLexicons(GlaffConfig config)
         {
             if (!string.IsNullOrWhiteSpace(config.Main))
             {
@@ -139,7 +139,7 @@ namespace Bard.CLI
 
         static void HandleParseError(IEnumerable<Error> errs)
         {
-          //handle errors
+            //handle errors
         }
     }
 }
