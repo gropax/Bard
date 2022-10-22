@@ -31,6 +31,9 @@ namespace Bard.Fra.Analysis.Glaff
 
         public LemmaDetectionConfig LemmaDetection { get; set; }
             = new LemmaDetectionConfig();
+
+        public PronunciationCleaningConfig PronunciationCleaning { get; set; }
+            = new PronunciationCleaningConfig();
     }
 
 }

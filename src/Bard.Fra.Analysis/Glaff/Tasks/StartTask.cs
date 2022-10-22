@@ -1,4 +1,5 @@
-﻿using Bard.Storage.Neo4j.Fra;
+﻿using Bard.Storage.Neo4j;
+using Bard.Storage.Neo4j.Fra;
 using Bard.Utils;
 using System;
 using System.Collections.Generic;
@@ -24,18 +25,42 @@ namespace Bard.Fra.Analysis.Glaff
         {
             var analysisPipeline = new AnalysisPipelineFactory(Config.Analysis).Build();
             var entrySerializer = new GlaffEntryNodeSerializer();
+            var pronunSerializer = new PronunciationNodeSerializer();
 
-            var entryNodes = ParseLexicons(Config.Source)
-                .Select(e => analysisPipeline.Analyze(e))
-                .Select(e => entrySerializer.Serialize(e.Result));
+            var entryResults = ParseLexicons(Config.Source)
+                .Select(e => analysisPipeline.Analyze(e));
                 //.Where(w => w.IsValid)
 
             if (Config.Source.Limit.HasValue)
-                entryNodes = entryNodes.Take(Config.Source.Limit.Value);
+                entryResults = entryResults.Take(Config.Source.Limit.Value);
 
-            foreach (var batch in entryNodes.Batch(1000))
+            var entries = entryResults.Select(r => r.Result);
+
+            foreach (var entryBatch in entries.Batch(1000))
             {
-                await GraphStorage.CreateAsync(batch);
+                var entryMultinodes = entryBatch
+                    .Select(e => entrySerializer.Serialize(e));
+
+                var entryNodes = await GraphStorage.CreateAsync(entryMultinodes);
+                var entry2id = Enumerable.Range(0, entryBatch.Length)
+                    .ToDictionary(i => entryBatch[i], i => entryNodes[i].Id);
+
+                var pronunBatch = entryBatch.SelectMany(e => e.Pronunciations).ToArray();
+                var pronunMultinodes = pronunBatch.Select(p => pronunSerializer.Serialize(p));
+
+                var pronunNodes = await GraphStorage.CreateAsync(pronunMultinodes);
+                var pronun2id = Enumerable.Range(0, pronunBatch.Length)
+                    .ToDictionary(i => pronunBatch[i], i => pronunNodes[i].Id);
+
+                var relationships =
+                    from entry in entryBatch
+                    from pronun in entry.Pronunciations
+                    select new Relationship(
+                        originId: entry2id[entry],
+                        targetId: pronun2id[pronun],
+                        label: RelationshipLabel.HAS);
+
+                await GraphStorage.CreateAsync(relationships);
             }
         }
 

@@ -20,3 +20,5 @@ dataSources:
         abortIfAcronym: false
       lemmaDetection:
         enabled: true
+      pronunciationCleaning:
+        enabled: true

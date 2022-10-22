@@ -1,5 +1,7 @@
 ﻿using Bard.Contracts.Fra;
+using Bard.Fra.Analysis.Phonology;
 using System;
+using System.Collections.Generic;
 
 namespace Bard.Fra.Analysis.Glaff
 {
@@ -37,6 +39,14 @@ namespace Bard.Fra.Analysis.Glaff
         public bool? MissingPronunciation { get; set; }
         public bool? IsAcronym { get; set; }
         public bool? IsLemma { get; set; }
+
+        public Pronunciation[] Pronunciations { get; set; }
+        //public ChangeHistory PronunciationHistory { get; set; }
+        //public List<IAnomaly> Anomalies { get; } = new List<IAnomaly>();
+        //public string Pronunciation { get; set; }
+        //public Phoneme[] Phonemes { get; set; }
+        ////public Syllable[] Syllables { get; set; }
+        //public string Alignment { get; set; }
     }
 
 

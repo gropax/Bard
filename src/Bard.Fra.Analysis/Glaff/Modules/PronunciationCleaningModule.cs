@@ -5,27 +5,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bard.Fra.Analysis
+namespace Bard.Fra.Analysis.Glaff.Modules
 {
-    public static class PronunciationCleaningModuleFactory
+    public class PronunciationCleaningConfig
     {
-        public class Config
+        public bool Enabled { get; set; } = true;
+    }
+
+    public class PronunciationCleaningModuleFactory
+    {
+        private PronunciationCleaningConfig Config { get; }
+        public PronunciationCleaningModuleFactory(PronunciationCleaningConfig config)
         {
-            public bool Enabled { get; set; } = true;
+            Config = config;
         }
 
-        public static PronunciationCleaningModule Build(Config config)
+        public PronunciationCleaningModule Build()
         {
             var steps = new List<IPhonologicalAnalyzer>();
 
             steps.Add(new AlignmentAnalyzer());
+
             steps.Add(new FixSyllabationStep());
 
             return new PronunciationCleaningModule(steps.ToArray());
         }
     }
 
-    public class PronunciationCleaningModule : IAnalysisModule
+    public class PronunciationCleaningModule : IAnalysisModule<GlaffEntry>
     {
         private IPhonologicalAnalyzer[] _steps;
 
@@ -34,76 +41,28 @@ namespace Bard.Fra.Analysis
             _steps = steps;
         }
 
-        public void Analyze(WordForm wordForm)
+        public bool Analyze(AnalysisResult<GlaffEntry> result)
         {
+            var entry = result.Result;
+
             // Separate the multiple pronunciations
-            var pronunciations = ParsePronunciations(wordForm);
+            var pronunciations = ParsePronunciations(entry);
 
             // Run each in the pipeline
             foreach (var step in _steps)
-            {
-                var newValues = new List<string>();
-                bool hasChanged = false;
-
                 foreach (var pronunciation in pronunciations)
-                {
-                    if (step.Analyze(pronunciation))
-                    {
-                        hasChanged = true;
-                    }
+                    step.Analyze(pronunciation);
 
-                    newValues.Add(pronunciation.Value);
-                }
+            entry.Pronunciations = pronunciations.ToArray();
 
-                if (hasChanged)
-                    wordForm.PronunciationHistory.AddChange(step.Name, string.Join(";", newValues));
-            }
-
-            // Pick the one with the least anomalies
-            var best = pronunciations
-                .Where(p => p.IsValid)
-                .OrderBy(p => p.Anomalies.Count).FirstOrDefault();
-
-            if (best != null)
-            {
-                wordForm.Pronunciation = best.Value;
-                wordForm.Phonemes = best.Phonemes.Select(p => Phonemes.BySymbol(p)).ToArray();
-                wordForm.Alignment = best.Alignment;
-                wordForm.Anomalies.AddRange(best.Anomalies);
-
-                if (pronunciations.Length > 1)
-                {
-                    wordForm.PronunciationHistory.AddChange("SelectBest", best.Value);
-                    wordForm.Anomalies.Add(new GenericAnomaly(AnomalyType.MultiplePronunciations));
-                }
-            }
+            var abort = false;
+            return abort;
         }
 
-        private Pronunciation[] ParsePronunciations(WordForm wordForm)
+        private Pronunciation[] ParsePronunciations(GlaffEntry entry)
         {
-            var parts = wordForm.Pronunciation.Split(";", StringSplitOptions.RemoveEmptyEntries);
-            return parts.Select(p => new Pronunciation(wordForm.GlaffEntry.GraphicalForm, p)).ToArray();
-        }
-    }
-
-    public class Pronunciation
-    {
-        public string Graphemes { get; }
-        public string Value { get; set; }
-        public string[] Phonemes { get; set; }
-        public string Alignment { get; set; }
-        public ChangeHistory History { get; }
-        public List<IAnomaly> Anomalies { get; } = new List<IAnomaly>();
-
-        public bool IsValid { get; set; } = true;
-        public bool? AlignmentFailed { get; set; }
-        public bool? BadSyllabation { get; set; }
-
-        public Pronunciation(string graphemes, string value)
-        {
-            Graphemes = graphemes;
-            Value = value;
-            History = new ChangeHistory(value);
+            var parts = entry.IpaPronunciations.Split(";", StringSplitOptions.RemoveEmptyEntries);
+            return parts.Select(p => new Pronunciation(entry.GraphicalForm, p)).ToArray();
         }
     }
 
@@ -130,7 +89,10 @@ namespace Bard.Fra.Analysis
             // Determine index of missing syllable separators in the pronunciation string
             var missingDotIndices = FindMissingDots(pronuncValue);
             if (missingDotIndices.Count == 0)
+            {
+                pronunciation.BadSyllabation = true;
                 return false;
+            }
             else
             {
                 var builder = new StringBuilder();
@@ -146,6 +108,8 @@ namespace Bard.Fra.Analysis
 
                 pronunciation.Value = builder.ToString();
                 pronunciation.Anomalies.Add(new GenericAnomaly(AnomalyType.BadSyllabation));
+                pronunciation.History.AddChange(nameof(FixSyllabationStep), pronunciation.Value);
+                pronunciation.BadSyllabation = true;
 
                 return true;
             }
@@ -207,9 +171,12 @@ namespace Bard.Fra.Analysis
             var aligner = new NaivePhonologicalAligner(graphemes, phonemes);
             var alignment = aligner.Compute();
             if (alignment == null)
-                pronunciation.Anomalies.Add(new GenericAnomaly(AnomalyType.AlignmentFailed));
+                pronunciation.AlignmentFailed = true;
             else
+            {
                 pronunciation.Alignment = string.Join(" ", alignment.Select(i => $"{graphemes.Substring(i.Start, i.Length)}:{string.Join(string.Empty, i.Value)}"));
+                pronunciation.AlignmentFailed = false;
+            }
 
             return false;
         }

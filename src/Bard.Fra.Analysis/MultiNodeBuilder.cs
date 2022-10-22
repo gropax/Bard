@@ -11,14 +11,6 @@ using System.Threading.Tasks;
 
 namespace Bard.Fra.Analysis
 {
-    public static class NodeLabel
-    {
-        public const string LABEL_WORD_FORM = "WordForm";
-        public const string LABEL_PHON_SEQ = "PhonSeq";
-        public const string LABEL_LEMMA = "Lemma";
-        public const string LABEL_GLAFF_ENTRY = "GlaffEntry";
-    }
-
     public class MultiNodeBuilder
     {
         public Relationship Build(long originId, long targetId, PhoneticRealization realization)

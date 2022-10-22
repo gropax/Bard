@@ -20,7 +20,7 @@ namespace Bard.Fra.Analysis.Glaff
 
         public async Task Execute()
         {
-            await GraphStorage.DeleteLabel(NodeLabel.LABEL_GLAFF_ENTRY);
+            await GraphStorage.DeleteGlaffContent();
         }
 
     }

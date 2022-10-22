@@ -30,6 +30,9 @@ namespace Bard.Fra.Analysis.Glaff
             if (Config.LemmaDetection.Enabled)
                 modules.Add(new Modules.LemmaDetectionModule(Config.LemmaDetection));
 
+            if (Config.PronunciationCleaning.Enabled)
+                modules.Add(new Modules.PronunciationCleaningModuleFactory(Config.PronunciationCleaning).Build());
+
             return new AnalysisPipeline<GlaffEntry>(modules.ToArray());
         }
     }
