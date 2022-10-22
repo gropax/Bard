@@ -1,5 +1,6 @@
 ﻿using Bard.Contracts.Fra;
 using Bard.Storage.Fra;
+using Bard.Utils;
 using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,41 @@ namespace Bard.Storage.Neo4j.Fra
         {
             _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
         }
+
+        private GlaffEntryNodeSerializer _glaffEntryNodeSerializer = new GlaffEntryNodeSerializer();
+        private PronunciationNodeSerializer _pronunciationNodeSerializer = new PronunciationNodeSerializer();
+
+        public async Task CreateGlaffEntriesAsync(
+            IEnumerable<GlaffEntry> entries)
+        {
+            foreach (var entryBatch in entries.Batch(1000))
+            {
+                var entryMultinodes = entryBatch
+                    .Select(e => _glaffEntryNodeSerializer.Serialize(e));
+
+                var entryNodes = await CreateAsync(entryMultinodes);
+                var entry2id = Enumerable.Range(0, entryBatch.Length)
+                    .ToDictionary(i => entryBatch[i], i => entryNodes[i].Id);
+
+                var pronunBatch = entryBatch.SelectMany(e => e.Pronunciations).ToArray();
+                var pronunMultinodes = pronunBatch.Select(p => _pronunciationNodeSerializer.Serialize(p));
+
+                var pronunNodes = await CreateAsync(pronunMultinodes);
+                var pronun2id = Enumerable.Range(0, pronunBatch.Length)
+                    .ToDictionary(i => pronunBatch[i], i => pronunNodes[i].Id);
+
+                var relationships =
+                    from entry in entryBatch
+                    from pronun in entry.Pronunciations
+                    select new Relationship(
+                        originId: entry2id[entry],
+                        targetId: pronun2id[pronun],
+                        label: RelationshipLabel.HAS);
+
+                await CreateAsync(relationships);
+            }
+        }
+
 
         public async Task<PhonGraphWordDto[]> SearchPhonGraphWords(string graphemes, int limit = 10)
         {

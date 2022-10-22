@@ -1,4 +1,5 @@
-﻿using Bard.Utils;
+﻿using Bard.Contracts.Fra;
+using Bard.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;

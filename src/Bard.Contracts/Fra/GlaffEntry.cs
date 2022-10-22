@@ -1,9 +1,8 @@
 ﻿using Bard.Contracts.Fra;
-using Bard.Fra.Analysis.Phonology;
 using System;
 using System.Collections.Generic;
 
-namespace Bard.Fra.Analysis.Glaff
+namespace Bard.Contracts.Fra
 {
     public class GlaffEntry
     {

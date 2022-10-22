@@ -1,4 +1,5 @@
-﻿using Bard.Fra.Analysis;
+﻿using Bard.Contracts.Fra;
+using Bard.Fra.Analysis;
 using Bard.Fra.Analysis.Glaff.Modules;
 using System;
 using System.Collections.Generic;

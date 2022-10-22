@@ -1,4 +1,5 @@
-﻿using Bard.Fra.Analysis;
+﻿using Bard.Contracts.Fra;
+using Bard.Fra.Analysis;
 using Bard.Fra.Analysis.Glaff;
 using Bard.Storage.Neo4j.Fra;
 using Bard.Utils;

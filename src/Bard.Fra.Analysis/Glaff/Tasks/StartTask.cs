@@ -1,4 +1,5 @@
-﻿using Bard.Storage.Neo4j;
+﻿using Bard.Contracts.Fra;
+using Bard.Storage.Neo4j;
 using Bard.Storage.Neo4j.Fra;
 using Bard.Utils;
 using System;
@@ -36,32 +37,7 @@ namespace Bard.Fra.Analysis.Glaff
 
             var entries = entryResults.Select(r => r.Result);
 
-            foreach (var entryBatch in entries.Batch(1000))
-            {
-                var entryMultinodes = entryBatch
-                    .Select(e => entrySerializer.Serialize(e));
-
-                var entryNodes = await GraphStorage.CreateAsync(entryMultinodes);
-                var entry2id = Enumerable.Range(0, entryBatch.Length)
-                    .ToDictionary(i => entryBatch[i], i => entryNodes[i].Id);
-
-                var pronunBatch = entryBatch.SelectMany(e => e.Pronunciations).ToArray();
-                var pronunMultinodes = pronunBatch.Select(p => pronunSerializer.Serialize(p));
-
-                var pronunNodes = await GraphStorage.CreateAsync(pronunMultinodes);
-                var pronun2id = Enumerable.Range(0, pronunBatch.Length)
-                    .ToDictionary(i => pronunBatch[i], i => pronunNodes[i].Id);
-
-                var relationships =
-                    from entry in entryBatch
-                    from pronun in entry.Pronunciations
-                    select new Relationship(
-                        originId: entry2id[entry],
-                        targetId: pronun2id[pronun],
-                        label: RelationshipLabel.HAS);
-
-                await GraphStorage.CreateAsync(relationships);
-            }
+            await GraphStorage.CreateGlaffEntriesAsync(entries);
         }
 
         private static IEnumerable<GlaffEntry> ParseLexicons(SourceConfig config)

@@ -1,11 +1,10 @@
-﻿using Intervals;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bard.Fra.Analysis.Phonology
+namespace Bard.Contracts.Fra
 {
     public class PhoneticRealization
     {

@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Bard.Contracts\Bard.Contracts.csproj" />
     <ProjectReference Include="..\Bard.Storage\Bard.Storage.csproj" />
+    <ProjectReference Include="..\Bard.Utils\Bard.Utils.csproj" />
   </ItemGroup>
 
 </Project>

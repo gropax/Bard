@@ -1,4 +1,5 @@
-﻿using Bard.Fra.Analysis.Phonology;
+﻿using Bard.Contracts.Fra;
+using Bard.Fra.Analysis.Phonology;
 using Intervals;
 using System;
 using System.Collections.Generic;

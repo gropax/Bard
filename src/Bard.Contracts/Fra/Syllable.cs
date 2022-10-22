@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bard.Fra.Analysis.Phonology
+namespace Bard.Contracts.Fra
 {
     public static class SyllableExtensions
     {
@@ -16,7 +16,7 @@ namespace Bard.Fra.Analysis.Phonology
 
     public class Syllable
     {
-        public static Syllable Null { get; } = new Syllable(Phonology.Phonemes._);
+        public static Syllable Null { get; } = new Syllable(Fra.Phonemes._);
 
         public Phoneme[] Onset { get; }
         public Phoneme Nucleus { get; }

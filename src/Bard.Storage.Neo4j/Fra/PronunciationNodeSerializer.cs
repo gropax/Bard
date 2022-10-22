@@ -1,4 +1,5 @@
-﻿using Bard.Storage.Neo4j;
+﻿using Bard.Contracts.Fra;
+using Bard.Storage.Neo4j;
 using Bard.Storage.Neo4j.Fra;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bard.Fra.Analysis.Glaff
+namespace Bard.Storage.Neo4j.Fra
 {
     public class PronunciationNodeSerializer : INodeSerializer<Pronunciation>
     {
