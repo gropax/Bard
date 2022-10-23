@@ -11,6 +11,7 @@ namespace Bard.CLI
     {
         public GraphStorageConfig GraphStorage { get; set; }
         public DataSourceConfig DataSources { get; set; }
+        public AnalysisConfig Analysis { get; set; }
     }
 
     public class GraphStorageConfig
@@ -26,4 +27,8 @@ namespace Bard.CLI
         public Fra.Analysis.Glaff.Config Glaff { get; set; }
     }
 
+    public class AnalysisConfig
+    {
+        public Fra.Analysis.Words.Config Words { get; set; }
+    }
 }

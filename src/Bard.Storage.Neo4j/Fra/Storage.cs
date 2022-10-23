@@ -22,6 +22,66 @@ namespace Bard.Storage.Neo4j.Fra
         private GlaffEntryNodeSerializer _glaffEntryNodeSerializer = new GlaffEntryNodeSerializer();
         private PronunciationNodeSerializer _pronunciationNodeSerializer = new PronunciationNodeSerializer();
 
+        public async IAsyncEnumerable<LemmaData> GetNounLemmaData()
+        {
+            var session = _driver.AsyncSession();
+            try
+            {
+                var cursor = await session.RunAsync($@"
+                    MATCH (g:{NodeLabel.GLAFF_ENTRY})
+                    WHERE g.`{GlaffEntryNodeSerializer.POS}` = '{POS.Noun}'
+                    OPTIONAL MATCH (g)-[:{RelationshipLabel.HAS}]->(p:{NodeLabel.PRONUNCIATION})
+                    WITH g, collect(p) AS px
+                    WITH
+                        g.`{GlaffEntryNodeSerializer.LEMMA}` AS lemma,
+                        g.`{GlaffEntryNodeSerializer.GENDER}` AS gender,
+                        g.`{GlaffEntryNodeSerializer.NUMBER}` AS number, 
+                        collect({{ entry: g, pronunciations: px }}) AS entries
+                    RETURN lemma, gender, collect(entries) AS entries");
+
+                while (await cursor.FetchAsync())
+                {
+                    var r = cursor.Current;
+                    var entries = r["entries"].As<List<object>>();
+
+                    var wordForms = new List<WordFormData>();
+                    foreach (var wfDataObj in entries)
+                    {
+                        var glaffEntries = new List<GlaffEntry>();
+
+                        var wordFormData = wfDataObj.As<List<object>>();
+                        foreach (var entryData in wordFormData)
+                        {
+                            var dict = entryData.As<Dictionary<string, object>>();
+                            var entry = dict["entry"].As<INode>();
+                            var pronunciations = dict["pronunciations"].As<List<INode>>();
+
+                            var glaffEntry = _glaffEntryNodeSerializer.Deserialize(entry);
+                            glaffEntry.Pronunciations = pronunciations
+                                .Select(p => _pronunciationNodeSerializer.Deserialize(p))
+                                .ToArray();
+
+                            glaffEntries.Add(glaffEntry);
+                        }
+
+                        wordForms.Add(new WordFormData(glaffEntries.ToArray()));
+                    }
+
+                    yield return new LemmaData(wordForms.ToArray());
+                }
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+        }
+
+        private MultiNode ToMultiNode(INode iNode)
+        {
+            throw new NotImplementedException();
+        }
+
+
         public async Task CreateGlaffEntriesAsync(
             IEnumerable<GlaffEntry> entries)
         {
@@ -152,7 +212,7 @@ namespace Bard.Storage.Neo4j.Fra
 
         public async Task DeleteGlaffContent(int batchSize = 1000)
         {
-            var q = $@"CALL apoc.periodic.iterate('MATCH (g:{NodeLabel.LABEL_GLAFF_ENTRY}) OPTIONAL MATCH (g)-[:{RelationshipLabel.HAS}*]->(p:{NodeLabel.LABEL_PRONUNCIATION}) RETURN g, p', 'DETACH DELETE g, p', {{batchSize: {batchSize}}})";
+            var q = $@"CALL apoc.periodic.iterate('MATCH (g:{NodeLabel.GLAFF_ENTRY}) OPTIONAL MATCH (g)-[:{RelationshipLabel.HAS}*]->(p:{NodeLabel.PRONUNCIATION}) RETURN g, p', 'DETACH DELETE g, p', {{batchSize: {batchSize}}})";
             await Transaction(async t => await t.RunAsync(q));
         }
 

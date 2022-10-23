@@ -1,6 +1,7 @@
 ﻿using Bard.Contracts.Fra;
 using Bard.Storage.Neo4j;
 using Bard.Storage.Neo4j.Fra;
+using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Bard.Storage.Neo4j.Fra
 {
-    public class GlaffEntryNodeSerializer : INodeSerializer<GlaffEntry>
+    public class GlaffEntryNodeSerializer : NodeSerializerBase, INodeSerializer<GlaffEntry>
     {
         public const string RANK = "glaff.raw.rank";
         public const string IS_OLD_FASHIONED = "glaff.raw.is_old_fashioned";
@@ -95,20 +96,101 @@ namespace Bard.Storage.Neo4j.Fra
 
 
             nodeTypes.Add(new NodeType(
-                label: NodeLabel.LABEL_GLAFF_ENTRY,
+                label: NodeLabel.GLAFF_ENTRY,
                 fields: fields.ToArray()));
 
             return new MultiNode(nodeTypes.ToArray());
         }
 
-        public GlaffEntry Deserialize(MultiNode node)
+        public GlaffEntry Deserialize(INode node)
         {
-            throw new NotImplementedException();
-        }
+            EnsureHasLabel(node, NodeLabel.GLAFF_ENTRY);
 
-        protected Field GetField<T>(string fieldName, T value) where T : Enum
-        {
-            return new Field(fieldName, value.ToString());
+            var rank = node[RANK].As<int>();
+            var oldFashioned = node[IS_OLD_FASHIONED].As<bool>();
+            var graphicalForm = node[GRAPHICAL_FORM].As<string>();
+            var morphoSyntax = node[MORPHO_SYNTAX].As<string>();
+            var pos = Enum.Parse<POS>(node[POS].As<string>());
+
+            Person? person = null;
+            if (node.Properties.TryGetValue(PERSON, out var personObj))
+                person = Enum.Parse<Person>(personObj.As<string>());
+
+            Gender? gender = null;
+            if (node.Properties.TryGetValue(PERSON, out var genderObj))
+                gender = Enum.Parse<Gender>(genderObj.As<string>());
+
+            Number? number = null;
+            if (node.Properties.TryGetValue(PERSON, out var numberObj))
+                number = Enum.Parse<Number>(numberObj.As<string>());
+
+            Mood? mood = null;
+            if (node.Properties.TryGetValue(PERSON, out var moodObj))
+                mood = Enum.Parse<Mood>(moodObj.As<string>());
+
+            Tense? tense = null;
+            if (node.Properties.TryGetValue(PERSON, out var tenseObj))
+                tense = Enum.Parse<Tense>(tenseObj.As<string>());
+
+            var lemma = node[LEMMA].As<string>();
+            var ipaPronunciations = node[IPA_PRONUNCIATIONS].As<string>();
+            var sampaPronunciations = node[SAMPA_PRONUNCIATIONS].As<string>();
+            var frantexAbsFormFreq = node[FRANTEX_ABS_FORM_FREQ].As<int>();
+            var frantexRelFormFreq = node[FRANTEX_REL_FORM_FREQ].As<int>();
+            var frantexAbsLemmaFreq = node[FRANTEX_ABS_LEMMA_FREQ].As<int>();
+            var frantexRelLemmaFreq = node[FRANTEX_REL_LEMMA_FREQ].As<int>();
+            var lm10AbsFormFreq = node[LM10_ABS_FORM_FREQ].As<int>();
+            var lm10RelFormFreq = node[LM10_REL_FORM_FREQ].As<int>();
+            var lm10AbsLemmaFreq = node[LM10_ABS_LEMMA_FREQ].As<int>();
+            var lm10RelLemmaFreq = node[LM10_REL_LEMMA_FREQ].As<int>();
+            var frwacAbsFormFreq = node[FRWAC_ABS_FORM_FREQ].As<int>();
+            var frwacRelFormFreq = node[FRWAC_REL_FORM_FREQ].As<int>();
+            var frwacAbsLemmaFreq = node[FRWAC_ABS_LEMMA_FREQ].As<int>();
+            var frwacRelLemmaFreq = node[FRWAC_REL_LEMMA_FREQ].As<int>();
+
+            bool? missingPronunciation = null;
+            if (node.Properties.TryGetValue(MISSING_PRONUNCIATION, out object missingPronunciationObj))
+                missingPronunciation = missingPronunciationObj.As<bool>();
+
+            bool? isAcronym = null;
+            if (node.Properties.TryGetValue(IS_ACRONYM, out object isAcronymObj))
+                isAcronym = isAcronymObj.As<bool>();
+
+            bool? isLemma = null;
+            if (node.Properties.TryGetValue(IS_LEMMA, out object isLemmaObj))
+                isLemma = isLemmaObj.As<bool>();
+
+            return new GlaffEntry()
+            {
+                Rank = rank,
+                OldFashioned = oldFashioned,
+                GraphicalForm = graphicalForm,
+                MorphoSyntax = morphoSyntax,
+                POS = pos,
+                Person = person,
+                Gender = gender,
+                Number = number,
+                Mood = mood,
+                Tense = tense,
+                Lemma = lemma,
+                IpaPronunciations = ipaPronunciations,
+                SampaPronunciations = sampaPronunciations,
+                FrantexAbsoluteFormFrequency = frantexAbsFormFreq,
+                FrantexRelativeFormFrequency = frantexRelFormFreq,
+                FrantexAbsoluteLemmaFrequency = frantexAbsLemmaFreq,
+                FrantexRelativeLemmaFrequency = frantexRelLemmaFreq,
+                LM10AbsoluteFormFrequency = lm10AbsFormFreq,
+                LM10RelativeFormFrequency = lm10RelFormFreq,
+                LM10AbsoluteLemmaFrequency = lm10AbsLemmaFreq,
+                LM10RelativeLemmaFrequency = lm10RelLemmaFreq,
+                FrWacAbsoluteFormFrequency = frwacAbsFormFreq,
+                FrWacRelativeFormFrequency = frwacRelFormFreq,
+                FrWacAbsoluteLemmaFrequency = frwacAbsLemmaFreq,
+                FrWacRelativeLemmaFrequency = frwacRelLemmaFreq,
+                MissingPronunciation = missingPronunciation,
+                IsAcronym = isAcronym,
+                IsLemma = isLemma,
+            };
         }
     }
 }

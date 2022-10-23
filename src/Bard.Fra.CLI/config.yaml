@@ -22,3 +22,8 @@ dataSources:
         enabled: true
       pronunciationCleaning:
         enabled: true
+
+analysis:
+  words:
+    nouns:
+      enabled: true

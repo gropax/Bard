@@ -52,7 +52,7 @@ namespace Bard.Fra.Analysis
             var nodeTypes = new List<NodeType>();
 
             nodeTypes.Add(new NodeType(
-                label: NodeLabel.LABEL_PHON_SEQ,
+                label: NodeLabel.PHONETIC_SEQUENCE,
                 fields: GetPhoneticSequenceNodeFields(phonSeq)));
 
             return new MultiNode(nodeTypes.ToArray());
@@ -75,13 +75,13 @@ namespace Bard.Fra.Analysis
             var nodeTypes = new List<NodeType>();
 
             nodeTypes.Add(new NodeType(
-                label: NodeLabel.LABEL_WORD_FORM,
+                label: NodeLabel.WORD_FORM,
                 fields: GetWordFormNodeFields(wordForm)));
 
             //nodeTypes.Add(new NodeType(label: GetLabel(wordForm.GlaffEntry.POS)));
 
             if (wordForm.IsLemma)
-                nodeTypes.Add(new NodeType(label: NodeLabel.LABEL_LEMMA));
+                nodeTypes.Add(new NodeType(label: NodeLabel.LEMMA));
 
             return new MultiNode(nodeTypes.ToArray());
         }

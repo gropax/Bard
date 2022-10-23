@@ -2,7 +2,7 @@
   "profiles": {
     "Bard.Fra.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "start Glaff -c \"D:/source/repos/Bard/src/Bard.Fra.CLI/config.yaml\""
+      "commandLineArgs": "start Nouns -c \"D:/source/repos/Bard/src/Bard.Fra.CLI/config.yaml\""
     }
   }
 }

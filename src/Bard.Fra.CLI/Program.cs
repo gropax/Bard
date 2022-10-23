@@ -44,6 +44,8 @@ namespace Bard.CLI
         enum TaskId
         {
             Glaff,
+            Words,
+                Nouns,
         }
 
         static void Main(string[] args)
@@ -79,6 +81,12 @@ namespace Bard.CLI
                 await new CleanTask(config.DataSources.Glaff, graphStorage).Execute();
                 await new StartTask(config.DataSources.Glaff, graphStorage).Execute();
             }
+
+            if (tasks.Contains(TaskId.Nouns) || tasks.Contains(TaskId.Words))
+            {
+                await new Fra.Analysis.Words.Nouns.CleanTask(graphStorage).Execute();
+                await new Fra.Analysis.Words.Nouns.StartTask(config.Analysis.Words.Nouns, graphStorage).Execute();
+            }
         }
 
         static void CleanCommand(CleanOptions opts)
@@ -95,6 +103,9 @@ namespace Bard.CLI
 
             if (tasks.Contains(TaskId.Glaff))
                 await new CleanTask(config.DataSources.Glaff, graphStorage).Execute();
+
+            if (tasks.Contains(TaskId.Nouns) || tasks.Contains(TaskId.Words))
+                await new Fra.Analysis.Words.Nouns.CleanTask(graphStorage).Execute();
         }
 
         static List<TaskId> ParseTaskIds(string tasks)

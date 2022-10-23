@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Neo4j.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,6 @@ namespace Bard.Storage.Neo4j
     public interface INodeSerializer<T>
     {
         MultiNode Serialize(T item);
-        T Deserialize(MultiNode node);
+        T Deserialize(INode node);
     }
 }

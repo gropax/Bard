@@ -1,6 +1,7 @@
 ﻿using Bard.Contracts.Fra;
 using Bard.Storage.Neo4j;
 using Bard.Storage.Neo4j.Fra;
+using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Bard.Storage.Neo4j.Fra
 {
-    public class PronunciationNodeSerializer : INodeSerializer<Pronunciation>
+    public class PronunciationNodeSerializer : NodeSerializerBase, INodeSerializer<Pronunciation>
     {
         public const string GRAPHICAL_FORM = "pronun.raw.graphical_form";
         public const string ORIGINAL_VALUE = "pronun.raw.original_value";
@@ -38,21 +39,43 @@ namespace Bard.Storage.Neo4j.Fra
 
 
             nodeTypes.Add(new NodeType(
-                label: NodeLabel.LABEL_PRONUNCIATION,
+                label: NodeLabel.PRONUNCIATION,
                 fields: fields.ToArray()));
 
 
             return new MultiNode(nodeTypes.ToArray());
         }
 
-        public Pronunciation Deserialize(MultiNode node)
+        public Pronunciation Deserialize(INode node)
         {
-            throw new NotImplementedException();
-        }
+            EnsureHasLabel(node, NodeLabel.PRONUNCIATION);
 
-        protected Field GetField<T>(string fieldName, T value) where T : Enum
-        {
-            return new Field(fieldName, value.ToString());
+            var graphicalForm = node[GRAPHICAL_FORM].As<string>();
+            var finalValue = node[FINAL_VALUE].As<string>();
+
+            string phonemes = null;
+            if (node.Properties.TryGetValue(PHONEMES, out var phonemesObj))
+                phonemes = phonemesObj.As<string>();
+
+            string alignment = null;
+            if (node.Properties.TryGetValue(ALIGNMENT, out var alignmentObj))
+                alignment = alignmentObj.As<string>();
+
+            bool isValid = node[IS_VALID].As<bool>();
+
+            //var originalValue = node[ORIGINAL_VALUE].As<string>();
+            //var changeHistory = node[CHANGE_HISTORY].As<string>();
+            //var anomalyCount = node[ANOMALY_COUNT].As<int>();
+            //var anomalies = node[ANOMALIES].As<string>();
+
+            return new Pronunciation()
+            {
+                Graphemes = graphicalForm,
+                Value = finalValue,
+                Phonemes = phonemes.Split('.'),
+                Alignment = alignment,
+                IsValid = isValid,
+            };
         }
     }
 }

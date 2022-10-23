@@ -13,11 +13,15 @@ namespace Bard.Storage.Neo4j.Fra
 
     public static class NodeLabel
     {
-        public const string LABEL_WORD_FORM = "WordForm";
-        public const string LABEL_PHON_SEQ = "PhonSeq";
-        public const string LABEL_LEMMA = "Lemma";
-        public const string LABEL_GLAFF_ENTRY = "GlaffEntry";
-        public const string LABEL_PRONUNCIATION = "Pronun";
+        public const string GLAFF_ENTRY = "GlaffEntry";
+        public const string PRONUNCIATION = "Pronun";
+
+        public const string LEMMA = "Lemma";
+        public const string WORD_FORM = "WordForm";
+
+        public const string NOUN = "Noun";
+
+        public const string PHONETIC_SEQUENCE = "PhonSeq";
     }
 
 }

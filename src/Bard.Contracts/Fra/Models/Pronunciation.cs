@@ -8,7 +8,7 @@ namespace Bard.Contracts.Fra
 {
     public class Pronunciation
     {
-        public string Graphemes { get; }
+        public string Graphemes { get; set; }
         public string Value { get; set; }
         public string[] Phonemes { get; set; }
         public string Alignment { get; set; }
@@ -19,6 +19,7 @@ namespace Bard.Contracts.Fra
         public bool? AlignmentFailed { get; set; }
         public bool? BadSyllabation { get; set; }
 
+        public Pronunciation() { }
         public Pronunciation(string graphemes, string value)
         {
             Graphemes = graphemes;
