@@ -8,6 +8,8 @@ namespace Bard.Contracts.Fra
 {
     public class Pronunciation
     {
+        public long? Id { get; set; }
+
         public string Graphemes { get; set; }
         public string Value { get; set; }
         public string[] Phonemes { get; set; }

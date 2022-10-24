@@ -1,6 +1,7 @@
 ﻿using Bard.Contracts.Fra;
 using Bard.Fra.Analysis;
 using Bard.Fra.Analysis.Glaff.Modules;
+using Bard.Fra.Analysis.Words.Nouns.Modules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,32 +10,29 @@ using System.Threading.Tasks;
 
 namespace Bard.Fra.Analysis.Words.Nouns
 {
-    //public class AnalysisPipelineFactory
-    //{
-    //    public AnalysisConfig Config { get; }
+    public class AnalysisConfig
+    {
+        public WordBuildingConfig WordBuilding { get; set; }
+            = new WordBuildingConfig();
+    }
 
-    //    public AnalysisPipelineFactory(AnalysisConfig config)
-    //    {
-    //        Config = config;
-    //    }
+    public class AnalysisPipelineFactory
+    {
+        public AnalysisConfig Config { get; }
 
-    //    public AnalysisPipeline<GlaffEntry> Build()
-    //    {
-    //        var modules = new List<IAnalysisModule<GlaffEntry>>();
+        public AnalysisPipelineFactory(AnalysisConfig config)
+        {
+            Config = config;
+        }
 
-    //        if (Config.MissingPronunciationDetection.Enabled)
-    //            modules.Add(new MissingPronunciationDetectionModule(Config.MissingPronunciationDetection));
+        public AnalysisPipeline<LemmaData<NounLemma, NounForm>> Build()
+        {
+            var modules = new List<IAnalysisModule<LemmaData<NounLemma, NounForm>>>();
 
-    //        if (Config.AcronymDetection.Enabled)
-    //            modules.Add(new AcronymDetectionModule(Config.AcronymDetection));
+            if (Config.WordBuilding.Enabled)
+                modules.Add(new WordBuildingModule(Config.WordBuilding));
 
-    //        if (Config.LemmaDetection.Enabled)
-    //            modules.Add(new Modules.LemmaDetectionModule(Config.LemmaDetection));
-
-    //        if (Config.PronunciationCleaning.Enabled)
-    //            modules.Add(new Modules.PronunciationCleaningModuleFactory(Config.PronunciationCleaning).Build());
-
-    //        return new AnalysisPipeline<GlaffEntry>(modules.ToArray());
-    //    }
-    //}
+            return new AnalysisPipeline<LemmaData<NounLemma, NounForm>>(modules.ToArray());
+        }
+    }
 }

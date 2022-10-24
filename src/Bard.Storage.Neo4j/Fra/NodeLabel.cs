@@ -9,6 +9,8 @@ namespace Bard.Storage.Neo4j.Fra
     public static class RelationshipLabel
     {
         public const string HAS = "HAS";
+        public const string LEMMA = "LEMMA";
+        public const string SOURCE = "SOURCE";
     }
 
     public static class NodeLabel

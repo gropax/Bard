@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace Bard.Contracts.Fra
 {
-    public abstract class Lemma
+    public interface ILemma
     {
+        long? Id { get; }
+        abstract POS POS { get; }
+        string GraphicalForm { get; }
+    }
+
+    public abstract class Lemma : ILemma
+    {
+        public long? Id { get; set; }
+
         public abstract POS POS { get; }
         public string GraphicalForm { get; set; }
     }

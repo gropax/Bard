@@ -104,7 +104,7 @@ namespace Bard.Storage.Neo4j.Fra
 
         public GlaffEntry Deserialize(INode node)
         {
-            EnsureHasLabel(node, NodeLabel.GLAFF_ENTRY);
+            EnsureHasLabels(node, NodeLabel.GLAFF_ENTRY);
 
             var rank = node[RANK].As<int>();
             var oldFashioned = node[IS_OLD_FASHIONED].As<bool>();
@@ -117,19 +117,19 @@ namespace Bard.Storage.Neo4j.Fra
                 person = Enum.Parse<Person>(personObj.As<string>());
 
             Gender? gender = null;
-            if (node.Properties.TryGetValue(PERSON, out var genderObj))
+            if (node.Properties.TryGetValue(GENDER, out var genderObj))
                 gender = Enum.Parse<Gender>(genderObj.As<string>());
 
             Number? number = null;
-            if (node.Properties.TryGetValue(PERSON, out var numberObj))
+            if (node.Properties.TryGetValue(NUMBER, out var numberObj))
                 number = Enum.Parse<Number>(numberObj.As<string>());
 
             Mood? mood = null;
-            if (node.Properties.TryGetValue(PERSON, out var moodObj))
+            if (node.Properties.TryGetValue(MOOD, out var moodObj))
                 mood = Enum.Parse<Mood>(moodObj.As<string>());
 
             Tense? tense = null;
-            if (node.Properties.TryGetValue(PERSON, out var tenseObj))
+            if (node.Properties.TryGetValue(TENSE, out var tenseObj))
                 tense = Enum.Parse<Tense>(tenseObj.As<string>());
 
             var lemma = node[LEMMA].As<string>();
@@ -162,6 +162,7 @@ namespace Bard.Storage.Neo4j.Fra
 
             return new GlaffEntry()
             {
+                Id = node.Id,
                 Rank = rank,
                 OldFashioned = oldFashioned,
                 GraphicalForm = graphicalForm,

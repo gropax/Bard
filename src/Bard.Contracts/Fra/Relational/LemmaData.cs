@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace Bard.Contracts.Fra
 {
-    public class LemmaData
+    public class LemmaData<TLemma, TWordForm>
+        where TLemma : ILemma
+        where TWordForm : IWordForm
     {
-        public WordFormData[] WordForms { get; }
+        public WordFormData<TWordForm>[] WordForms { get; }
+        public TLemma Lemma { get; set; }
 
-        public LemmaData(WordFormData[] wordForms)
+        public LemmaData(WordFormData<TWordForm>[] wordForms)
         {
             WordForms = wordForms;
         }

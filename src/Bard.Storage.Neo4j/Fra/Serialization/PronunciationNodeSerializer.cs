@@ -48,7 +48,7 @@ namespace Bard.Storage.Neo4j.Fra
 
         public Pronunciation Deserialize(INode node)
         {
-            EnsureHasLabel(node, NodeLabel.PRONUNCIATION);
+            EnsureHasLabels(node, NodeLabel.PRONUNCIATION);
 
             var graphicalForm = node[GRAPHICAL_FORM].As<string>();
             var finalValue = node[FINAL_VALUE].As<string>();
@@ -70,6 +70,7 @@ namespace Bard.Storage.Neo4j.Fra
 
             return new Pronunciation()
             {
+                Id = node.Id,
                 Graphemes = graphicalForm,
                 Value = finalValue,
                 Phonemes = phonemes.Split('.'),

@@ -24,11 +24,26 @@ namespace Bard.Fra.Analysis.Words.Nouns
 
         public async Task Execute()
         {
-            //var analysisPipeline = new AnalysisPipelineFactory(Config.Analysis).Build();
+            var analysisPipeline = new AnalysisPipelineFactory(Config.Analysis).Build();
 
-            await foreach (var lemmaData in GraphStorage.GetNounLemmaData())
+            var lemmaData = GraphStorage.GetNounLemmaData();
+            var processed = Analyze(analysisPipeline, lemmaData);
+            var batches = processed.Batch(100);
+
+            await foreach (var batch in batches)
             {
-                Console.WriteLine("lemma");
+                await GraphStorage.CreateNounsAsync(batch);
+            }
+        }
+
+        private async IAsyncEnumerable<LemmaData<NounLemma, NounForm>> Analyze(
+            AnalysisPipeline<LemmaData<NounLemma, NounForm>> analysisPipeline,
+            IAsyncEnumerable<LemmaData<NounLemma, NounForm>> lemmaData)
+        {
+            await foreach (var lemma in lemmaData)
+            {
+                analysisPipeline.Analyze(lemma);
+                yield return lemma;
             }
         }
     }

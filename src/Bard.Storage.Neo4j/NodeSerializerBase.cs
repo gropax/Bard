@@ -14,7 +14,7 @@ namespace Bard.Storage.Neo4j
             return new Field(fieldName, value.ToString());
         }
 
-        protected void EnsureHasLabel(INode node, params string[] labels)
+        protected void EnsureHasLabels(INode node, params string[] labels)
         {
             foreach (var label in labels)
             {
@@ -24,6 +24,15 @@ namespace Bard.Storage.Neo4j
                     throw new Exception($"Node should have label [{label}] but has [{nodeLabels}].");
                 }
             }
+        }
+
+        protected void EnsureHasProperty(INode node, string prop, object expectedValue)
+        {
+            if (!node.Properties.TryGetValue(prop, out var value))
+                throw new Exception($"Node should have property [{prop}].");
+
+            if (value != expectedValue)
+                throw new Exception($"Node property [{prop}] should be [{expectedValue}] but was [{value}].");
         }
     }
 }

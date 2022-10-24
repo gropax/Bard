@@ -21,8 +21,10 @@ namespace Bard.Storage.Neo4j.Fra
 
         private GlaffEntryNodeSerializer _glaffEntryNodeSerializer = new GlaffEntryNodeSerializer();
         private PronunciationNodeSerializer _pronunciationNodeSerializer = new PronunciationNodeSerializer();
+        private NounLemmaNodeSerializer _nounLemmaNodeSerializer = new NounLemmaNodeSerializer();
+        private NounFormNodeSerializer _nounFormNodeSerializer = new NounFormNodeSerializer();
 
-        public async IAsyncEnumerable<LemmaData> GetNounLemmaData()
+        public async IAsyncEnumerable<LemmaData<NounLemma, NounForm>> GetNounLemmaData()
         {
             var session = _driver.AsyncSession();
             try
@@ -44,7 +46,7 @@ namespace Bard.Storage.Neo4j.Fra
                     var r = cursor.Current;
                     var entries = r["entries"].As<List<object>>();
 
-                    var wordForms = new List<WordFormData>();
+                    var wordForms = new List<WordFormData<NounForm>>();
                     foreach (var wfDataObj in entries)
                     {
                         var glaffEntries = new List<GlaffEntry>();
@@ -64,10 +66,10 @@ namespace Bard.Storage.Neo4j.Fra
                             glaffEntries.Add(glaffEntry);
                         }
 
-                        wordForms.Add(new WordFormData(glaffEntries.ToArray()));
+                        wordForms.Add(new WordFormData<NounForm>(glaffEntries.ToArray()));
                     }
 
-                    yield return new LemmaData(wordForms.ToArray());
+                    yield return new LemmaData<NounLemma, NounForm>(wordForms.ToArray());
                 }
             }
             finally
@@ -76,11 +78,63 @@ namespace Bard.Storage.Neo4j.Fra
             }
         }
 
-        private MultiNode ToMultiNode(INode iNode)
-        {
-            throw new NotImplementedException();
-        }
 
+        public async Task CreateNounsAsync(
+            IEnumerable<LemmaData<NounLemma, NounForm>> nouns)
+        {
+            foreach (var batch in nouns.Batch(1000))
+            {
+                var lemmaMultiNodes = batch
+                    .Select(e => _nounLemmaNodeSerializer.Serialize(e.Lemma));
+
+                var lemmaNodes = await CreateAsync(lemmaMultiNodes);
+                var lemma2Id = Enumerable.Range(0, batch.Length)
+                    .ToDictionary(i => batch[i].Lemma, i => lemmaNodes[i].Id);
+
+                var formBatch = batch
+                    .SelectMany(e => e.WordForms)
+                    .Select(f => f.WordForm)
+                    .ToArray();
+
+                var formMultiNodes = formBatch.Select(p => _nounFormNodeSerializer.Serialize(p));
+
+                var formNodes = await CreateAsync(formMultiNodes);
+                var form2Id = Enumerable.Range(0, formBatch.Length)
+                    .ToDictionary(i => formBatch[i], i => formNodes[i].Id);
+
+                var lemmaRels =
+                    from lemmaData in batch
+                    from wordForm in lemmaData.WordForms
+                    select new Relationship(
+                        originId: form2Id[wordForm.WordForm],
+                        targetId: lemma2Id[lemmaData.Lemma],
+                        label: RelationshipLabel.LEMMA);
+
+                await CreateAsync(lemmaRels);
+
+                var pronunciationRels =
+                    from lemmaData in batch
+                    from wordForm in lemmaData.WordForms
+                    from pronunciation in wordForm.Pronunciations
+                    select new Relationship(
+                        originId: form2Id[wordForm.WordForm],
+                        targetId: pronunciation.Id.Value,
+                        label: RelationshipLabel.HAS);
+
+                await CreateAsync(pronunciationRels);
+
+                var glaffEntryRels =
+                    from lemmaData in batch
+                    from wordForm in lemmaData.WordForms
+                    from glaffEntry in wordForm.GlaffEntries
+                    select new Relationship(
+                        originId: form2Id[wordForm.WordForm],
+                        targetId: glaffEntry.Id.Value,
+                        label: RelationshipLabel.SOURCE);
+
+                await CreateAsync(glaffEntryRels);
+            }
+        }
 
         public async Task CreateGlaffEntriesAsync(
             IEnumerable<GlaffEntry> entries)

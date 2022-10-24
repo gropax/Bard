@@ -9,5 +9,6 @@ namespace Bard.Fra.Analysis.Words.Nouns
     public class Config
     {
         public bool Enabled { get; set; } = true;
+        public AnalysisConfig Analysis { get; set; } = new AnalysisConfig();
     }
 }

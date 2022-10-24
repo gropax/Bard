@@ -6,6 +6,8 @@ namespace Bard.Contracts.Fra
 {
     public class GlaffEntry
     {
+        public long? Id { get; set; }
+
         public int Rank { get; set; }
         public bool OldFashioned { get; set; }
         public string GraphicalForm { get; set; }
