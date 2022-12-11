@@ -43,10 +43,11 @@ namespace Bard.CLI
 
         enum TaskId
         {
-            Glaff,
-            Words,
-                Nouns,
-            Phonology,
+            All,
+                Glaff,
+                Words,
+                    Nouns,
+                Phonology,
         }
 
         static void Main(string[] args)
@@ -77,19 +78,19 @@ namespace Bard.CLI
 
             var graphStorage = GetGraphStorage(config.GraphStorage);
 
-            if (tasks.Contains(TaskId.Glaff))
+            if (tasks.Contains(TaskId.Glaff) || tasks.Contains(TaskId.All))
             {
                 await new CleanTask(config.DataSources.Glaff, graphStorage).Execute();
                 await new StartTask(config.DataSources.Glaff, graphStorage).Execute();
             }
 
-            if (tasks.Contains(TaskId.Nouns) || tasks.Contains(TaskId.Words))
+            if (tasks.Contains(TaskId.Nouns) || tasks.Contains(TaskId.Words) || tasks.Contains(TaskId.All))
             {
                 await new Fra.Analysis.Words.Nouns.CleanTask(graphStorage).Execute();
                 await new Fra.Analysis.Words.Nouns.StartTask(config.Analysis.Words.Nouns, graphStorage).Execute();
             }
 
-            if (tasks.Contains(TaskId.Phonology))
+            if (tasks.Contains(TaskId.Phonology) || tasks.Contains(TaskId.All))
             {
                 await new Fra.Analysis.Phonology.CleanTask(graphStorage).Execute();
                 await new Fra.Analysis.Phonology.StartTask(config.Analysis.Phonology, graphStorage).Execute();

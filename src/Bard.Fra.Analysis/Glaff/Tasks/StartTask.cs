@@ -28,9 +28,12 @@ namespace Bard.Fra.Analysis.Glaff
             var entrySerializer = new GlaffEntryNodeSerializer();
             var pronunSerializer = new PronunciationNodeSerializer();
 
-            var entryResults = ParseLexicons(Config.Source)
-                .Select(e => analysisPipeline.Analyze(e));
-                //.Where(w => w.IsValid)
+            var rawEntries = ParseLexicons(Config.Source);
+
+            if (Config.Source.Skip.HasValue)
+                rawEntries = rawEntries.Skip(Config.Source.Skip.Value);
+
+            var entryResults = rawEntries.Select(e => analysisPipeline.Analyze(e));
 
             if (Config.Source.Limit.HasValue)
                 entryResults = entryResults.Take(Config.Source.Limit.Value);

@@ -24,7 +24,8 @@ namespace Bard.Fra.Analysis.Glaff.Modules
 
         public bool Analyze(AnalysisResult<GlaffEntry> result)
         {
-            bool isMissing = string.IsNullOrWhiteSpace(result.Result.IpaPronunciations);
+            var parts = result.Result.IpaPronunciations.Split(',', StringSplitOptions.TrimEntries);
+            bool isMissing = parts.Length == 0;
 
             result.Result.MissingPronunciation = isMissing;
 

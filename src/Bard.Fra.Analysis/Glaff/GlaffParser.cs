@@ -81,7 +81,7 @@ namespace Bard.Fra.Analysis.Glaff
                         GraphicalForm = columns[0],
                         MorphoSyntax = columns[1],
                         Lemma = columns[2],
-                        IpaPronunciations = columns.Length > 3 ? columns[3] : null,
+                        IpaPronunciations = columns.Length > 3 ? columns[3] : string.Empty,
                     };
                 }
             }

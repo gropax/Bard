@@ -62,8 +62,8 @@ namespace Bard.Fra.Analysis
     public class AnalysisResult<T>
     {
         public T Result { get; }
-        public List<AnalysisError> Errors { get; }
-        public List<AnalysisWarning> Warnings { get; }
+        public List<AnalysisError> Errors { get; } = new List<AnalysisError>();
+        public List<AnalysisWarning> Warnings { get; } = new List<AnalysisWarning>();
         public Dictionary<Type, long> Durations { get; } = new Dictionary<Type, long>();
         public bool IsAborted { get; set; } = true;
 

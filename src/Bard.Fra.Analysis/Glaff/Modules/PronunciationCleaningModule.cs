@@ -55,7 +55,9 @@ namespace Bard.Fra.Analysis.Glaff.Modules
                 foreach (var pronunciation in pronunciations)
                     step.Analyze(pronunciation);
 
-            entry.Pronunciations = pronunciations.ToArray();
+            entry.Pronunciations = pronunciations
+                .Where(p => p.IsValid)
+                .ToArray();
 
             var abort = false;
             return abort;
