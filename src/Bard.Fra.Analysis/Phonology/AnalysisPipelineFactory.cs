@@ -1,4 +1,4 @@
-﻿using Bard.Contracts.Fra;
+﻿using Bard.Contracts.Fra.Analysis.Phonology;
 using Bard.Fra.Analysis;
 using Bard.Fra.Analysis.Glaff.Modules;
 using Bard.Fra.Analysis.Words.Nouns.Modules;
@@ -25,14 +25,14 @@ namespace Bard.Fra.Analysis.Phonology
             Config = config;
         }
 
-        public AnalysisPipeline<WordForm> Build()
+        public AnalysisPipeline<WordPhonologyData> Build()
         {
-            var modules = new List<IAnalysisModule<WordForm>>();
+            var modules = new List<IAnalysisModule<WordPhonologyData>>();
 
             if (Config.PhonologicalAnalysis.Enabled)
                 modules.Add(new PhonologicalAnalysisModule(Config.PhonologicalAnalysis));
 
-            return new AnalysisPipeline<WordForm>(modules.ToArray());
+            return new AnalysisPipeline<WordPhonologyData>(modules.ToArray());
         }
     }
 }

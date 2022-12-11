@@ -12,20 +12,16 @@ namespace Bard.Storage.Neo4j.Fra
 {
     public class NounLemmaNodeSerializer : NodeSerializerBase, INodeSerializer<NounLemma>
     {
-        public const string GRAPHICAL_FORM = "lemma.graphical_form";
-        public const string POS = "lemma.pos";
-        public const string GENDER = "lemma.gender";
-
         public MultiNode Serialize(NounLemma item)
         {
             var nodeTypes = new List<NodeType>();
             var fields = new List<Field>();
 
-            fields.Add(new Field(GRAPHICAL_FORM, item.GraphicalForm));
-            fields.Add(GetField(POS, item.POS));
+            fields.Add(new Field(PropLabel.LEMMA_GRAPHICAL_FORM, item.GraphicalForm));
+            fields.Add(GetField(PropLabel.LEMMA_POS, item.POS));
 
             if (item.Gender.HasValue)
-                fields.Add(GetField(GENDER, item.Gender.Value));
+                fields.Add(GetField(PropLabel.LEMMA_GENDER, item.Gender.Value));
 
 
             nodeTypes.Add(new NodeType(
@@ -40,12 +36,12 @@ namespace Bard.Storage.Neo4j.Fra
         public NounLemma Deserialize(INode node)
         {
             EnsureHasLabels(node, NodeLabel.LEMMA);
-            EnsureHasProperty(node, POS, Contracts.Fra.POS.Noun.ToString());
+            EnsureHasProperty(node, PropLabel.LEMMA_POS, POS.Noun.ToString());
 
-            var graphicalForm = node[GRAPHICAL_FORM].As<string>();
+            var graphicalForm = node[PropLabel.LEMMA_GRAPHICAL_FORM].As<string>();
 
             Gender? gender = null;
-            if (node.Properties.TryGetValue(GENDER, out var genderObj))
+            if (node.Properties.TryGetValue(PropLabel.LEMMA_GENDER, out var genderObj))
                 gender = Enum.Parse<Gender>(genderObj.As<string>());
 
             return new NounLemma()

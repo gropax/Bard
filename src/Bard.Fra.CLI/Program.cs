@@ -46,7 +46,7 @@ namespace Bard.CLI
             Glaff,
             Words,
                 Nouns,
-            Phonetic,
+            Phonology,
         }
 
         static void Main(string[] args)
@@ -89,9 +89,9 @@ namespace Bard.CLI
                 await new Fra.Analysis.Words.Nouns.StartTask(config.Analysis.Words.Nouns, graphStorage).Execute();
             }
 
-            if (tasks.Contains(TaskId.Phonetic))
+            if (tasks.Contains(TaskId.Phonology))
             {
-                await new Fra.Analysis.Phonology.CleanTask(graphStorage).Execute();
+                //await new Fra.Analysis.Phonology.CleanTask(graphStorage).Execute();
                 await new Fra.Analysis.Phonology.StartTask(config.Analysis.Phonology, graphStorage).Execute();
             }
         }

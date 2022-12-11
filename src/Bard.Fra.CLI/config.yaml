@@ -27,3 +27,5 @@ analysis:
   words:
     nouns:
       enabled: true
+  phonology:
+    enabled: true

@@ -2,7 +2,7 @@
   "profiles": {
     "Bard.Fra.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "start Nouns -c \"D:/source/repos/Bard/src/Bard.Fra.CLI/config.yaml\""
+      "commandLineArgs": "start Phonology -c \"D:/source/repos/Bard/src/Bard.Fra.CLI/config.yaml\""
     }
   }
 }

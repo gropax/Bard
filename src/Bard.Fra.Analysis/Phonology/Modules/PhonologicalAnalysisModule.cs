@@ -1,4 +1,5 @@
 ﻿using Bard.Contracts.Fra;
+using Bard.Contracts.Fra.Analysis.Phonology;
 using Bard.Fra.Analysis.Phonology;
 using Intervals;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WordPhonologyData = Bard.Contracts.Fra.Analysis.Phonology.WordPhonologyData;
 
 namespace Bard.Fra.Analysis.Phonology
 {
@@ -14,7 +16,7 @@ namespace Bard.Fra.Analysis.Phonology
         public bool Enabled { get; set; } = true;
     }
 
-    public class PhonologicalAnalysisModule : IAnalysisModule<WordForm>
+    public class PhonologicalAnalysisModule : IAnalysisModule<WordPhonologyData>
     {
         public PhonologicalAnalysisConfig Config { get; }
 
@@ -23,7 +25,7 @@ namespace Bard.Fra.Analysis.Phonology
             Config = config;
         }
 
-        public bool Analyze(AnalysisResult<WordForm> analysisResult)
+        public bool Analyze(AnalysisResult<WordPhonologyData> analysisResult)
         {
             var wordForm = analysisResult.Result;
 
@@ -42,7 +44,7 @@ namespace Bard.Fra.Analysis.Phonology
             return abort;
         }
 
-        private void FixPhonemes(WordForm wordForm)
+        private void FixPhonemes(WordPhonologyData wordForm)
         {
             wordForm.Syllables = new Syllabifier().Compute(wordForm.Phonemes).ToArray();
             if (wordForm.Syllables.Length == 0)
@@ -66,14 +68,14 @@ namespace Bard.Fra.Analysis.Phonology
             wordForm.Phonemes = newSyllables.SelectMany(s => s.Phonemes).ToArray();
         }
 
-        private PhoneticRealization GetStandardRealization(WordForm wordForm)
+        private PhoneticRealization GetStandardRealization(WordPhonologyData data)
         {
-            var phonWord = GetPhoneticWord(wordForm.Phonemes);
+            var phonWord = GetPhoneticWord(data.Phonemes);
 
             return new PhoneticRealization()
             {
-                Graphemes = wordForm.GlaffEntry.GraphicalForm,
-                Alignment = wordForm.Alignment,
+                Graphemes = data.WordForm.GraphicalForm,
+                Alignment = data.Alignment,
                 PhoneticWord = phonWord,
                 IsStandard = true,
             };

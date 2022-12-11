@@ -14,11 +14,11 @@ namespace Bard.Contracts.Fra
         string GraphicalForm { get; }
     }
 
-    public abstract class WordForm2 : IWordForm
+    public class WordForm2 : IWordForm
     {
         public long? Id { get; set; }
 
-        public abstract POS POS { get; }
+        public POS POS { get; set; }
         public string Lemma { get; set; }
         public string GraphicalForm { get; set; }
 
@@ -28,7 +28,7 @@ namespace Bard.Contracts.Fra
 
     public class NounForm : WordForm2
     {
-        public override POS POS => POS.Noun;
+        //public POS POS => POS.Noun;
         public Gender? Gender { get; set; }
         public Number? Number { get; set; }
     }

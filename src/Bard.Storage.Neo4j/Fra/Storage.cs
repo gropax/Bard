@@ -1,4 +1,5 @@
 ﻿using Bard.Contracts.Fra;
+using Bard.Contracts.Fra.Analysis.Phonology;
 using Bard.Contracts.Fra.Analysis.Words;
 using Bard.Storage.Fra;
 using Bard.Utils;
@@ -23,6 +24,7 @@ namespace Bard.Storage.Neo4j.Fra
         private GlaffEntryNodeSerializer _glaffEntryNodeSerializer = new GlaffEntryNodeSerializer();
         private PronunciationNodeSerializer _pronunciationNodeSerializer = new PronunciationNodeSerializer();
         private NounLemmaNodeSerializer _nounLemmaNodeSerializer = new NounLemmaNodeSerializer();
+        private WordFormNodeSerializer _wordFormNodeSerializer = new WordFormNodeSerializer();
         private NounFormNodeSerializer _nounFormNodeSerializer = new NounFormNodeSerializer();
 
         /// <summary>
@@ -35,13 +37,13 @@ namespace Bard.Storage.Neo4j.Fra
             {
                 var cursor = await session.RunAsync($@"
                     MATCH (g:{NodeLabel.GLAFF_ENTRY})
-                    WHERE g.`{GlaffEntryNodeSerializer.POS}` = '{POS.Noun}'
+                    WHERE g.`{PropLabel.GLAFF_POS}` = '{POS.Noun}'
                     OPTIONAL MATCH (g)-[:{RelationshipLabel.HAS}]->(p:{NodeLabel.PRONUNCIATION})
                     WITH g, collect(p) AS px
                     WITH
-                        g.`{GlaffEntryNodeSerializer.LEMMA}` AS lemma,
-                        g.`{GlaffEntryNodeSerializer.GENDER}` AS gender,
-                        g.`{GlaffEntryNodeSerializer.NUMBER}` AS number, 
+                        g.`{PropLabel.GLAFF_LEMMA}` AS lemma,
+                        g.`{PropLabel.GLAFF_GENDER}` AS gender,
+                        g.`{PropLabel.GLAFF_NUMBER}` AS number, 
                         collect({{ entry: g, pronunciations: px }}) AS entries
                     RETURN lemma, gender, collect(entries) AS entries");
 
@@ -174,64 +176,41 @@ namespace Bard.Storage.Neo4j.Fra
         /// <summary>
         /// Return all word forms.
         /// </summary>
-        public async IAsyncEnumerable<WordForm> GetWordFormData()
+        public async IAsyncEnumerable<WordPhonologyData> GetWordPhonologyData()
         {
-            //var session = _driver.AsyncSession();
-            //try
-            //{
-            //    var cursor = await session.RunAsync($@"
-            //        MATCH (g:{NodeLabel.GLAFF_ENTRY})
-            //        WHERE g.`{GlaffEntryNodeSerializer.POS}` = '{POS.Noun}'
-            //        OPTIONAL MATCH (g)-[:{RelationshipLabel.HAS}]->(p:{NodeLabel.PRONUNCIATION})
-            //        WITH g, collect(p) AS px
-            //        WITH
-            //            g.`{GlaffEntryNodeSerializer.LEMMA}` AS lemma,
-            //            g.`{GlaffEntryNodeSerializer.GENDER}` AS gender,
-            //            g.`{GlaffEntryNodeSerializer.NUMBER}` AS number, 
-            //            collect({{ entry: g, pronunciations: px }}) AS entries
-            //        RETURN lemma, gender, collect(entries) AS entries");
+            var session = _driver.AsyncSession();
+            try
+            {
+                var query = $@"
+                    MATCH (wf:{NodeLabel.WORD_FORM})
+                    OPTIONAL MATCH (wf)-[:{RelationshipLabel.HAS}]->(p:{NodeLabel.PRONUNCIATION})
+                    WITH wf, collect(p) AS px
+                    WHERE size(px) > 0
+                    RETURN wf AS wordForm, px AS pronunciations";
 
-            //    while (await cursor.FetchAsync())
-            //    {
-            //        var r = cursor.Current;
-            //        var entries = r["entries"].As<List<object>>();
+                var cursor = await session.RunAsync(query);
+                while (await cursor.FetchAsync())
+                {
+                    var r = cursor.Current;
 
-            //        var wordForms = new List<WordFormData<NounForm>>();
-            //        foreach (var wfDataObj in entries)
-            //        {
-            //            var glaffEntries = new List<GlaffEntry>();
+                    var wordForm = r["wordForm"].As<INode>();
+                    var pronuns = r["pronunciations"].As<List<INode>>();
 
-            //            var wordFormData = wfDataObj.As<List<object>>();
-            //            foreach (var entryData in wordFormData)
-            //            {
-            //                var dict = entryData.As<Dictionary<string, object>>();
-            //                var entry = dict["entry"].As<INode>();
-            //                var pronunciations = dict["pronunciations"].As<List<INode>>();
-
-            //                var glaffEntry = _glaffEntryNodeSerializer.Deserialize(entry);
-            //                glaffEntry.Pronunciations = pronunciations
-            //                    .Select(p => _pronunciationNodeSerializer.Deserialize(p))
-            //                    .ToArray();
-
-            //                glaffEntries.Add(glaffEntry);
-            //            }
-
-            //            wordForms.Add(new WordFormData<NounForm>(glaffEntries.ToArray()));
-            //        }
-
-            //        yield return new LemmaData<NounLemma, NounForm>(wordForms.ToArray());
-            //    }
-            //}
-            //finally
-            //{
-            //    await session.CloseAsync();
-            //}
-            yield break;
-            throw new NotImplementedException();
+                    yield return new WordPhonologyData(
+                        wordForm: _wordFormNodeSerializer.Deserialize(wordForm),
+                        pronunciations: pronuns.Select(p =>
+                            _pronunciationNodeSerializer.Deserialize(p))
+                            .ToArray());
+                }
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
         }
 
         public async Task CreateWordPhonologyAsync(
-            IEnumerable<WordForm> nouns)
+            IEnumerable<Contracts.Fra.Analysis.Phonology.WordPhonologyData> wordForms)
         {
             //foreach (var batch in nouns.Batch(1000))
             //{

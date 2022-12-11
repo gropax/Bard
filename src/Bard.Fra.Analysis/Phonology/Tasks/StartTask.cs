@@ -1,5 +1,4 @@
-﻿using Bard.Contracts.Fra;
-using Bard.Contracts.Fra.Analysis.Words;
+﻿using Bard.Contracts.Fra.Analysis.Phonology;
 using Bard.Storage.Neo4j;
 using Bard.Storage.Neo4j.Fra;
 using Bard.Utils;
@@ -27,7 +26,7 @@ namespace Bard.Fra.Analysis.Phonology
         {
             var analysisPipeline = new AnalysisPipelineFactory(Config.Analysis).Build();
 
-            var wordFormData = GraphStorage.GetWordFormData();
+            var wordFormData = GraphStorage.GetWordPhonologyData();
             var processed = Analyze(analysisPipeline, wordFormData);
             var batches = processed.Batch(100);
 
@@ -37,9 +36,9 @@ namespace Bard.Fra.Analysis.Phonology
             }
         }
 
-        private async IAsyncEnumerable<WordForm> Analyze(
-            AnalysisPipeline<WordForm> analysisPipeline,
-            IAsyncEnumerable<WordForm> lemmaData)
+        private async IAsyncEnumerable<WordPhonologyData> Analyze(
+            AnalysisPipeline<WordPhonologyData> analysisPipeline,
+            IAsyncEnumerable<WordPhonologyData> lemmaData)
         {
             await foreach (var lemma in lemmaData)
             {
