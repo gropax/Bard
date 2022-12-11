@@ -14,6 +14,8 @@ namespace Bard.Storage.Neo4j.Fra
         {
             var fields = new List<Field>();
 
+            fields.Add(new Field(PropLabel.INNER_RHYME_SYLLABLE_NUMBER, item.Content.SyllableNumber));
+
             return new Relationship(
                 item.OriginId,
                 item.TargetId,
@@ -25,10 +27,12 @@ namespace Bard.Storage.Neo4j.Fra
         {
             EnsureHasType(rel, RelationshipLabel.INNER_RHYME);
 
+            var syllableNumber = rel[PropLabel.INNER_RHYME_SYLLABLE_NUMBER].As<int>();
+
             return new Relation<InnerRhymeRelation>(
                 rel.StartNodeId,
                 rel.EndNodeId,
-                new InnerRhymeRelation());
+                new InnerRhymeRelation(syllableNumber));
         }
 
     }

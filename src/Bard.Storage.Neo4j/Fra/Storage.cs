@@ -218,7 +218,7 @@ namespace Bard.Storage.Neo4j.Fra
         {
             var phonSeqDict = new Dictionary<string, long>();
 
-            foreach (var batch in data.Batch(1000))
+            foreach (var batch in data.Batch(100))
             {
                 // Get all phonetic sequences (words and syllables) in batch that
                 // have not already been created.
@@ -233,12 +233,14 @@ namespace Bard.Storage.Neo4j.Fra
                     .Select(s => _phoneticSequenceNodeSerializer.Serialize(s))
                     .ToArray();
 
-                var phonSeqNodes = await CreateAsync(phonSeqs);
+                var newPhonSeqNodes = await CreateAsync(phonSeqs);
+                var newPhonSeqSet = new HashSet<string>();
 
-                foreach (var node in phonSeqNodes)
+                foreach (var node in newPhonSeqNodes)
                 {
                     var phonSeq = _phoneticSequenceNodeSerializer.Deserialize(node);
                     phonSeqDict[phonSeq.IpaRepresentation] = phonSeq.Id.Value;
+                    newPhonSeqSet.Add(phonSeq.IpaRepresentation);
                 }
 
 
@@ -248,7 +250,9 @@ namespace Bard.Storage.Neo4j.Fra
                 {
                     foreach (var phonReal in item.Realizations)
                     {
-                        var phonRealId = phonSeqDict[phonReal.PhoneticWord.PhoneticSequence.IpaRepresentation];
+                        string ipa = phonReal.PhoneticWord.PhoneticSequence.IpaRepresentation;
+                        var phonRealId = phonSeqDict[ipa];
+
                         var relation = new Relation<PhoneticRealizationRelation>(
                             item.WordForm.Id.Value,
                             phonRealId,
@@ -256,31 +260,40 @@ namespace Bard.Storage.Neo4j.Fra
 
                         relationships.Add(_phoneticRealizationRelationSerializer.Serialize(relation));
 
-                        foreach (var rhyme in phonReal.PhoneticWord.Rhymes)
+                        // Only had relations between a phonetic sequence and its rhymes
+                        // the first time it is encountered, to prevent duplicate relationships.
+                        //
+                        if (newPhonSeqSet.Contains(ipa))
                         {
-                            var rhymeId = phonSeqDict[rhyme.PhoneticSequence.IpaRepresentation];
-                            var rhymeRel = new Relation<RhymeRelation>(
-                                item.WordForm.Id.Value,
-                                phonRealId,
-                                new RhymeRelation());
+                            newPhonSeqSet.Remove(ipa);
 
-                            relationships.Add(_rhymeRelationSerializer.Serialize(rhymeRel));
-                        }
+                            foreach (var rhyme in phonReal.PhoneticWord.Rhymes)
+                            {
+                                var rhymeId = phonSeqDict[rhyme.PhoneticSequence.IpaRepresentation];
+                                var rhymeRel = new Relation<RhymeRelation>(
+                                    phonRealId,
+                                    rhymeId,
+                                    new RhymeRelation());
 
-                        foreach (var innerRhyme in phonReal.PhoneticWord.InnerRhymes)
-                        {
-                            var innerRhymeId = phonSeqDict[innerRhyme.PhoneticSequence.IpaRepresentation];
-                            var innerRhymeRel = new Relation<InnerRhymeRelation>(
-                                item.WordForm.Id.Value,
-                                phonRealId,
-                                new InnerRhymeRelation());
+                                relationships.Add(_rhymeRelationSerializer.Serialize(rhymeRel));
+                            }
 
-                            relationships.Add(_innerRhymeRelationSerializer.Serialize(innerRhymeRel));
+                            for (int i = 0; i < phonReal.PhoneticWord.InnerRhymes.Length; i++)
+                            {
+                                var innerRhyme = phonReal.PhoneticWord.InnerRhymes[i];
+                                var innerRhymeId = phonSeqDict[innerRhyme.PhoneticSequence.IpaRepresentation];
+                                var innerRhymeRel = new Relation<InnerRhymeRelation>(
+                                    phonRealId,
+                                    innerRhymeId,
+                                    new InnerRhymeRelation(i + 1));
+
+                                relationships.Add(_innerRhymeRelationSerializer.Serialize(innerRhymeRel));
+                            }
                         }
                     }
                 }
 
-                await CreateAsync(relationships);
+                await CreateAsync(relationships, merge: false);
             }
         }
 
@@ -387,8 +400,11 @@ namespace Bard.Storage.Neo4j.Fra
             await Transaction(async t => await t.RunAsync(q));
         }
 
-        public async Task<long[]> CreateAsync(IEnumerable<Relationship> relationships)
+        public async Task<long[]> CreateAsync(
+            IEnumerable<Relationship> relationships,
+            bool merge = true)
         {
+            string createOp = merge ? "MERGE" : "CREATE";
             var ids = new List<long>();
 
             foreach (var grp in relationships.GroupBy(r => r.Label))
@@ -400,7 +416,7 @@ namespace Bard.Storage.Neo4j.Fra
                         UNWIND $props AS map
                         MATCH (o) WHERE id(o) = map._originId
                         MATCH (t) WHERE id(t) = map._targetId
-                        MERGE (o)-[r:{grp.Key}]->(t)
+                        {createOp} (o)-[r:{grp.Key}]->(t)
                         WITH r, apoc.map.removeKeys(map, ['_originId', '_targetId']) AS fields
                         SET r = fields
                         RETURN r",

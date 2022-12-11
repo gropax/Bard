@@ -19,7 +19,7 @@ namespace Bard.Storage.Neo4j.Fra
             var fields = new List<Field>();
 
             fields.Add(new Field(PropLabel.PHONETIC_SEQUENCE_IPA, item.IpaRepresentation));
-            fields.Add(new Field(PropLabel.PHONETIC_SEQUENCE_PHONEMES, string.Join('.', item.Phonemes.Format())));
+            fields.Add(new Field(PropLabel.PHONETIC_SEQUENCE_PHONEMES, string.Join('.', item.Phonemes.Select(p => p.Symbol))));
             fields.Add(new Field(PropLabel.PHONETIC_SEQUENCE_SYLLABLES, string.Join('.', item.Syllables.Select(s => s.Format()))));
 
             nodeTypes.Add(new NodeType(

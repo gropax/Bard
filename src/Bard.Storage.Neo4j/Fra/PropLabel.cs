@@ -60,6 +60,8 @@ namespace Bard.Storage.Neo4j.Fra
         public const string PHONETIC_SEQUENCE_IPA = "phon_seq.ipa";
         public const string PHONETIC_SEQUENCE_PHONEMES = "phon_seq.phonemes";
         public const string PHONETIC_SEQUENCE_SYLLABLES = "phon_seq.syllables";
+
+        public const string INNER_RHYME_SYLLABLE_NUMBER = "inner_rhyme.syllable_number";
     }
 
 }

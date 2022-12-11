@@ -91,7 +91,7 @@ namespace Bard.CLI
 
             if (tasks.Contains(TaskId.Phonology))
             {
-                //await new Fra.Analysis.Phonology.CleanTask(graphStorage).Execute();
+                await new Fra.Analysis.Phonology.CleanTask(graphStorage).Execute();
                 await new Fra.Analysis.Phonology.StartTask(config.Analysis.Phonology, graphStorage).Execute();
             }
         }

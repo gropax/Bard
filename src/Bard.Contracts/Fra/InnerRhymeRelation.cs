@@ -8,5 +8,11 @@ namespace Bard.Contracts.Fra
 {
     public class InnerRhymeRelation : IRelation
     {
+        public int SyllableNumber { get; }
+
+        public InnerRhymeRelation(int syllableNumber)
+        {
+            SyllableNumber = syllableNumber;
+        }
     }
 }

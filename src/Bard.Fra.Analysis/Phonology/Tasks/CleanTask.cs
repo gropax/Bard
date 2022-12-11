@@ -18,7 +18,7 @@ namespace Bard.Fra.Analysis.Phonology
 
         public async Task Execute()
         {
-            await GraphStorage.DeleteLabel(NodeLabel.NOUN);
+            await GraphStorage.DeleteLabel(NodeLabel.PHONETIC_SEQUENCE);
         }
 
     }
