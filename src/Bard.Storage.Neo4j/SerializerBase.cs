@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Bard.Storage.Neo4j
 {
-    public abstract class NodeSerializerBase
+    public abstract class SerializerBase
     {
         protected Field GetField<T>(string fieldName, T value) where T : Enum
         {
@@ -34,5 +34,12 @@ namespace Bard.Storage.Neo4j
             if (value != expectedValue)
                 throw new Exception($"Node property [{prop}] should be [{expectedValue}] but was [{value}].");
         }
+
+        protected void EnsureHasType(IRelationship rel, string type)
+        {
+            if (rel.Type != type)
+                throw new Exception($"Relationship should have type [{type}] but has [{rel.Type}].");
+        }
+
     }
 }

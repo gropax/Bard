@@ -56,7 +56,7 @@ namespace Bard.Fra.Analysis
                 new PhoneticSequenceIdComparer());
 
             // Build new PhonSeq nodes
-            var newPhonSeqs = phonSeqs.Where(s => !_phonSeqIdMapping.ContainsKey(s.Id)).ToArray();
+            var newPhonSeqs = phonSeqs.Where(s => !_phonSeqIdMapping.ContainsKey(s.IpaRepresentation)).ToArray();
             var phonSeqMultinodes = newPhonSeqs.Select(s => _nodeBuilder.Build(s)).ToArray();
 
             // Store new PhonSeq nodes, update ID mappings
@@ -86,20 +86,20 @@ namespace Bard.Fra.Analysis
                 foreach (var real in wordForm.Realizations)
                 {
                     long wordFormNodeId = wordFormIdMapping[wordForm.GlaffEntry.Rank];
-                    long phonSeqNodeId = _phonSeqIdMapping[real.PhoneticWord.PhoneticSequence.Id];
+                    long phonSeqNodeId = _phonSeqIdMapping[real.PhoneticWord.PhoneticSequence.IpaRepresentation];
                     phonRealRels.Add(new PhoneticRealizationRelation(wordFormNodeId, phonSeqNodeId, real));
 
                     foreach (var rhyme in real.PhoneticWord.Rhymes)
                     {
                         rhymeRels.Add(new RhymeRelation(phonSeqNodeId,
-                            _phonSeqIdMapping[rhyme.PhoneticSequence.Id],
+                            _phonSeqIdMapping[rhyme.PhoneticSequence.IpaRepresentation],
                             rhyme));
                     }
 
                     foreach (var innerRhyme in real.PhoneticWord.InnerRhymes)
                     {
                         innerRhymeRels.Add(new InnerRhymeRelation(phonSeqNodeId,
-                            _phonSeqIdMapping[innerRhyme.PhoneticSequence.Id],
+                            _phonSeqIdMapping[innerRhyme.PhoneticSequence.IpaRepresentation],
                             innerRhyme));
                     }
                 }

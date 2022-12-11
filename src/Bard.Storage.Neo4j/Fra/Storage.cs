@@ -26,6 +26,10 @@ namespace Bard.Storage.Neo4j.Fra
         private NounLemmaNodeSerializer _nounLemmaNodeSerializer = new NounLemmaNodeSerializer();
         private WordFormNodeSerializer _wordFormNodeSerializer = new WordFormNodeSerializer();
         private NounFormNodeSerializer _nounFormNodeSerializer = new NounFormNodeSerializer();
+        private PhoneticSequenceNodeSerializer _phoneticSequenceNodeSerializer = new PhoneticSequenceNodeSerializer();
+        private PhoneticRealizationRelationSerializer _phoneticRealizationRelationSerializer = new PhoneticRealizationRelationSerializer();
+        private RhymeRelationSerializer _rhymeRelationSerializer = new RhymeRelationSerializer();
+        private InnerRhymeRelationSerializer _innerRhymeRelationSerializer = new InnerRhymeRelationSerializer();
 
         /// <summary>
         /// Return all nominal word forms grouped by their lemma.
@@ -210,61 +214,74 @@ namespace Bard.Storage.Neo4j.Fra
         }
 
         public async Task CreateWordPhonologyAsync(
-            IEnumerable<Contracts.Fra.Analysis.Phonology.WordPhonologyData> wordForms)
+            IEnumerable<WordPhonologyData> data)
         {
-            //foreach (var batch in nouns.Batch(1000))
-            //{
-            //    var lemmaMultiNodes = batch
-            //        .Select(e => _nounLemmaNodeSerializer.Serialize(e.Lemma));
+            var phonSeqDict = new Dictionary<string, long>();
 
-            //    var lemmaNodes = await CreateAsync(lemmaMultiNodes);
-            //    var lemma2Id = Enumerable.Range(0, batch.Length)
-            //        .ToDictionary(i => batch[i].Lemma, i => lemmaNodes[i].Id);
+            foreach (var batch in data.Batch(1000))
+            {
+                // Get all phonetic sequences (words and syllables) in batch that
+                // have not already been created.
+                //
+                var phonSeqs = batch.SelectMany(d => d.Realizations)
+                    .Select(r => r.PhoneticWord)
+                    .SelectMany(p =>
+                        p.Rhymes.Select(r => r.PhoneticSequence)
+                        .Concat(p.InnerRhymes.Select(r => r.PhoneticSequence))
+                        .Append(p.PhoneticSequence))
+                    .Where(s => !phonSeqDict.ContainsKey(s.IpaRepresentation))
+                    .Select(s => _phoneticSequenceNodeSerializer.Serialize(s))
+                    .ToArray();
 
-            //    var formBatch = batch
-            //        .SelectMany(e => e.WordForms)
-            //        .Select(f => f.WordForm)
-            //        .ToArray();
+                var phonSeqNodes = await CreateAsync(phonSeqs);
 
-            //    var formMultiNodes = formBatch.Select(p => _nounFormNodeSerializer.Serialize(p));
+                foreach (var node in phonSeqNodes)
+                {
+                    var phonSeq = _phoneticSequenceNodeSerializer.Deserialize(node);
+                    phonSeqDict[phonSeq.IpaRepresentation] = phonSeq.Id.Value;
+                }
 
-            //    var formNodes = await CreateAsync(formMultiNodes);
-            //    var form2Id = Enumerable.Range(0, formBatch.Length)
-            //        .ToDictionary(i => formBatch[i], i => formNodes[i].Id);
 
-            //    var lemmaRels =
-            //        from lemmaData in batch
-            //        from wordForm in lemmaData.WordForms
-            //        select new Relationship(
-            //            originId: form2Id[wordForm.WordForm],
-            //            targetId: lemma2Id[lemmaData.Lemma],
-            //            label: RelationshipLabel.LEMMA);
+                var relationships = new List<Relationship>();
 
-            //    await CreateAsync(lemmaRels);
+                foreach (var item in batch)
+                {
+                    foreach (var phonReal in item.Realizations)
+                    {
+                        var phonRealId = phonSeqDict[phonReal.PhoneticWord.PhoneticSequence.IpaRepresentation];
+                        var relation = new Relation<PhoneticRealizationRelation>(
+                            item.WordForm.Id.Value,
+                            phonRealId,
+                            new PhoneticRealizationRelation());
 
-            //    var pronunciationRels =
-            //        from lemmaData in batch
-            //        from wordForm in lemmaData.WordForms
-            //        from pronunciation in wordForm.Pronunciations
-            //        select new Relationship(
-            //            originId: form2Id[wordForm.WordForm],
-            //            targetId: pronunciation.Id.Value,
-            //            label: RelationshipLabel.HAS);
+                        relationships.Add(_phoneticRealizationRelationSerializer.Serialize(relation));
 
-            //    await CreateAsync(pronunciationRels);
+                        foreach (var rhyme in phonReal.PhoneticWord.Rhymes)
+                        {
+                            var rhymeId = phonSeqDict[rhyme.PhoneticSequence.IpaRepresentation];
+                            var rhymeRel = new Relation<RhymeRelation>(
+                                item.WordForm.Id.Value,
+                                phonRealId,
+                                new RhymeRelation());
 
-            //    var glaffEntryRels =
-            //        from lemmaData in batch
-            //        from wordForm in lemmaData.WordForms
-            //        from glaffEntry in wordForm.GlaffEntries
-            //        select new Relationship(
-            //            originId: form2Id[wordForm.WordForm],
-            //            targetId: glaffEntry.Id.Value,
-            //            label: RelationshipLabel.SOURCE);
+                            relationships.Add(_rhymeRelationSerializer.Serialize(rhymeRel));
+                        }
 
-            //    await CreateAsync(glaffEntryRels);
-            //}
-            throw new NotImplementedException();
+                        foreach (var innerRhyme in phonReal.PhoneticWord.InnerRhymes)
+                        {
+                            var innerRhymeId = phonSeqDict[innerRhyme.PhoneticSequence.IpaRepresentation];
+                            var innerRhymeRel = new Relation<InnerRhymeRelation>(
+                                item.WordForm.Id.Value,
+                                phonRealId,
+                                new InnerRhymeRelation());
+
+                            relationships.Add(_innerRhymeRelationSerializer.Serialize(innerRhymeRel));
+                        }
+                    }
+                }
+
+                await CreateAsync(relationships);
+            }
         }
 
 

@@ -57,6 +57,9 @@ namespace Bard.Storage.Neo4j.Fra
         public const string LEMMA_POS = "lemma.pos";
         public const string LEMMA_GENDER = "lemma.gender";
 
+        public const string PHONETIC_SEQUENCE_IPA = "phon_seq.ipa";
+        public const string PHONETIC_SEQUENCE_PHONEMES = "phon_seq.phonemes";
+        public const string PHONETIC_SEQUENCE_SYLLABLES = "phon_seq.syllables";
     }
 
 }

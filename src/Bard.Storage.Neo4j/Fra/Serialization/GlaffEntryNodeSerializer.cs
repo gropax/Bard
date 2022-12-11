@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Bard.Storage.Neo4j.Fra
 {
-    public class GlaffEntryNodeSerializer : NodeSerializerBase, INodeSerializer<GlaffEntry>
+    public class GlaffEntryNodeSerializer : SerializerBase, INodeSerializer<GlaffEntry>
     {
         public MultiNode Serialize(GlaffEntry item)
         {

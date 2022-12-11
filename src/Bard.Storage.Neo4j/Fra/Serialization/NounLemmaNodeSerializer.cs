@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Bard.Storage.Neo4j.Fra
 {
-    public class NounLemmaNodeSerializer : NodeSerializerBase, INodeSerializer<NounLemma>
+    public class NounLemmaNodeSerializer : SerializerBase, INodeSerializer<NounLemma>
     {
         public MultiNode Serialize(NounLemma item)
         {

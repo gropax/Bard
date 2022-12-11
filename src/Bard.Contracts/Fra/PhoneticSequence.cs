@@ -16,7 +16,9 @@ namespace Bard.Contracts.Fra
 
     public class PhoneticSequence
     {
-        public string Id { get; set; }
+        public long? Id { get; set; }
+
+        public string IpaRepresentation { get; set; }
         public Phoneme[] Phonemes { get; set; }
         public Syllable[] Syllables { get; set; }
     }
@@ -25,12 +27,12 @@ namespace Bard.Contracts.Fra
     {
         public bool Equals(PhoneticSequence x, PhoneticSequence y)
         {
-            return x.Id == y.Id;
+            return x.IpaRepresentation == y.IpaRepresentation;
         }
 
         public int GetHashCode([DisallowNull] PhoneticSequence obj)
         {
-            return obj.Id.GetHashCode();
+            return obj.IpaRepresentation.GetHashCode();
         }
     }
 

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Bard.Storage.Neo4j.Fra
 {
-    public class WordFormNodeSerializer : NodeSerializerBase, INodeSerializer<WordForm2>
+    public class WordFormNodeSerializer : SerializerBase, INodeSerializer<WordForm2>
     {
         public MultiNode Serialize(WordForm2 item)
         {
@@ -47,7 +47,7 @@ namespace Bard.Storage.Neo4j.Fra
     }
 
 
-    public class NounFormNodeSerializer : NodeSerializerBase, INodeSerializer<NounForm>
+    public class NounFormNodeSerializer : SerializerBase, INodeSerializer<NounForm>
     {
         public MultiNode Serialize(NounForm item)
         {

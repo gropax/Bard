@@ -102,7 +102,7 @@ namespace Bard.Fra.Analysis.Phonology
                 {
                     PhoneticSequence = new PhoneticSequence()
                     {
-                        Id = phonemes.Format(),
+                        IpaRepresentation = phonemes.Format(),
                         Phonemes = phonemes,
                         Syllables = syllables,
                     },
@@ -123,7 +123,7 @@ namespace Bard.Fra.Analysis.Phonology
             {
                 PhoneticSequence = new PhoneticSequence()
                 {
-                    Id = syllables.Last().Rhyme.Format(),
+                    IpaRepresentation = syllables.Last().Rhyme.Format(),
                     Phonemes = syllables.Last().Rhyme.ToArray(),
                     Syllables = new[] { syllables.Last().RhymeSyllable },
                 },
@@ -145,7 +145,7 @@ namespace Bard.Fra.Analysis.Phonology
                 {
                     PhoneticSequence = new PhoneticSequence()
                     {
-                        Id = syllable.Rhyme.Format(),
+                        IpaRepresentation = syllable.Rhyme.Format(),
                         Phonemes = syllable.Rhyme.ToArray(),
                         Syllables = new[] { syllable.RhymeSyllable },
                     },

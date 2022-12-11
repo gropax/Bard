@@ -11,6 +11,9 @@ namespace Bard.Storage.Neo4j.Fra
         public const string HAS = "HAS";
         public const string LEMMA = "LEMMA";
         public const string SOURCE = "SOURCE";
+        public const string PHONETIC_REALIZATION = "PHON_REAL";
+        public const string RHYME = "RHYME";
+        public const string INNER_RHYME = "INNER_RHYME";
     }
 
     public static class NodeLabel
