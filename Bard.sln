@@ -28,7 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intervals.Tests", "src\Inte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bard.Fra.Web", "src\Bard.Fra.Web\Bard.Fra.Web.csproj", "{AD19A10F-AC10-4F08-8DFA-0BDCC179AE46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bard.Fra.CLI", "src\Bard.Fra.CLI\Bard.Fra.CLI.csproj", "{297C0E4C-7652-4A12-AB61-B47071AA666F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bard.Fra.CLI", "src\Bard.Fra.CLI\Bard.Fra.CLI.csproj", "{297C0E4C-7652-4A12-AB61-B47071AA666F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

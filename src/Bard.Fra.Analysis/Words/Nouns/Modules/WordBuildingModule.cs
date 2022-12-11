@@ -1,4 +1,5 @@
 ﻿using Bard.Contracts.Fra;
+using Bard.Contracts.Fra.Analysis.Words;
 using System;
 using System.Collections.Generic;
 using System.Linq;

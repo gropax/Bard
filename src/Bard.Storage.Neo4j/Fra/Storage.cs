@@ -1,4 +1,5 @@
 ﻿using Bard.Contracts.Fra;
+using Bard.Contracts.Fra.Analysis.Words;
 using Bard.Storage.Fra;
 using Bard.Utils;
 using Neo4j.Driver;
@@ -24,6 +25,9 @@ namespace Bard.Storage.Neo4j.Fra
         private NounLemmaNodeSerializer _nounLemmaNodeSerializer = new NounLemmaNodeSerializer();
         private NounFormNodeSerializer _nounFormNodeSerializer = new NounFormNodeSerializer();
 
+        /// <summary>
+        /// Return all nominal word forms grouped by their lemma.
+        /// </summary>
         public async IAsyncEnumerable<LemmaData<NounLemma, NounForm>> GetNounLemmaData()
         {
             var session = _driver.AsyncSession();
@@ -165,6 +169,123 @@ namespace Bard.Storage.Neo4j.Fra
 
                 await CreateAsync(relationships);
             }
+        }
+
+        /// <summary>
+        /// Return all word forms.
+        /// </summary>
+        public async IAsyncEnumerable<WordForm> GetWordFormData()
+        {
+            //var session = _driver.AsyncSession();
+            //try
+            //{
+            //    var cursor = await session.RunAsync($@"
+            //        MATCH (g:{NodeLabel.GLAFF_ENTRY})
+            //        WHERE g.`{GlaffEntryNodeSerializer.POS}` = '{POS.Noun}'
+            //        OPTIONAL MATCH (g)-[:{RelationshipLabel.HAS}]->(p:{NodeLabel.PRONUNCIATION})
+            //        WITH g, collect(p) AS px
+            //        WITH
+            //            g.`{GlaffEntryNodeSerializer.LEMMA}` AS lemma,
+            //            g.`{GlaffEntryNodeSerializer.GENDER}` AS gender,
+            //            g.`{GlaffEntryNodeSerializer.NUMBER}` AS number, 
+            //            collect({{ entry: g, pronunciations: px }}) AS entries
+            //        RETURN lemma, gender, collect(entries) AS entries");
+
+            //    while (await cursor.FetchAsync())
+            //    {
+            //        var r = cursor.Current;
+            //        var entries = r["entries"].As<List<object>>();
+
+            //        var wordForms = new List<WordFormData<NounForm>>();
+            //        foreach (var wfDataObj in entries)
+            //        {
+            //            var glaffEntries = new List<GlaffEntry>();
+
+            //            var wordFormData = wfDataObj.As<List<object>>();
+            //            foreach (var entryData in wordFormData)
+            //            {
+            //                var dict = entryData.As<Dictionary<string, object>>();
+            //                var entry = dict["entry"].As<INode>();
+            //                var pronunciations = dict["pronunciations"].As<List<INode>>();
+
+            //                var glaffEntry = _glaffEntryNodeSerializer.Deserialize(entry);
+            //                glaffEntry.Pronunciations = pronunciations
+            //                    .Select(p => _pronunciationNodeSerializer.Deserialize(p))
+            //                    .ToArray();
+
+            //                glaffEntries.Add(glaffEntry);
+            //            }
+
+            //            wordForms.Add(new WordFormData<NounForm>(glaffEntries.ToArray()));
+            //        }
+
+            //        yield return new LemmaData<NounLemma, NounForm>(wordForms.ToArray());
+            //    }
+            //}
+            //finally
+            //{
+            //    await session.CloseAsync();
+            //}
+            yield break;
+            throw new NotImplementedException();
+        }
+
+        public async Task CreateWordPhonologyAsync(
+            IEnumerable<WordForm> nouns)
+        {
+            //foreach (var batch in nouns.Batch(1000))
+            //{
+            //    var lemmaMultiNodes = batch
+            //        .Select(e => _nounLemmaNodeSerializer.Serialize(e.Lemma));
+
+            //    var lemmaNodes = await CreateAsync(lemmaMultiNodes);
+            //    var lemma2Id = Enumerable.Range(0, batch.Length)
+            //        .ToDictionary(i => batch[i].Lemma, i => lemmaNodes[i].Id);
+
+            //    var formBatch = batch
+            //        .SelectMany(e => e.WordForms)
+            //        .Select(f => f.WordForm)
+            //        .ToArray();
+
+            //    var formMultiNodes = formBatch.Select(p => _nounFormNodeSerializer.Serialize(p));
+
+            //    var formNodes = await CreateAsync(formMultiNodes);
+            //    var form2Id = Enumerable.Range(0, formBatch.Length)
+            //        .ToDictionary(i => formBatch[i], i => formNodes[i].Id);
+
+            //    var lemmaRels =
+            //        from lemmaData in batch
+            //        from wordForm in lemmaData.WordForms
+            //        select new Relationship(
+            //            originId: form2Id[wordForm.WordForm],
+            //            targetId: lemma2Id[lemmaData.Lemma],
+            //            label: RelationshipLabel.LEMMA);
+
+            //    await CreateAsync(lemmaRels);
+
+            //    var pronunciationRels =
+            //        from lemmaData in batch
+            //        from wordForm in lemmaData.WordForms
+            //        from pronunciation in wordForm.Pronunciations
+            //        select new Relationship(
+            //            originId: form2Id[wordForm.WordForm],
+            //            targetId: pronunciation.Id.Value,
+            //            label: RelationshipLabel.HAS);
+
+            //    await CreateAsync(pronunciationRels);
+
+            //    var glaffEntryRels =
+            //        from lemmaData in batch
+            //        from wordForm in lemmaData.WordForms
+            //        from glaffEntry in wordForm.GlaffEntries
+            //        select new Relationship(
+            //            originId: form2Id[wordForm.WordForm],
+            //            targetId: glaffEntry.Id.Value,
+            //            label: RelationshipLabel.SOURCE);
+
+            //    await CreateAsync(glaffEntryRels);
+            //}
+            throw new NotImplementedException();
         }
 
 

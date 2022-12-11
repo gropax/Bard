@@ -30,5 +30,6 @@ namespace Bard.CLI
     public class AnalysisConfig
     {
         public Fra.Analysis.Words.Config Words { get; set; }
+        public Fra.Analysis.Phonology.Config Phonology { get; set; }
     }
 }

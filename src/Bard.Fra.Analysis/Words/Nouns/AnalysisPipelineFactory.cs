@@ -1,4 +1,5 @@
 ﻿using Bard.Contracts.Fra;
+using Bard.Contracts.Fra.Analysis.Words;
 using Bard.Fra.Analysis;
 using Bard.Fra.Analysis.Glaff.Modules;
 using Bard.Fra.Analysis.Words.Nouns.Modules;

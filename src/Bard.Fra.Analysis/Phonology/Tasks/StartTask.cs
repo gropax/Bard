@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bard.Fra.Analysis.Words.Nouns
+namespace Bard.Fra.Analysis.Phonology
 {
     public class StartTask
     {
@@ -27,19 +27,19 @@ namespace Bard.Fra.Analysis.Words.Nouns
         {
             var analysisPipeline = new AnalysisPipelineFactory(Config.Analysis).Build();
 
-            var lemmaData = GraphStorage.GetNounLemmaData();
-            var processed = Analyze(analysisPipeline, lemmaData);
+            var wordFormData = GraphStorage.GetWordFormData();
+            var processed = Analyze(analysisPipeline, wordFormData);
             var batches = processed.Batch(100);
 
             await foreach (var batch in batches)
             {
-                await GraphStorage.CreateNounsAsync(batch);
+                await GraphStorage.CreateWordPhonologyAsync(batch);
             }
         }
 
-        private async IAsyncEnumerable<LemmaData<NounLemma, NounForm>> Analyze(
-            AnalysisPipeline<LemmaData<NounLemma, NounForm>> analysisPipeline,
-            IAsyncEnumerable<LemmaData<NounLemma, NounForm>> lemmaData)
+        private async IAsyncEnumerable<WordForm> Analyze(
+            AnalysisPipeline<WordForm> analysisPipeline,
+            IAsyncEnumerable<WordForm> lemmaData)
         {
             await foreach (var lemma in lemmaData)
             {
