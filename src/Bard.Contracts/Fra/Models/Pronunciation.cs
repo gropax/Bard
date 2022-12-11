@@ -21,6 +21,8 @@ namespace Bard.Contracts.Fra
         public bool? AlignmentFailed { get; set; }
         public bool? BadSyllabation { get; set; }
 
+        public Phoneme[] GetPhonemes() => Phonemes.Select(p => Fra.Phonemes.BySymbol(p)).ToArray();
+
         public Pronunciation() { }
         public Pronunciation(string graphemes, string value)
         {

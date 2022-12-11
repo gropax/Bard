@@ -14,7 +14,7 @@ namespace Bard.Contracts.Fra.Analysis.Phonology
         public List<IAnomaly> Anomalies { get; } = new List<IAnomaly>();
         public string Pronunciation { get; set; }
         public ChangeHistory PronunciationHistory { get; set; }
-        public PhoneticRealization StdRealization { get; set; }
+        public PhoneticRealization MainRealization { get; set; }
         public PhoneticRealization[] Realizations { get; set; } = Array.Empty<PhoneticRealization>();
 
         public Phoneme[] Phonemes { get; set; }
