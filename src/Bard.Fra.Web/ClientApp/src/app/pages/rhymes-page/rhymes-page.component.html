@@ -1,2 +1,6 @@
-<app-phon-graph-word-selector (selected)="onWordSelected($event)"></app-phon-graph-word-selector>
-<app-final-rhyme-table [word]="selectedWord"></app-final-rhyme-table>
+<mat-card class="box">
+  <mat-card-content>
+    <app-phon-graph-word-selector (selected)="onWordSelected($event)"></app-phon-graph-word-selector>
+    <app-final-rhyme-table [word]="selectedWord"></app-final-rhyme-table>
+  </mat-card-content>
+</mat-card>

@@ -3,6 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http'
 
 import { BrowserModule } from '@angular/platform-browser';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -26,6 +27,8 @@ import { WordFormSelectorComponent } from './components/word-form-selector/word-
 import { PhonGraphWordSelectorComponent } from './components/phon-graph-word-selector/phon-graph-word-selector.component';
 import { RhymesPageComponent } from './pages/rhymes-page/rhymes-page.component';
 import { FinalRhymeTableComponent } from './pages/rhymes-page/final-rhyme-table/final-rhyme-table.component';
+import { EditorPageComponent } from './pages/editor-page/editor-page.component';
+import { PageContentComponent } from './components/page-content/page-content.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,9 @@ import { FinalRhymeTableComponent } from './pages/rhymes-page/final-rhyme-table/
     WordFormSelectorComponent,
     PhonGraphWordSelectorComponent,
     RhymesPageComponent,
-    FinalRhymeTableComponent
+    FinalRhymeTableComponent,
+    EditorPageComponent,
+    PageContentComponent
   ],
   imports: [
     BrowserModule,
@@ -42,6 +47,7 @@ import { FinalRhymeTableComponent } from './pages/rhymes-page/final-rhyme-table/
     ReactiveFormsModule,
     HttpClientModule,
 
+    MatCardModule,
     MatIconModule,
     MatListModule,
     MatFormFieldModule,

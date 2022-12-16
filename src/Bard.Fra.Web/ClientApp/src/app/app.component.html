@@ -19,14 +19,16 @@
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
                  [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
       <mat-nav-list>
-        <a mat-list-item routerLink=".">Lemmas</a>
+        <a mat-list-item routerLink="/editor" (click)="snav.close()">Editor</a>
         <a mat-list-item routerLink="/word-forms" (click)="snav.close()">Word forms</a>
         <a mat-list-item routerLink="/rhymes" (click)="snav.close()">Rhymes</a>
       </mat-nav-list>
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <router-outlet></router-outlet>
+      <app-page-content [loading]="(appState.pageLoading$ | async)!">
+        <router-outlet></router-outlet>
+      </app-page-content>
     </mat-sidenav-content>
 
   </mat-sidenav-container>
