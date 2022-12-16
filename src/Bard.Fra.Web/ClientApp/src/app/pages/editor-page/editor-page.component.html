@@ -1,5 +1,19 @@
 <mat-card class="box">
   <mat-card-content>
-    <p>editor-page works!</p>
+
+    <div class="editor-layout">
+      <div class="left-column">
+        <textarea
+          [(ngModel)]="text"
+          (ngModelChange)="updateText()"
+          class="editor-input">
+        </textarea>
+      </div>
+
+      <div class="right-column">
+        Right
+      </div>
+    </div>
+
   </mat-card-content>
 </mat-card>
