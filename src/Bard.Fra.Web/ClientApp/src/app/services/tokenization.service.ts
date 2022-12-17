@@ -69,6 +69,7 @@ export class TokenizationService {
       }
     }
 
+    if (text.length > 0)
     tokens.push(new Token(startIndex, text.length, tokenType, newlineCount));
 
     return tokens;
