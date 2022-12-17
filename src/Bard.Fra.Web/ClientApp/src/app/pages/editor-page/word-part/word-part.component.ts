@@ -20,7 +20,7 @@ export class WordPartComponent implements OnInit {
     private renderer: Renderer2)
   {
     this.renderer.listen('window', 'click', (e:Event) => {
-      if (e.target !== this.span.nativeElement) {
+      if (this.selectedWord === this.wordPart.word && e.target !== this.span.nativeElement) {
         this.selectEvent.emit(null);
       }
     });

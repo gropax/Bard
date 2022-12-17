@@ -37,7 +37,6 @@ export class EditorPageComponent implements OnInit {
   }
 
   public selectWord(word: Word | null) {
-    console.log(word);
     this.selectedWord = word;
   }
 
