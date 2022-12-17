@@ -124,10 +124,6 @@ export class ParsingService {
         var firstTokenIndex = Math.max(word.initialToken.index, verseFirstToken.index);
         var lastTokenIndex = Math.min(word.lastToken.index, verseLastToken.index);
 
-        console.log(`word = ${word.content}`);
-        console.log(`firstTokenIndex = ${firstTokenIndex}`);
-        console.log(`lastTokenIndex = ${lastTokenIndex}`);
-
         var tokens = verseTokens.filter(t => firstTokenIndex <= t.index && t.index <= lastTokenIndex);
 
         wordParts.push(new WordPart(tokens, word));

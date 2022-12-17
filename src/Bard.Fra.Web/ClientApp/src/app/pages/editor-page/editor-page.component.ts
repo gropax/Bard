@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, debounceTime, map } from 'rxjs';
+import { Word } from '../../models/text';
 import { ParsingService } from '../../services/parsing.service';
 import { TokenizationService } from '../../services/tokenization.service';
 
@@ -17,6 +18,8 @@ export class EditorPageComponent implements OnInit {
   public $tokens = this.$text.pipe(map(text => this.tokenizer.tokenize(text)));
   public $strophes = this.$tokens.pipe(map(tokens => this.parser.parse(tokens)));
 
+  public highlightedWord: Word | null = null;
+
   constructor(
     private tokenizer: TokenizationService,
     private parser: ParsingService) {
@@ -30,6 +33,16 @@ export class EditorPageComponent implements OnInit {
 
   public updateText() {
     this.textSubject.next(this.text);
+  }
+
+  public highlightWord(word: Word) {
+    console.log(word);
+    this.highlightedWord = word;
+  }
+
+  public unhighlightWord() {
+    console.log(null);
+    this.highlightedWord = null;
   }
 
 }
