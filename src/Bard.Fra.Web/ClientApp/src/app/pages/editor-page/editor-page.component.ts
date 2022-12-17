@@ -18,6 +18,7 @@ export class EditorPageComponent implements OnInit {
   public $tokens = this.$text.pipe(map(text => this.tokenizer.tokenize(text)));
   public $strophes = this.$tokens.pipe(map(tokens => this.parser.parse(tokens)));
 
+  public selectedWord: Word | null = null;
   public highlightedWord: Word | null = null;
 
   constructor(
@@ -35,14 +36,9 @@ export class EditorPageComponent implements OnInit {
     this.textSubject.next(this.text);
   }
 
-  public highlightWord(word: Word) {
+  public selectWord(word: Word | null) {
     console.log(word);
-    this.highlightedWord = word;
-  }
-
-  public unhighlightWord() {
-    console.log(null);
-    this.highlightedWord = null;
+    this.selectedWord = word;
   }
 
 }

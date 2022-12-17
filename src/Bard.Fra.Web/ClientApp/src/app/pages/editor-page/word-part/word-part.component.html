@@ -1,0 +1,11 @@
+<span #span
+  class="word-part"
+  [ngClass]="[
+    hover ? 'hover' : '',
+    wordPart.word === selectedWord ? 'selected' : '',
+  ]"
+  (mouseenter)="hover = true"
+  (mouseleave)="hover = false"
+  (click)="selectEvent.emit(wordPart.word)">
+  {{ wordPart.content }}
+</span>

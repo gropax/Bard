@@ -13,13 +13,12 @@
       <div class="right-column">
         <div *ngFor="let strophe of ($strophes | async)">
           <p *ngFor="let verse of strophe.verses">
-            <span *ngFor="let wordPart of verse.wordParts"
-              class="word-part"
-              [ngClass]="wordPart.word === highlightedWord ? 'hover' : ''"
-              (mouseenter)="highlightWord(wordPart.word)"
-              (mouseleave)="unhighlightWord()">
-              {{ wordPart.content }}
-            </span>
+            <app-word-part
+              *ngFor="let wordPart of verse.wordParts"
+              [wordPart]="wordPart"
+              [selectedWord]="selectedWord"
+              (selectEvent)="selectWord($event)">
+            </app-word-part>
           </p>
         </div>
       </div>
