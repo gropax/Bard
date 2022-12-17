@@ -11,8 +11,8 @@
       </div>
 
       <div class="right-column">
-        <div *ngFor="let strophe of ($strophes | async)">
-          <p *ngFor="let verse of strophe.verses">
+        <div *ngFor="let strophe of ($strophes | async)" class="strophe">
+          <p *ngFor="let verse of strophe.verses" class="verse">
             <app-word-part
               *ngFor="let wordPart of verse.wordParts"
               [wordPart]="wordPart"
