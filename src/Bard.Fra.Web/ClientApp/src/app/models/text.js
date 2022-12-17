@@ -1,47 +1,48 @@
 "use strict";
+//export class TokenizedText {
+//  constructor(
+//    public text: string,
+//    public paragraphs: Strophe[]) {
+//  }
+//}
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TokenType = exports.Token = exports.WordSpan = exports.VerseSpan = exports.ParagraphSpan = exports.TokenizedText = void 0;
-var TokenizedText = /** @class */ (function () {
-    function TokenizedText(text, paragraphs) {
-        this.text = text;
-        this.paragraphs = paragraphs;
-    }
-    return TokenizedText;
-}());
-exports.TokenizedText = TokenizedText;
-var ParagraphSpan = /** @class */ (function () {
-    function ParagraphSpan(startIndex, endIndex, verses) {
+exports.TokenType = exports.Token = exports.Word = exports.Verse = exports.Strophe = void 0;
+var Strophe = /** @class */ (function () {
+    function Strophe(startIndex, endIndex, verses, words) {
         this.startIndex = startIndex;
         this.endIndex = endIndex;
         this.verses = verses;
-    }
-    return ParagraphSpan;
-}());
-exports.ParagraphSpan = ParagraphSpan;
-var VerseSpan = /** @class */ (function () {
-    function VerseSpan(startIndex, endIndex, words) {
-        this.startIndex = startIndex;
-        this.endIndex = endIndex;
         this.words = words;
     }
-    return VerseSpan;
+    return Strophe;
 }());
-exports.VerseSpan = VerseSpan;
-var WordSpan = /** @class */ (function () {
-    function WordSpan(startIndex, endIndex) {
+exports.Strophe = Strophe;
+var Verse = /** @class */ (function () {
+    function Verse(startIndex, endIndex, tokens) {
         this.startIndex = startIndex;
         this.endIndex = endIndex;
+        this.tokens = tokens;
     }
-    return WordSpan;
+    return Verse;
 }());
-exports.WordSpan = WordSpan;
+exports.Verse = Verse;
+var Word = /** @class */ (function () {
+    function Word(startIndex, endIndex, tokens) {
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
+        this.tokens = tokens;
+    }
+    return Word;
+}());
+exports.Word = Word;
 var Token = /** @class */ (function () {
-    function Token(startIndex, endIndex, type, newlineConut) {
-        if (newlineConut === void 0) { newlineConut = 0; }
+    function Token(startIndex, endIndex, type, content, newlineCount) {
+        if (newlineCount === void 0) { newlineCount = 0; }
         this.startIndex = startIndex;
         this.endIndex = endIndex;
         this.type = type;
-        this.newlineConut = newlineConut;
+        this.content = content;
+        this.newlineCount = newlineCount;
     }
     return Token;
 }());

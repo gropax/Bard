@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, debounceTime, map } from 'rxjs';
+import { ParsingService } from '../../services/parsing.service';
 import { TokenizationService } from '../../services/tokenization.service';
 
 @Component({
@@ -11,18 +12,20 @@ export class EditorPageComponent implements OnInit {
 
   public text: string;
   public textSubject = new BehaviorSubject<string>("");
-  public $text = this.textSubject.asObservable()
-    .pipe(debounceTime(500));
 
+  public $text = this.textSubject.asObservable().pipe(debounceTime(500));
   public $tokens = this.$text.pipe(map(text => this.tokenizer.tokenize(text)));
+  public $strophes = this.$tokens.pipe(map(tokens => this.parser.parse(tokens)));
 
   constructor(
-    private tokenizer: TokenizationService) {
+    private tokenizer: TokenizationService,
+    private parser: ParsingService) {
   }
 
   ngOnInit(): void {
     //this.$text.subscribe(text => console.log(text));
-    this.$tokens.subscribe(tokens => console.log(tokens));
+    //this.$tokens.subscribe(tokens => console.log(tokens));
+    //this.$strophes.subscribe(strophes => console.log(strophes));
   }
 
   public updateText() {

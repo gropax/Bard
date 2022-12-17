@@ -11,7 +11,13 @@
       </div>
 
       <div class="right-column">
-        Right
+        <div *ngFor="let strophe of ($strophes | async)">
+          <p *ngFor="let verse of strophe.verses">
+            <span *ngFor="let token of verse.tokens">
+              {{ token.content }}
+            </span>
+          </p>
+        </div>
       </div>
     </div>
 
