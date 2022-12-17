@@ -1,40 +1,56 @@
 
-//export class TokenizedText {
-//  constructor(
-//    public text: string,
-//    public paragraphs: Strophe[]) {
-//  }
-//}
-
 export class Strophe {
   constructor(
-    public startIndex: number,
-    public endIndex: number,
+    public tokens: Token[],
     public verses: Verse[],
     public words: Word[]) {
   }
+
+  public initialToken = this.tokens[0];
+  public lastToken = this.tokens[this.tokens.length-1];
 }
 
 export class Verse {
   constructor(
-    public startIndex: number,
-    public endIndex: number,
-    public tokens: Token[]) {
+    public tokens: Token[],
+    public wordParts: WordPart[]) {
   }
+
+  public initialToken = this.tokens[0];
+  public lastToken = this.tokens[this.tokens.length-1];
+}
+
+export class WordPart {
+  constructor(
+    public tokens: Token[],
+    public word: Word) {
+  }
+
+  public content = this.tokens.map(t => t.content).join('');
+
+  public initialToken = this.tokens[0];
+  public lastToken = this.tokens[this.tokens.length-1];
+
+  public containsBegining = this.initialToken == this.word.initialToken;
+  public containsEnd = this.lastToken == this.word.lastToken;
 }
 
 export class Word {
   constructor(
-    public startIndex: number,
-    public endIndex: number,
     public tokens: Token[]) {
   }
+
+  public content = this.tokens.map(t => t.content).join('');
+
+  public initialToken = this.tokens[0];
+  public lastToken = this.tokens[this.tokens.length-1];
 }
 
 export class Token {
   constructor(
-    public startIndex: number,
-    public endIndex: number,
+    public index: number,
+    public startChar: number,
+    public endChar: number,
     public type: TokenType,
     public content: string,
     public newlineCount: number = 0) {

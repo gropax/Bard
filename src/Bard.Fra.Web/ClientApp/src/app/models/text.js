@@ -1,45 +1,56 @@
 "use strict";
-//export class TokenizedText {
-//  constructor(
-//    public text: string,
-//    public paragraphs: Strophe[]) {
-//  }
-//}
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TokenType = exports.Token = exports.Word = exports.Verse = exports.Strophe = void 0;
+exports.TokenType = exports.Token = exports.Word = exports.WordPart = exports.Verse = exports.Strophe = void 0;
 var Strophe = /** @class */ (function () {
-    function Strophe(startIndex, endIndex, verses, words) {
-        this.startIndex = startIndex;
-        this.endIndex = endIndex;
+    function Strophe(tokens, verses, words) {
+        this.tokens = tokens;
         this.verses = verses;
         this.words = words;
+        this.initialToken = this.tokens[0];
+        this.lastToken = this.tokens[this.tokens.length - 1];
     }
     return Strophe;
 }());
 exports.Strophe = Strophe;
 var Verse = /** @class */ (function () {
-    function Verse(startIndex, endIndex, tokens) {
-        this.startIndex = startIndex;
-        this.endIndex = endIndex;
+    function Verse(tokens, wordParts) {
         this.tokens = tokens;
+        this.wordParts = wordParts;
+        this.initialToken = this.tokens[0];
+        this.lastToken = this.tokens[this.tokens.length - 1];
     }
     return Verse;
 }());
 exports.Verse = Verse;
-var Word = /** @class */ (function () {
-    function Word(startIndex, endIndex, tokens) {
-        this.startIndex = startIndex;
-        this.endIndex = endIndex;
+var WordPart = /** @class */ (function () {
+    function WordPart(tokens, word) {
         this.tokens = tokens;
+        this.word = word;
+        this.content = this.tokens.map(function (t) { return t.content; }).join('');
+        this.initialToken = this.tokens[0];
+        this.lastToken = this.tokens[this.tokens.length - 1];
+        this.containsBegining = this.initialToken == this.word.initialToken;
+        this.containsEnd = this.lastToken == this.word.lastToken;
+    }
+    return WordPart;
+}());
+exports.WordPart = WordPart;
+var Word = /** @class */ (function () {
+    function Word(tokens) {
+        this.tokens = tokens;
+        this.content = this.tokens.map(function (t) { return t.content; }).join('');
+        this.initialToken = this.tokens[0];
+        this.lastToken = this.tokens[this.tokens.length - 1];
     }
     return Word;
 }());
 exports.Word = Word;
 var Token = /** @class */ (function () {
-    function Token(startIndex, endIndex, type, content, newlineCount) {
+    function Token(index, startChar, endChar, type, content, newlineCount) {
         if (newlineCount === void 0) { newlineCount = 0; }
-        this.startIndex = startIndex;
-        this.endIndex = endIndex;
+        this.index = index;
+        this.startChar = startChar;
+        this.endChar = endChar;
         this.type = type;
         this.content = content;
         this.newlineCount = newlineCount;

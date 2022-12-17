@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Strophe, Token, TokenType, Verse, Word } from '../models/text';
+import { Strophe, Token, TokenType, Verse, Word, WordPart } from '../models/text';
 
 @Injectable({
   providedIn: 'root'
@@ -10,25 +10,15 @@ export class ParsingService {
     var strophes = [];
 
     for (var stropheTokens of this.splitStrophes(tokens)) {
+      var words = this.splitWords(stropheTokens).map(tx => new Word(tx));
+
       var verses = [];
-      var words = [];
-
       for (var verseTokens of this.splitVerses(stropheTokens)) {
-        var startIndex = verseTokens[0].startIndex;
-        var endIndex = verseTokens[verseTokens.length-1].endIndex;
-        verses.push(new Verse(startIndex, endIndex, verseTokens));
+        var wordParts = this.alignWithWords(words, verseTokens);
+        verses.push(new Verse(verseTokens, wordParts));
       }
 
-      for (var wordTokens of this.splitWords(stropheTokens)) {
-        var startIndex = wordTokens[0].startIndex;
-        var endIndex = wordTokens[wordTokens.length-1].endIndex;
-        words.push(new Word(startIndex, endIndex, wordTokens));
-      }
-
-      var startIndex = verses[0].startIndex;
-      var endIndex = verses[verses.length-1].endIndex;
-
-      strophes.push(new Strophe(startIndex, endIndex, verses, words));
+      strophes.push(new Strophe(stropheTokens, verses, words));
     }
 
     return strophes;
@@ -119,6 +109,34 @@ export class ParsingService {
       words.push(wordTokens);
 
     return words;
+  }
+
+  private alignWithWords(words: Word[], verseTokens: Token[]) {
+    var verseFirstToken = verseTokens[0];
+    var verseLastToken = verseTokens[verseTokens.length-1];
+
+    var wordParts = [];
+
+    for (var word of words) {
+      if (word.lastToken.endChar > verseFirstToken.startChar &&
+          word.initialToken.startChar < verseLastToken.endChar)
+      {
+        var firstTokenIndex = Math.max(word.initialToken.index, verseFirstToken.index);
+        var lastTokenIndex = Math.min(word.lastToken.index, verseLastToken.index);
+
+        console.log(`word = ${word.content}`);
+        console.log(`firstTokenIndex = ${firstTokenIndex}`);
+        console.log(`lastTokenIndex = ${lastTokenIndex}`);
+
+        var tokens = verseTokens.filter(t => firstTokenIndex <= t.index && t.index <= lastTokenIndex);
+
+        wordParts.push(new WordPart(tokens, word));
+      }
+    }
+
+    console.log(wordParts);
+
+    return wordParts;
   }
 
 }

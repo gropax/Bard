@@ -8,6 +8,7 @@ export class TokenizationService {
 
   public tokenize(text: string): Token[] {
     var tokens = [];
+    var tokenIndex = 0;
 
     var tokenType = TokenType.Blank;
     var newlineCount = 0;
@@ -25,7 +26,7 @@ export class TokenizationService {
           // next
         } else {  
           if (i > 0)  // do not add empty blank token at start
-            tokens.push(new Token(startIndex, i, tokenType, " ", newlineCount));
+            tokens.push(new Token(tokenIndex++, startIndex, i, tokenType, " ", newlineCount));
 
           tokenType = this.getTokenType(charType);
           startIndex = i;
@@ -36,7 +37,7 @@ export class TokenizationService {
         if (charType == CharType.Dash) {
           // next
         } else {
-          tokens.push(new Token(startIndex, i, tokenType, "-"));
+          tokens.push(new Token(tokenIndex++, startIndex, i, tokenType, "-"));
           tokenType = this.getTokenType(charType);
           startIndex = i;
         }
@@ -45,7 +46,7 @@ export class TokenizationService {
         if (charType == CharType.Apostrophe) {
           // next
         } else {
-          tokens.push(new Token(startIndex, i, tokenType, "'"));
+          tokens.push(new Token(tokenIndex++, startIndex, i, tokenType, "'"));
           tokenType = this.getTokenType(charType);
           startIndex = i;
         }
@@ -54,7 +55,7 @@ export class TokenizationService {
         if (charType == CharType.Punctuation) {
           // next
         } else {
-          tokens.push(new Token(startIndex, i, tokenType, text[startIndex]));
+          tokens.push(new Token(tokenIndex++, startIndex, i, tokenType, text[startIndex]));
           tokenType = this.getTokenType(charType);
           startIndex = i;
         }
@@ -63,7 +64,7 @@ export class TokenizationService {
         if (charType == CharType.Word) {
           // next
         } else {
-          tokens.push(new Token(startIndex, i, tokenType, text.substring(startIndex, i)));
+          tokens.push(new Token(tokenIndex++, startIndex, i, tokenType, text.substring(startIndex, i)));
           tokenType = this.getTokenType(charType);
           startIndex = i;
         }
@@ -71,7 +72,7 @@ export class TokenizationService {
     }
 
     if (text.length > 0)
-      tokens.push(new Token(startIndex, text.length, tokenType, text.substring(startIndex, i), newlineCount));
+      tokens.push(new Token(tokenIndex++, startIndex, text.length, tokenType, text.substring(startIndex, i), newlineCount));
 
     return tokens;
   }
