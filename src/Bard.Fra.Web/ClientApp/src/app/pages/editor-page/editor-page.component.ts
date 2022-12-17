@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, debounceTime } from 'rxjs';
+import { BehaviorSubject, debounceTime, map } from 'rxjs';
+import { TokenizationService } from '../../services/tokenization.service';
 
 @Component({
   selector: 'app-editor-page',
@@ -13,10 +14,15 @@ export class EditorPageComponent implements OnInit {
   public $text = this.textSubject.asObservable()
     .pipe(debounceTime(500));
 
-  constructor() { }
+  public $tokens = this.$text.pipe(map(text => this.tokenizer.tokenize(text)));
+
+  constructor(
+    private tokenizer: TokenizationService) {
+  }
 
   ngOnInit(): void {
-    this.$text.subscribe(text => console.log(text));
+    //this.$text.subscribe(text => console.log(text));
+    this.$tokens.subscribe(tokens => console.log(tokens));
   }
 
   public updateText() {
