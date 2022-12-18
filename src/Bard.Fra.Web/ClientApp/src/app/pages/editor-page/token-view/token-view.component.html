@@ -5,6 +5,8 @@
         <app-word-part *ngIf="segment.isWord"
           [wordPart]="segment.asWordPart()"
           [selectedWord]="selectedWord"
+          [hoveredWord]="hoveredWord"
+          (hoverEvent)="hoverWord($event)"
           (selectEvent)="selectWord($event)">
         </app-word-part>
         <span *ngIf="!segment.isWord" class="punct-segment">{{ segment.content }}</span>

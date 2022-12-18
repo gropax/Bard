@@ -21,10 +21,11 @@ export class EditorPageComponent implements OnInit {
   public strophes: Strophe[];
 
   public viewMode = {
-    token: 'Tok',
+    tokens: 'Tok',
+    syllables: 'Syl',
     ipa: 'IPA',
   }
-  public selectedViewMode: string = this.viewMode.token;
+  public selectedViewMode: string = this.viewMode.tokens;
 
   constructor(
     private tokenizer: TokenizationService,

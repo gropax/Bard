@@ -10,6 +10,7 @@ export class TokenViewComponent implements OnInit {
 
   @Input() strophes: Strophe[];
 
+  public hoveredWord: Word | null = null;
   public selectedWord: Word | null = null;
   public selectedWordElem: HTMLSpanElement | null = null;
 
@@ -30,6 +31,10 @@ export class TokenViewComponent implements OnInit {
   public selectWord($event: [Word, HTMLSpanElement]) {
     this.selectedWord = $event[0];
     this.selectedWordElem = $event[1];
+  }
+
+  public hoverWord($event: Word | null) {
+    this.hoveredWord = $event;
   }
 
 }

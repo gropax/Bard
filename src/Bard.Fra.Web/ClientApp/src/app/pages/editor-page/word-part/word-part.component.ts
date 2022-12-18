@@ -11,10 +11,10 @@ export class WordPartComponent implements OnInit {
   @ViewChild('span') span: ElementRef;
 
   @Input() wordPart: WordPart;
+  @Input() hoveredWord: Word | null;
   @Input() selectedWord: Word | null;
+  @Output() hoverEvent = new EventEmitter<Word | null>();
   @Output() selectEvent = new EventEmitter<[Word, HTMLSpanElement]>();
-
-  public hover = false;
 
   ngOnInit(): void {
   }

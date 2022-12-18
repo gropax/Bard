@@ -12,7 +12,7 @@
 
       <div class="right-column">
         <app-token-view
-          *ngIf="selectedViewMode === viewMode.token"
+          *ngIf="selectedViewMode === viewMode.tokens"
           [strophes]="strophes">
         </app-token-view>
       </div>
@@ -20,7 +20,12 @@
       <div class="menu-column">
         <div class="menu-grid">
           <app-view-menu-button
-            [viewMode]="viewMode.token"
+            [viewMode]="viewMode.tokens"
+            [selectedViewMode]="selectedViewMode"
+            (selectEvent)="selectViewMode($event)">
+          </app-view-menu-button>
+          <app-view-menu-button
+            [viewMode]="viewMode.syllables"
             [selectedViewMode]="selectedViewMode"
             (selectEvent)="selectViewMode($event)">
           </app-view-menu-button>
