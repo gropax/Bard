@@ -29,7 +29,7 @@ import { RhymesPageComponent } from './pages/rhymes-page/rhymes-page.component';
 import { FinalRhymeTableComponent } from './pages/rhymes-page/final-rhyme-table/final-rhyme-table.component';
 import { EditorPageComponent } from './pages/editor-page/editor-page.component';
 import { PageContentComponent } from './components/page-content/page-content.component';
-import { WordPartComponent } from './pages/editor-page/word-part/word-part.component';
+import { WordPartComponent } from './pages/editor-page/token-view/word-part/word-part.component';
 import { ViewMenuButtonComponent } from './pages/editor-page/view-menu-button/view-menu-button.component';
 import { TokenViewComponent } from './pages/editor-page/token-view/token-view.component';
 

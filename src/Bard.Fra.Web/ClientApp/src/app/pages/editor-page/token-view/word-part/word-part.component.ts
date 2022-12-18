@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
-import { Word, WordPart } from '../../../models/text';
+import { Word, WordPart } from '../../../../models/text';
 
 @Component({
   selector: 'app-word-part',
