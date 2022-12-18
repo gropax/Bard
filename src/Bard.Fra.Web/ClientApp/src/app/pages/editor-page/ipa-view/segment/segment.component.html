@@ -1,0 +1,11 @@
+<span #span
+  class="segment"
+  [ngClass]="[
+    segment.word === hoveredWord ? 'hover' : '',
+    segment.word === selectedWord ? 'selected' : '',
+  ]"
+  (mouseenter)="hoverEvent.emit(segment.word)"
+  (mouseleave)="hoverEvent.emit(null)"
+  (click)="selectEvent.emit([segment.word!, span])">
+  {{ segment.content }}
+</span>

@@ -15,6 +15,10 @@
           *ngIf="selectedViewMode === viewMode.tokens"
           [strophes]="strophes">
         </app-token-view>
+        <app-ipa-view
+          *ngIf="selectedViewMode === viewMode.ipa"
+          [strophes]="strophes">
+        </app-ipa-view>
       </div>
 
       <div class="menu-column">

@@ -32,6 +32,8 @@ import { PageContentComponent } from './components/page-content/page-content.com
 import { WordPartComponent } from './pages/editor-page/token-view/word-part/word-part.component';
 import { ViewMenuButtonComponent } from './pages/editor-page/view-menu-button/view-menu-button.component';
 import { TokenViewComponent } from './pages/editor-page/token-view/token-view.component';
+import { IpaViewComponent } from './pages/editor-page/ipa-view/ipa-view.component';
+import { SegmentComponent } from './pages/editor-page/ipa-view/segment/segment.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import { TokenViewComponent } from './pages/editor-page/token-view/token-view.co
     PageContentComponent,
     WordPartComponent,
     ViewMenuButtonComponent,
-    TokenViewComponent
+    TokenViewComponent,
+    IpaViewComponent,
+    SegmentComponent
   ],
   imports: [
     BrowserModule,
