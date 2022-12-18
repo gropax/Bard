@@ -133,7 +133,6 @@ export class ParsingService {
       var token = verseTokens[i];
 
       tokenWord = wordDict[token.index];
-      console.log(tokenWord);
       if (tokenWord) {
         wordTokens.push(token);
         currentWord = tokenWord;

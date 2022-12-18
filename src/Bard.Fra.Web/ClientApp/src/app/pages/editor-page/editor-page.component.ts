@@ -25,7 +25,7 @@ export class EditorPageComponent implements OnInit {
     token: 'Tk',
     ipa: 'IPA',
   }
-  public selectedViewMode: string | null = null;
+  public selectedViewMode: string = this.viewMode.token;
 
   constructor(
     private tokenizer: TokenizationService,
@@ -35,7 +35,7 @@ export class EditorPageComponent implements OnInit {
   ngOnInit(): void {
     //this.$text.subscribe(text => console.log(text));
     //this.$tokens.subscribe(tokens => console.log(tokens));
-    this.$strophes.subscribe(strophes => console.log(strophes));
+    //this.$strophes.subscribe(strophes => console.log(strophes));
   }
 
   public updateText() {
@@ -46,7 +46,7 @@ export class EditorPageComponent implements OnInit {
     this.selectedWord = word;
   }
 
-  public selectViewMode(viewMode: string | null) {
+  public selectViewMode(viewMode: string) {
     this.selectedViewMode = viewMode;
   }
 

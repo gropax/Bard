@@ -8,7 +8,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export class ViewMenuButtonComponent implements OnInit {
 
   @Input() viewMode: string;
-  @Input() selectedViewMode: string | null;
+  @Input() selectedViewMode: string;
   @Output() selectEvent = new EventEmitter<string>();
 
   public hover = false;
