@@ -30,6 +30,7 @@ import { FinalRhymeTableComponent } from './pages/rhymes-page/final-rhyme-table/
 import { EditorPageComponent } from './pages/editor-page/editor-page.component';
 import { PageContentComponent } from './components/page-content/page-content.component';
 import { WordPartComponent } from './pages/editor-page/word-part/word-part.component';
+import { ViewMenuButtonComponent } from './pages/editor-page/view-menu-button/view-menu-button.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { WordPartComponent } from './pages/editor-page/word-part/word-part.compo
     FinalRhymeTableComponent,
     EditorPageComponent,
     PageContentComponent,
-    WordPartComponent
+    WordPartComponent,
+    ViewMenuButtonComponent
   ],
   imports: [
     BrowserModule,

@@ -21,6 +21,12 @@ export class EditorPageComponent implements OnInit {
   public selectedWord: Word | null = null;
   public highlightedWord: Word | null = null;
 
+  public viewMode = {
+    token: 'Tk',
+    ipa: 'IPA',
+  }
+  public selectedViewMode: string | null = null;
+
   constructor(
     private tokenizer: TokenizationService,
     private parser: ParsingService) {
@@ -38,6 +44,10 @@ export class EditorPageComponent implements OnInit {
 
   public selectWord(word: Word | null) {
     this.selectedWord = word;
+  }
+
+  public selectViewMode(viewMode: string | null) {
+    this.selectedViewMode = viewMode;
   }
 
 }

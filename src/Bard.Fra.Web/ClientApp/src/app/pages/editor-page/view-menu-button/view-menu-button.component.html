@@ -1,0 +1,11 @@
+<div
+  class="view-mode-btn"
+  [ngClass]="[
+    hover ? 'hover' : '',
+    viewMode === selectedViewMode ? 'selected' : '',
+  ]"
+  (mouseenter)="hover = true"
+  (mouseleave)="hover = false"
+  (click)="selectEvent.emit(viewMode)">
+  {{ viewMode }}
+</div>

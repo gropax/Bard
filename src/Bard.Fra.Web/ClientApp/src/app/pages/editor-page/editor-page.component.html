@@ -24,6 +24,21 @@
           </p>
         </div>
       </div>
+
+      <div class="menu-column">
+        <div class="menu-grid">
+          <app-view-menu-button
+            [viewMode]="viewMode.token"
+            [selectedViewMode]="selectedViewMode"
+            (selectEvent)="selectViewMode($event)">
+          </app-view-menu-button>
+          <app-view-menu-button
+            [viewMode]="viewMode.ipa"
+            [selectedViewMode]="selectedViewMode"
+            (selectEvent)="selectViewMode($event)">
+          </app-view-menu-button>
+        </div>
+      </div>
     </div>
 
   </mat-card-content>
