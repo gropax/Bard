@@ -1,0 +1,14 @@
+<div class="token-view">
+  <div *ngFor="let strophe of strophes" class="strophe">
+    <p *ngFor="let verse of strophe.verses" class="verse">
+      <ng-container *ngFor="let segment of verse.segments">
+        <app-word-part *ngIf="segment.isWord"
+          [wordPart]="segment.asWordPart()"
+          [selectedWord]="selectedWord"
+          (selectEvent)="selectWord($event)">
+        </app-word-part>
+        <span *ngIf="!segment.isWord" class="punct-segment">{{ segment.content }}</span>
+      </ng-container>
+    </p>
+  </div>
+</div>

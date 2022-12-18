@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { BehaviorSubject, debounceTime, map } from 'rxjs';
-import { Word } from '../../models/text';
+import { Strophe, Word } from '../../models/text';
 import { ParsingService } from '../../services/parsing.service';
 import { TokenizationService } from '../../services/tokenization.service';
 
@@ -18,42 +18,27 @@ export class EditorPageComponent implements OnInit {
   public $tokens = this.$text.pipe(map(text => this.tokenizer.tokenize(text)));
   public $strophes = this.$tokens.pipe(map(tokens => this.parser.parse(tokens)));
 
-  public selectedWord: Word | null = null;
-  public selectedWordElem: HTMLSpanElement | null = null;
-  public highlightedWord: Word | null = null;
+  public strophes: Strophe[];
 
   public viewMode = {
-    token: 'Tk',
+    token: 'Tok',
     ipa: 'IPA',
   }
   public selectedViewMode: string = this.viewMode.token;
 
   constructor(
-    private renderer: Renderer2,
     private tokenizer: TokenizationService,
-    private parser: ParsingService)
-  {
-    this.renderer.listen('window', 'click', (e:Event) => {
-      if (e.target !== this.selectedWordElem) {
-        this.selectedWord = null;
-        this.selectedWordElem = null;
-      }
-    });
+    private parser: ParsingService) {
   }
 
   ngOnInit(): void {
     //this.$text.subscribe(text => console.log(text));
     //this.$tokens.subscribe(tokens => console.log(tokens));
-    //this.$strophes.subscribe(strophes => console.log(strophes));
+    this.$strophes.subscribe(strophes => this.strophes = strophes);
   }
 
   public updateText() {
     this.textSubject.next(this.text);
-  }
-
-  public selectWord($event: [Word, HTMLSpanElement]) {
-    this.selectedWord = $event[0];
-    this.selectedWordElem = $event[1];
   }
 
   public selectViewMode(viewMode: string) {
