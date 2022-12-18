@@ -12,19 +12,9 @@ export class WordPartComponent implements OnInit {
 
   @Input() wordPart: WordPart;
   @Input() selectedWord: Word | null;
-  @Output() selectEvent = new EventEmitter<Word | null>();
+  @Output() selectEvent = new EventEmitter<[Word, HTMLSpanElement]>();
 
   public hover = false;
-
-  constructor(
-    private renderer: Renderer2)
-  {
-    this.renderer.listen('window', 'click', (e:Event) => {
-      if (this.selectedWord === this.wordPart.word && e.target !== this.span.nativeElement) {
-        this.selectEvent.emit(null);
-      }
-    });
-  }
 
   ngOnInit(): void {
   }

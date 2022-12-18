@@ -6,6 +6,7 @@
   ]"
   (mouseenter)="hover = true"
   (mouseleave)="hover = false"
-  (click)="selectEvent.emit(wordPart.word)">
+  (click)="selectEvent.emit([wordPart.word, span])">
+  <!--(click)="selectEvent.emit({ word: wordPart.word, elem: span})">-->
   {{ wordPart.content }}
 </span>

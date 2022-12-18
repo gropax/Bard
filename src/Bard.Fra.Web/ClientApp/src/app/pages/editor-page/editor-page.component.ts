@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { BehaviorSubject, debounceTime, map } from 'rxjs';
 import { Word } from '../../models/text';
 import { ParsingService } from '../../services/parsing.service';
@@ -19,6 +19,7 @@ export class EditorPageComponent implements OnInit {
   public $strophes = this.$tokens.pipe(map(tokens => this.parser.parse(tokens)));
 
   public selectedWord: Word | null = null;
+  public selectedWordElem: HTMLSpanElement | null = null;
   public highlightedWord: Word | null = null;
 
   public viewMode = {
@@ -28,8 +29,16 @@ export class EditorPageComponent implements OnInit {
   public selectedViewMode: string = this.viewMode.token;
 
   constructor(
+    private renderer: Renderer2,
     private tokenizer: TokenizationService,
-    private parser: ParsingService) {
+    private parser: ParsingService)
+  {
+    this.renderer.listen('window', 'click', (e:Event) => {
+      if (e.target !== this.selectedWordElem) {
+        this.selectedWord = null;
+        this.selectedWordElem = null;
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -42,8 +51,9 @@ export class EditorPageComponent implements OnInit {
     this.textSubject.next(this.text);
   }
 
-  public selectWord(word: Word | null) {
-    this.selectedWord = word;
+  public selectWord($event: [Word, HTMLSpanElement]) {
+    this.selectedWord = $event[0];
+    this.selectedWordElem = $event[1];
   }
 
   public selectViewMode(viewMode: string) {
