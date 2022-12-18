@@ -134,6 +134,11 @@ export class ParsingService {
 
       tokenWord = wordDict[token.index];
       if (tokenWord) {
+        if (tokenWord !== currentWord && wordTokens.length > 0) {
+          segments.push(new WordPart(wordTokens, currentWord));
+          wordTokens = [];
+          currentWord = tokenWord;
+        }
         wordTokens.push(token);
         currentWord = tokenWord;
       } else {
