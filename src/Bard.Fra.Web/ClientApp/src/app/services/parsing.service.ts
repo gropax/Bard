@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Strophe, Token, TokenType, Verse, Word, WordPart } from '../models/text';
+import { IVerseSegment, PunctSegment, Strophe, Token, TokenType, Verse, Word, WordPart } from '../models/text';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +14,9 @@ export class ParsingService {
 
       var verses = [];
       for (var verseTokens of this.splitVerses(stropheTokens)) {
-        var wordParts = this.alignWithWords(words, verseTokens);
-        verses.push(new Verse(verseTokens, wordParts));
+        //var wordParts = this.alignWithWords(words, verseTokens);
+        var segments = this.segmentVerse(verseTokens, words);
+        verses.push(new Verse(verseTokens, segments));
       }
 
       strophes.push(new Strophe(stropheTokens, verses, words));
@@ -95,9 +96,10 @@ export class ParsingService {
       } else if (token.type == TokenType.Punctuation) {
         if (wordTokens.length > 0) {
           words.push(wordTokens);
+          wordTokens = [];
         }
-        words.push([token]);
-        wordTokens = [];
+        //words.push([token]);
+        //wordTokens = [];
       }
       else
         wordTokens.push(token);
@@ -111,28 +113,51 @@ export class ParsingService {
     return words;
   }
 
-  private alignWithWords(words: Word[], verseTokens: Token[]) {
-    var verseFirstToken = verseTokens[0];
-    var verseLastToken = verseTokens[verseTokens.length-1];
+  private segmentVerse(verseTokens: Token[], words: Word[]): IVerseSegment[] {
+    var segments: IVerseSegment[] = [];
 
-    var wordParts = [];
-
-    for (var word of words) {
-      if (word.lastToken.endChar > verseFirstToken.startChar &&
-          word.initialToken.startChar < verseLastToken.endChar)
-      {
-        var firstTokenIndex = Math.max(word.initialToken.index, verseFirstToken.index);
-        var lastTokenIndex = Math.min(word.lastToken.index, verseLastToken.index);
-
-        var tokens = verseTokens.filter(t => firstTokenIndex <= t.index && t.index <= lastTokenIndex);
-
-        wordParts.push(new WordPart(tokens, word));
+    var wordDict: { [tokenIndex: number]: Word } = {};
+    for (var i = 0; i < words.length; i++) {
+      var word = words[i];
+      for (var j = 0; j < word.tokens.length; j++) {
+        var token = word.tokens[j];
+        wordDict[token.index] = word;
       }
     }
 
-    console.log(wordParts);
+    var wordTokens: Token[] = [];
+    var currentWord: any;
+    var tokenWord: any;
 
-    return wordParts;
+    for (var i = 0; i < verseTokens.length; i++) {
+      var token = verseTokens[i];
+
+      tokenWord = wordDict[token.index];
+      console.log(tokenWord);
+      if (tokenWord) {
+        wordTokens.push(token);
+        currentWord = tokenWord;
+      } else {
+        if (wordTokens.length > 0) {
+          segments.push(new WordPart(wordTokens, currentWord));
+          wordTokens = [];
+        }
+        segments.push(new PunctSegment([token], this.normalizeContent(token)));
+      }
+    }
+
+    if (wordTokens.length > 0)
+      segments.push(new WordPart(wordTokens, tokenWord));
+
+    return segments;
+  }
+
+  private normalizeContent(token: Token): string {
+    var str = token.content.trim();
+    if (str.length === 0)
+      return ' ';
+    else
+      return str;
   }
 
 }

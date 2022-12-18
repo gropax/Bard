@@ -13,12 +13,14 @@
       <div class="right-column">
         <div *ngFor="let strophe of ($strophes | async)" class="strophe">
           <p *ngFor="let verse of strophe.verses" class="verse">
-            <app-word-part
-              *ngFor="let wordPart of verse.wordParts"
-              [wordPart]="wordPart"
-              [selectedWord]="selectedWord"
-              (selectEvent)="selectWord($event)">
-            </app-word-part>
+            <ng-container *ngFor="let segment of verse.segments">
+              <app-word-part *ngIf="segment.isWord"
+                [wordPart]="segment.asWordPart()"
+                [selectedWord]="selectedWord"
+                (selectEvent)="selectWord($event)">
+              </app-word-part>
+              <span *ngIf="!segment.isWord" class="punct-segment">{{ segment.content }}</span>
+            </ng-container>
           </p>
         </div>
       </div>

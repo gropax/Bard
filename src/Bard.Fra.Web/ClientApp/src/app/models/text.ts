@@ -13,18 +13,39 @@ export class Strophe {
 export class Verse {
   constructor(
     public tokens: Token[],
-    public wordParts: WordPart[]) {
+    public segments: IVerseSegment[]) {
   }
 
   public initialToken = this.tokens[0];
   public lastToken = this.tokens[this.tokens.length-1];
 }
 
-export class WordPart {
+
+export interface IVerseSegment {
+  tokens: Token[];
+  content: string;
+  isWord: boolean;
+  asWordPart(): WordPart;
+}
+
+export class PunctSegment implements IVerseSegment {
+  constructor(
+    public tokens: Token[],
+    public content: string) {
+  }
+
+  public isWord = false;
+  public asWordPart(): WordPart { throw "not a WordPart"; }
+}
+
+export class WordPart implements IVerseSegment {
   constructor(
     public tokens: Token[],
     public word: Word) {
   }
+
+  public isWord = true;
+  public asWordPart(): WordPart { return this; }
 
   public content = this.tokens.map(t => t.content).join('');
 

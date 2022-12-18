@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TokenType = exports.Token = exports.Word = exports.WordPart = exports.Verse = exports.Strophe = void 0;
+exports.TokenType = exports.Token = exports.Word = exports.WordPart = exports.PunctSegment = exports.Verse = exports.Strophe = void 0;
 var Strophe = /** @class */ (function () {
     function Strophe(tokens, verses, words) {
         this.tokens = tokens;
@@ -13,25 +13,37 @@ var Strophe = /** @class */ (function () {
 }());
 exports.Strophe = Strophe;
 var Verse = /** @class */ (function () {
-    function Verse(tokens, wordParts) {
+    function Verse(tokens, segments) {
         this.tokens = tokens;
-        this.wordParts = wordParts;
+        this.segments = segments;
         this.initialToken = this.tokens[0];
         this.lastToken = this.tokens[this.tokens.length - 1];
     }
     return Verse;
 }());
 exports.Verse = Verse;
+var PunctSegment = /** @class */ (function () {
+    function PunctSegment(tokens, content) {
+        this.tokens = tokens;
+        this.content = content;
+        this.isWord = false;
+    }
+    PunctSegment.prototype.asWordPart = function () { throw "not a WordPart"; };
+    return PunctSegment;
+}());
+exports.PunctSegment = PunctSegment;
 var WordPart = /** @class */ (function () {
     function WordPart(tokens, word) {
         this.tokens = tokens;
         this.word = word;
+        this.isWord = true;
         this.content = this.tokens.map(function (t) { return t.content; }).join('');
         this.initialToken = this.tokens[0];
         this.lastToken = this.tokens[this.tokens.length - 1];
         this.containsBegining = this.initialToken == this.word.initialToken;
         this.containsEnd = this.lastToken == this.word.lastToken;
     }
+    WordPart.prototype.asWordPart = function () { return this; };
     return WordPart;
 }());
 exports.WordPart = WordPart;

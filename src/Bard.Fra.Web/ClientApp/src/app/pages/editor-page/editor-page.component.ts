@@ -14,7 +14,7 @@ export class EditorPageComponent implements OnInit {
   public text: string;
   public textSubject = new BehaviorSubject<string>("");
 
-  public $text = this.textSubject.asObservable().pipe(debounceTime(500));
+  public $text = this.textSubject.asObservable().pipe(debounceTime(300));
   public $tokens = this.$text.pipe(map(text => this.tokenizer.tokenize(text)));
   public $strophes = this.$tokens.pipe(map(tokens => this.parser.parse(tokens)));
 
@@ -29,7 +29,7 @@ export class EditorPageComponent implements OnInit {
   ngOnInit(): void {
     //this.$text.subscribe(text => console.log(text));
     //this.$tokens.subscribe(tokens => console.log(tokens));
-    //this.$strophes.subscribe(strophes => console.log(strophes));
+    this.$strophes.subscribe(strophes => console.log(strophes));
   }
 
   public updateText() {
