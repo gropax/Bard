@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IVerseSegment, PunctSegment, Strophe, Token, TokenType, Verse, Word, WordPart } from '../models/text';
+import { Strophe, Token, TokenType, Verse, Word, } from '../models/text';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +15,7 @@ export class ParsingService {
       var verses = [];
       for (var verseTokens of this.splitVerses(stropheTokens)) {
         //var wordParts = this.alignWithWords(words, verseTokens);
-        var segments = this.segmentVerse(verseTokens, words);
-        verses.push(new Verse(verseTokens, segments));
+        verses.push(new Verse(verseTokens));
       }
 
       strophes.push(new Strophe(stropheTokens, verses, words));
@@ -111,57 +110,6 @@ export class ParsingService {
       words.push(wordTokens);
 
     return words;
-  }
-
-  private segmentVerse(verseTokens: Token[], words: Word[]): IVerseSegment[] {
-    var segments: IVerseSegment[] = [];
-
-    var wordDict: { [tokenIndex: number]: Word } = {};
-    for (var i = 0; i < words.length; i++) {
-      var word = words[i];
-      for (var j = 0; j < word.tokens.length; j++) {
-        var token = word.tokens[j];
-        wordDict[token.index] = word;
-      }
-    }
-
-    var wordTokens: Token[] = [];
-    var currentWord: any;
-    var tokenWord: any;
-
-    for (var i = 0; i < verseTokens.length; i++) {
-      var token = verseTokens[i];
-
-      tokenWord = wordDict[token.index];
-      if (tokenWord) {
-        if (tokenWord !== currentWord && wordTokens.length > 0) {
-          segments.push(new WordPart(wordTokens, currentWord));
-          wordTokens = [];
-          currentWord = tokenWord;
-        }
-        wordTokens.push(token);
-        currentWord = tokenWord;
-      } else {
-        if (wordTokens.length > 0) {
-          segments.push(new WordPart(wordTokens, currentWord));
-          wordTokens = [];
-        }
-        segments.push(new PunctSegment([token], this.normalizeContent(token)));
-      }
-    }
-
-    if (wordTokens.length > 0)
-      segments.push(new WordPart(wordTokens, tokenWord));
-
-    return segments;
-  }
-
-  private normalizeContent(token: Token): string {
-    var str = token.content.trim();
-    if (str.length === 0)
-      return ' ';
-    else
-      return str;
   }
 
 }

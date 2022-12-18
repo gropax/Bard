@@ -1,70 +1,12 @@
 
-export class Strophe {
-  constructor(
-    public tokens: Token[],
-    public verses: Verse[],
-    public words: Word[]) {
-  }
-
-  public initialToken = this.tokens[0];
-  public lastToken = this.tokens[this.tokens.length-1];
-}
-
-export class Verse {
-  constructor(
-    public tokens: Token[],
-    public segments: IVerseSegment[]) {
-  }
-
-  public initialToken = this.tokens[0];
-  public lastToken = this.tokens[this.tokens.length-1];
-}
-
-
-export interface IVerseSegment {
-  tokens: Token[];
-  content: string;
-  isWord: boolean;
-  asWordPart(): WordPart;
-}
-
-export class PunctSegment implements IVerseSegment {
-  constructor(
-    public tokens: Token[],
-    public content: string) {
-  }
-
-  public isWord = false;
-  public asWordPart(): WordPart { throw "not a WordPart"; }
-}
-
-export class WordPart implements IVerseSegment {
-  constructor(
-    public tokens: Token[],
-    public word: Word) {
-  }
-
-  public isWord = true;
-  public asWordPart(): WordPart { return this; }
-
-  public content = this.tokens.map(t => t.content).join('');
-
-  public initialToken = this.tokens[0];
-  public lastToken = this.tokens[this.tokens.length-1];
-
-  public containsBegining = this.initialToken == this.word.initialToken;
-  public containsEnd = this.lastToken == this.word.lastToken;
-}
-
-export class Word {
-  constructor(
-    public tokens: Token[]) {
-  }
-
-  public content = this.tokens.map(t => t.content).join('');
-
-  public initialToken = this.tokens[0];
-  public lastToken = this.tokens[this.tokens.length-1];
+export enum TokenType {
+  Blank,
+  Word,
+  Dash,
+  Apostrophe,
+  Punctuation,
+  //NewVerse,
+  //NewParagraph,
 }
 
 export class Token {
@@ -78,12 +20,38 @@ export class Token {
   }
 }
 
-export enum TokenType {
-  Blank,
-  Word,
-  Dash,
-  Apostrophe,
-  Punctuation,
-  //NewVerse,
-  //NewParagraph,
+export abstract class TokenSpan {
+  constructor(
+    public tokens: Token[]) {
+  }
+
+  public content = this.tokens.map(t => t.content).join('');
+  public initialToken = this.tokens[0];
+  public lastToken = this.tokens[this.tokens.length-1];
+}
+
+export class Strophe extends TokenSpan {
+  constructor(
+    tokens: Token[],
+    public verses: Verse[],
+    public words: Word[])
+  {
+    super(tokens);
+  }
+}
+
+export class Verse extends TokenSpan {
+  constructor(
+    tokens: Token[])
+  {
+    super(tokens);
+  }
+}
+
+export class Word extends TokenSpan {
+  constructor(
+    tokens: Token[])
+  {
+    super(tokens);
+  }
 }
