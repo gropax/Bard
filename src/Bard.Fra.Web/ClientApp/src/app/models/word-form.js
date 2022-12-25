@@ -1,6 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RhymingWords = exports.PhonGraphWord = exports.WordForm = void 0;
+exports.RhymingWords = exports.PhonGraphWord = exports.WordForm = exports.WordPronunciation = void 0;
+var WordPronunciation = /** @class */ (function () {
+    function WordPronunciation(id, graphemes, ipa) {
+        this.id = id;
+        this.graphemes = graphemes;
+        this.ipa = ipa;
+    }
+    return WordPronunciation;
+}());
+exports.WordPronunciation = WordPronunciation;
 var WordForm = /** @class */ (function () {
     function WordForm(id, graphemes, syllables, pos, number, gender, person, mood, tense) {
         this.id = id;

@@ -3,9 +3,10 @@
   [ngClass]="[
     segment.word === hoveredWord ? 'hover' : '',
     segment.word === selectedWord ? 'selected' : '',
+    loading ? 'loading' : '',
   ]"
   (mouseenter)="hoverEvent.emit(segment.word)"
   (mouseleave)="hoverEvent.emit(null)"
   (click)="selectEvent.emit([segment.word!, span])">
-  {{ segment.content }}
+  {{ loading ? segment.content : pronunciations[0].ipa }}
 </span>

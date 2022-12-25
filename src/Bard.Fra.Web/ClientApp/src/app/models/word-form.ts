@@ -1,4 +1,12 @@
 
+export class WordPronunciation {
+  constructor(
+    public id: number,
+    public graphemes: string,
+    public ipa: string) {
+  }
+}
+
 export class WordForm {
   constructor(
     public id: number,

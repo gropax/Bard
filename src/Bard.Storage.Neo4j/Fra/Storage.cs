@@ -330,6 +330,36 @@ namespace Bard.Storage.Neo4j.Fra
             throw new NotImplementedException();
         }
 
+        public async Task<WordPronunciation[]> GetPronunciation(string graphemes)
+        {
+            return await Transaction(async t =>
+            {
+                var q = $@"
+                    MATCH (w:{NodeLabel.WORD_FORM})-[r:{RelationshipLabel.PHONETIC_REALIZATION}]->(p:{NodeLabel.PHONETIC_SEQUENCE})
+                    WHERE w.`{PropLabel.WORD_FORM_GRAPHICAL_FORM}` = $graphemes
+                    RETURN w, r, p";
+
+                var cursor = await t.RunAsync(q, new { graphemes });
+                var records = await cursor.ToListAsync();
+
+                var pronuns = new List<WordPronunciation>();
+                foreach (var r in records)
+                {
+                    var wordForm = _wordFormNodeSerializer.Deserialize(r["w"].As<INode>());
+                    var phonSeq = _phoneticSequenceNodeSerializer.Deserialize(r["p"].As<INode>());
+                    var phonReal = _phoneticRealizationRelationSerializer.Deserialize(r["r"].As<IRelationship>());
+
+                    pronuns.Add(new WordPronunciation(
+                        graphemes: wordForm.GraphicalForm,
+                        pos: wordForm.POS,
+                        ipa: phonSeq.IpaRepresentation));
+                }
+
+                return pronuns.ToArray();
+            });
+        }
+
+
         public async Task<WordFormDto[]> SearchWordForms(string graphemes, int limit = 10)
         {
             return await Transaction(async t =>

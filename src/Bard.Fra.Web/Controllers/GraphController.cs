@@ -1,4 +1,5 @@
-﻿using Bard.Storage.Neo4j.Fra;
+﻿using Bard.Fra.Web.Contracts;
+using Bard.Storage.Neo4j.Fra;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,13 @@ namespace Bard.Fra.Web.Controllers
         public GraphController(GraphStorage graphStorage)
         {
             _graphStorage = graphStorage;
+        }
+
+        [HttpPost("word-forms/pronunciation")]
+        public async Task<IActionResult> GetPronunciation([FromBody] GetPronunciationDto queryDto)
+        {
+            var results = await _graphStorage.GetPronunciation(queryDto.GraphicalForm);
+            return Ok(results);
         }
 
         [HttpGet("word-forms/search")]

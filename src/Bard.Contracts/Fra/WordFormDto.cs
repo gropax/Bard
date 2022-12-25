@@ -52,4 +52,20 @@ namespace Bard.Contracts.Fra
             Syllables = syllables;
         }
     }
+
+    public class WordPronunciation
+    {
+        public string Graphemes { get; }
+        public POS POS { get; }
+        public string Ipa { get; }
+
+        //public string Syllables { get; }
+
+        public WordPronunciation(string graphemes, POS pos, string ipa)
+        {
+            Graphemes = graphemes;
+            POS = pos;
+            Ipa = ipa;
+        }
+    }
 }

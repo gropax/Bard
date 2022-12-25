@@ -1,5 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Word } from '../../../../models/text';
+import { WordPronunciation } from '../../../../models/word-form';
+import { WordFormsService } from '../../../../services/word-forms-service';
 import { Segment } from '../ipa-view.component';
 
 @Component({
@@ -17,9 +19,21 @@ export class SegmentComponent implements OnInit {
   @Output() hoverEvent = new EventEmitter<Word | null>();
   @Output() selectEvent = new EventEmitter<[Word, HTMLSpanElement]>();
 
-  constructor() { }
+  public pronunciations: WordPronunciation[];
+  public loading: boolean;
+
+  constructor(
+    private wordFormsService: WordFormsService) {
+  }
 
   ngOnInit(): void {
+    this.loading = true;
+    this.wordFormsService.getPronunciation({
+      graphicalForm: this.segment.content,
+    }).subscribe(pronunciations => {
+      this.pronunciations = pronunciations;
+      this.loading = false;
+    });
   }
 
 }

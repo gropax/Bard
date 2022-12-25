@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { RhymingWords, PhonGraphWord, WordForm } from "../models/word-form";
+import { RhymingWords, PhonGraphWord, WordForm, WordPronunciation } from "../models/word-form";
 import { Injectable } from '@angular/core';
 import { Paginated } from "../models/paginated";
 
@@ -9,6 +9,10 @@ import { Paginated } from "../models/paginated";
 export class WordFormsService {
   
   constructor(protected http: HttpClient) { }
+
+  public getPronunciation(q: IWordPronunciationQuery) {
+    return this.http.post<WordPronunciation[]>('graph/word-forms/pronunciation', q);
+  }
 
   public searchWordForm(q: string, limit: number) {
     return this.http.get<WordForm[]>('graph/word-forms/search', { params: { q, limit } });
@@ -22,4 +26,8 @@ export class WordFormsService {
     return this.http.get<Paginated<RhymingWords>>('graph/final-rhymes',
       { params: { graphemes, phonemes, filter, sortDir, page, pageSize } });
   }
+}
+
+export interface IWordPronunciationQuery {
+  graphicalForm: string;
 }
