@@ -6,7 +6,7 @@ import { Paginated } from "../models/paginated";
 @Injectable({
   providedIn: 'root',
 })
-export class GraphService {
+export class WordFormsService {
   
   constructor(protected http: HttpClient) { }
 

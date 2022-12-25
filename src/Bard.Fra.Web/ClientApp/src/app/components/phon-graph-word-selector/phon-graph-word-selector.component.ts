@@ -10,7 +10,7 @@ import { concatMap } from 'rxjs';
 import { BehaviorSubject, map } from 'rxjs';
 import { Observable } from 'rxjs';
 import { PhonGraphWord, WordForm } from '../../models/word-form';
-import { GraphService } from '../../services/word-forms-service';
+import { WordFormsService } from '../../services/word-forms-service';
 
 @Component({
   selector: 'app-phon-graph-word-selector',
@@ -33,7 +33,7 @@ export class PhonGraphWordSelectorComponent implements OnInit, AfterViewInit {
   loading = false;
 
   constructor(
-    private graphService: GraphService) {
+    private graphService: WordFormsService) {
   }
 
   ngOnInit() {

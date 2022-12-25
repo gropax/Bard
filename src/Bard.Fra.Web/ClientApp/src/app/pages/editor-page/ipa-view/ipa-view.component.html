@@ -2,13 +2,13 @@
   <div *ngFor="let strophe of segments" class="strophe">
     <p *ngFor="let verse of strophe" class="verse">
       <ng-container *ngFor="let segment of verse">
-        <app-word-part *ngIf="segment.isWord"
-          [wordPart]="segment"
+        <app-ipa-segment *ngIf="segment.isWord"
+          [segment]="segment"
           [selectedWord]="selectedWord"
           [hoveredWord]="hoveredWord"
           (hoverEvent)="hoverWord($event)"
           (selectEvent)="selectWord($event)">
-        </app-word-part>
+        </app-ipa-segment>
         <span *ngIf="!segment.isWord" class="punct-segment">{{ segment.content }}</span>
       </ng-container>
     </p>

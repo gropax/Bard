@@ -4,7 +4,7 @@ import { map } from "rxjs";
 import { pluck } from "rxjs";
 import { BehaviorSubject } from "rxjs";
 import { RhymingWords } from "../models/word-form";
-import { GraphService } from "../services/word-forms-service";
+import { WordFormsService } from "../services/word-forms-service";
 
 
 /*
@@ -16,7 +16,7 @@ export class RhymingWordDataSource implements DataSource<RhymingWords> {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
 
-  constructor(private graphService: GraphService) {}
+  constructor(private graphService: WordFormsService) {}
 
   connect(collectionViewer: CollectionViewer) {
     return this.finalRhymeSubject.asObservable();

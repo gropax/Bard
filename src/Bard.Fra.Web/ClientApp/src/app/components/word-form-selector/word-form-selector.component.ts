@@ -10,7 +10,7 @@ import { concatMap } from 'rxjs';
 import { BehaviorSubject, map } from 'rxjs';
 import { Observable } from 'rxjs';
 import { WordForm } from '../../models/word-form';
-import { GraphService } from '../../services/word-forms-service';
+import { WordFormsService } from '../../services/word-forms-service';
 
 @Component({
   selector: 'app-word-form-selector',
@@ -33,7 +33,7 @@ export class WordFormSelectorComponent implements OnInit, AfterViewInit {
   loading = false;
 
   constructor(
-    private wordFormsService: GraphService) {
+    private wordFormsService: WordFormsService) {
   }
 
   ngOnInit() {

@@ -3,7 +3,7 @@ import { Word } from '../../../../models/text';
 import { Segment } from '../ipa-view.component';
 
 @Component({
-  selector: 'app-segment',
+  selector: 'app-ipa-segment',
   templateUrl: './segment.component.html',
   styleUrls: ['./segment.component.less']
 })

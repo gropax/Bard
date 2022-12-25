@@ -2,8 +2,8 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { RhymingWordDataSource } from '../../../data-sources/final-rhyme-data-source';
-import { RhymingWords, PhonGraphWord } from '../../../models/word-form';
-import { GraphService } from '../../../services/word-forms-service';
+import { PhonGraphWord } from '../../../models/word-form';
+import { WordFormsService } from '../../../services/word-forms-service';
 
 @Component({
   selector: 'app-final-rhyme-table',
@@ -20,7 +20,7 @@ export class FinalRhymeTableComponent implements OnInit, OnChanges {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
 
-  constructor(private graphService: GraphService) {
+  constructor(private graphService: WordFormsService) {
     this.dataSource = new RhymingWordDataSource(graphService);
   }
 
